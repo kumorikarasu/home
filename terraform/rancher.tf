@@ -1,7 +1,11 @@
 
-resource "proxmox_vm_qemu" "kube-vm" {
-  count = 3
-  name = "kube${count.index + 1}"
+locals {
+  num = 2
+}
+
+resource "proxmox_vm_qemu" "rancher-vm" {
+  count = 1
+  name = "racher${count.index + 1}"
   desc = "A test for using terraform and cloudinit"
 
   # Node name has to be the same name as within the cluster
@@ -54,10 +58,27 @@ resource "proxmox_vm_qemu" "kube-vm" {
   # Keep in mind to use the CIDR notation for the ip.
   # I could not get dhcp to work, every single VM had the same IP
   # I'm going to put that on the bad router I have for now
-  ipconfig0 = format("%s%02d%s", "ip=192.168.1.1", count.index, "/23,gw=192.168.0.1,ip6=dhcp")
+  ipconfig0 = format("%s%02d%s", "ip=192.168.1.", (count.index + 50), "/23,gw=192.168.0.1,ip6=dhcp")
 
   sshkeys = <<EOF
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDaLvJnJHpOtJJWsz1v0sg3eid6FxjZaHfqEN5/FQnldwOXtYKeI4M2YEBII4BSHnhr5ZpreFEvuVJuxh8qpzLzF8r7A0FAmeEEh6uBc+y9lLhdMaqTEBBpTFArarrcfKzKm+NBYYvVXAsoeY/8OwRj3+WlCLQWT6tT60w3SN6dwtQgaJa1lTH43umCXz+bwcI5VqJnkEFj3Z9wLoyEVOrQpwQaj5ELW1XDVhE0EZlyxFFzGoQVd6iCRzPmRhndgi3/L5A+dNS6SlUoYMhW+JyE6M3UHHqlYfJ0aOR6Pw5QmZcNXK2WwWU+wepW2Ktod6K0EcrRseoavo5dR0/FlPc1 kumori@DESKTOP-3N1AKAV
   EOF
+}
+
+resource "null_resource" "racher-exec" {
+  count = 1
+
+  connection {
+    host = "192.168.1.${count.index + 50}"
+    type = "ssh"
+    user = "kumori"
+    private_key = "${file("~/.ssh/id_rsa")}"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo docker run -d --restart=unless-stopped -p 80:80 -p 443:443 --privileged rancher/rancher"
+    ]
+  }
 }
 
