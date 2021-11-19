@@ -54,21 +54,25 @@
         "ubuntu-20.04.3-live-server-amd64.iso",
         "https://releases.ubuntu.com/20.04/ubuntu-20.04.3-live-server-amd64.iso"
       ],
+      "unmount_iso": true,
       "iso_storage_pool": "local",
       "iso_checksum": "sha256:f8e3086f3cea0fb3fefb29937ab5ed9d19e767079633960ccb50e76153effc98",
-      "ssh_username": "ubuntu",
-      "ssh_password": "ubuntu",
+      "ssh_username": "kumori",
+      "ssh_private_key_file" : "/home/kumori/.ssh/id_rsa",
       "ssh_timeout": "300m",
       "vm_name": "{{user `vm_name` }}",
       "vm_id": "{{user `vm_id`}}",
       "memory": "{{ user `ram` }}",
       "cores": "{{ user `cpus` }}",
       "os": "l26",
-      "unmount_iso": true,
       "template_description":"{{user `template_description`}}"
     }
   ],
 
-  "provisioners": [
-  ]
+  "provisioners": [{
+    "type": "shell",
+    "inline": [
+      "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do echo 'Waiting for cloud-init...'; sleep 1; done"
+    ]
+  }]
 }
