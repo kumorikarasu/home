@@ -31,6 +31,5 @@ autoinstall:
         ssh_authorized_keys:
           - 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDaLvJnJHpOtJJWsz1v0sg3eid6FxjZaHfqEN5/FQnldwOXtYKeI4M2YEBII4BSHnhr5ZpreFEvuVJuxh8qpzLzF8r7A0FAmeEEh6uBc+y9lLhdMaqTEBBpTFArarrcfKzKm+NBYYvVXAsoeY/8OwRj3+WlCLQWT6tT60w3SN6dwtQgaJa1lTH43umCXz+bwcI5VqJnkEFj3Z9wLoyEVOrQpwQaj5ELW1XDVhE0EZlyxFFzGoQVd6iCRzPmRhndgi3/L5A+dNS6SlUoYMhW+JyE6M3UHHqlYfJ0aOR6Pw5QmZcNXK2WwWU+wepW2Ktod6K0EcrRseoavo5dR0/FlPc1 kumori@DESKTOP-3N1AKAV'
   late-commands:
-    - echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' > /target/etc/sudoers.d/ubuntu
     - sed -ie 's/GRUB_CMDLINE_LINUX=.*/GRUB_CMDLINE_LINUX="net.ifnames=0 ipv6.disable=1 biosdevname=0"/' /target/etc/default/grub
     - curtin in-target --target /target update-grub2
