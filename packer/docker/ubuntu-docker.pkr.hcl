@@ -59,6 +59,6 @@ build {
   sources = ["source.proxmox-clone.docker"]
 
   provisioner "shell" {
-    inline         = ["sudo apt install -y docker.io"]
+    inline         = ["sudo apt install -y docker.io && sudo usermod -aG docker kumori"]
   }
 }

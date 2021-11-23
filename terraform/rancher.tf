@@ -24,20 +24,21 @@ resource "proxmox_vm_qemu" "rancher-vm" {
 
   # The template name to clone this vm from
   # This is currently setup manually as a template image
-  clone = "ubuntu-2004"
+  clone = "ubuntu-docker"
 
   # Activate QEMU agent for this VM
   agent = 1
 
   os_type = "cloud-init"
-  qemu_os = "other"
-  ciuser  = "kumori"
+  qemu_os = "l26"
   cores   = 2
   sockets = 1
   vcpus   = 0
   cpu     = "host"
   memory  = 2048
   scsihw  = "virtio-scsi-pci"
+
+  ipconfig0 = "ip=dhcp"
 
   # Setup the disk
   disk {
@@ -54,12 +55,7 @@ resource "proxmox_vm_qemu" "rancher-vm" {
     bridge = "vmbr0"
   }
 
-  # Setup the ip address using cloud-init.
-  # Keep in mind to use the CIDR notation for the ip.
-  # I could not get dhcp to work, every single VM had the same IP
-  # I'm going to put that on the bad router I have for now
-  ipconfig0 = format("%s%02d%s", "ip=192.168.1.", (count.index + 50), "/23,gw=192.168.0.1,ip6=dhcp")
-
+  ciuser  = "kumori"
   sshkeys = <<EOF
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDaLvJnJHpOtJJWsz1v0sg3eid6FxjZaHfqEN5/FQnldwOXtYKeI4M2YEBII4BSHnhr5ZpreFEvuVJuxh8qpzLzF8r7A0FAmeEEh6uBc+y9lLhdMaqTEBBpTFArarrcfKzKm+NBYYvVXAsoeY/8OwRj3+WlCLQWT6tT60w3SN6dwtQgaJa1lTH43umCXz+bwcI5VqJnkEFj3Z9wLoyEVOrQpwQaj5ELW1XDVhE0EZlyxFFzGoQVd6iCRzPmRhndgi3/L5A+dNS6SlUoYMhW+JyE6M3UHHqlYfJ0aOR6Pw5QmZcNXK2WwWU+wepW2Ktod6K0EcrRseoavo5dR0/FlPc1 kumori@DESKTOP-3N1AKAV
   EOF
@@ -69,7 +65,7 @@ resource "null_resource" "racher-exec" {
   count = 1
 
   connection {
-    host = "192.168.1.${count.index + 50}"
+    host = proxmox_vm_qemu.rancher-vm[count.index].default_ipv4_address
     type = "ssh"
     user = "kumori"
     private_key = "${file("~/.ssh/id_rsa")}"

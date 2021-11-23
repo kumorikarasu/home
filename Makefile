@@ -20,3 +20,6 @@ packer-base:
 	cd packer/ubuntu-2004
 	packer build ubuntu-2004-proxmox.json
 
+kube:
+	kubectl apply -f kube/minecraft
+	kubectl apply -f kube/satisfactory

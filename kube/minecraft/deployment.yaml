@@ -1,0 +1,93 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minecraft-deployment
+  labels:
+    app: minecraft
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minecraft
+  template:
+    metadata:
+      labels:
+        app: minecraft
+    spec:
+      volumes:
+      - name: minecraft
+        persistentVolumeClaim:
+          claimName: minecraft-pvc
+      containers:
+      - name: minecraft
+        image: itzg/minecraft-server:java15
+        resources:
+          requests:
+            memory: "48Gi"
+        ports:
+        - containerPort: 25565
+        env:
+        - name: EULA
+          value: "TRUE"
+        - name: TYPE
+          value: "FORGE"
+        - name: FORGE_INSTALLER
+          value: "forge-1.16.5-36.2.8-installer.jar"
+        - name: MEMORY
+          value: 48G
+        - name: JVM_DD_OPTS
+          value: "fml.queryResult:confirm"
+        - name: OPS
+          value: kumorikarasu
+        volumeMounts:
+        - mountPath: "/data"
+          name: minecraft
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: minecraft-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  resources:
+    requests:
+      storage: 1000Gi
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  finalizers:
+  - kubernetes.io/pv-protection
+  name: minecraft-pv
+spec:
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 1000Gi
+  nfs:
+    path: /mnt/user/appdata/minecraft/valhelsia3
+    server: 192.168.0.23
+  persistentVolumeReclaimPolicy: Retain
+  volumeMode: Filesystem
+status:
+  phase: Available
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minecraft-service
+spec:
+  type: NodePort
+  selector:
+    app: minecraft
+  ports:
+    - protocol: TCP
+      port: 25565
+      targetPort: 25565
+      nodePort: 31245
