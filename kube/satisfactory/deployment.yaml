@@ -21,7 +21,7 @@ spec:
           claimName: satisfactory-pvc
       containers:
       - name: satisfactory
-        image: wolveix/satisfactory-server:latest
+        image: wolveix/satisfactory-server:dev
         resources:
           requests:
             memory: "16Gi"
