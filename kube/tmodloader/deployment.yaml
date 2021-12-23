@@ -1,0 +1,96 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: terraria-deployment
+  labels:
+    app: terraria
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: terraria
+  template:
+    metadata:
+      labels:
+        app: terraria
+    spec:
+      volumes:
+      - name: terraria
+        persistentVolumeClaim:
+          claimName: terraria-pvc
+      containers:
+      - name: terraria
+        image: ich777/terrariaserver:tmodloader
+        resources:
+          requests:
+            memory: "8Gi"
+        ports:
+        - containerPort: 7777
+        - containerPort: 9012
+        env:
+        - name: UID
+          value: "99"
+        - name: GID
+          value: "100"
+        - name: GAME_PARAMS
+          value: "-config serverconfig.txt"
+        - name: GAME_VERSION
+          value: "1.3.5.3"
+        volumeMounts:
+        - mountPath: "/serverdata/serverfiles"
+          name: terraria
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: terraria-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  resources:
+    requests:
+      storage: 1000Gi
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  finalizers:
+  - kubernetes.io/pv-protection
+  name: terraria-pv
+spec:
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 1000Gi
+  nfs:
+    path: /mnt/user/appdata/terraria/tmodloader
+    server: 192.168.0.23
+  persistentVolumeReclaimPolicy: Retain
+  volumeMode: Filesystem
+status:
+  phase: Available
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: terraria-service
+spec:
+  type: NodePort
+  selector:
+    app: terraria
+  ports:
+    - name: app
+      protocol: TCP
+      port: 7777
+      targetPort: 7777
+      nodePort: 31251
+    - name: rcon
+      protocol: TCP
+      port: 9012
+      targetPort: 9012
+      nodePort: 31252
