@@ -1,8 +1,3 @@
-
-locals {
-  num = 2
-}
-
 resource "proxmox_vm_qemu" "rancher-vm" {
   count = 1
   name = "racher${count.index + 1}"
@@ -38,7 +33,7 @@ resource "proxmox_vm_qemu" "rancher-vm" {
   memory  = 2048
   scsihw  = "virtio-scsi-pci"
 
-  ipconfig0 = "ip=dhcp"
+  ipconfig0 = "ip=192.168.1.${count.index + 10}/23,gw=192.168.0.1"
 
   # Setup the disk
   disk {
@@ -76,5 +71,22 @@ resource "null_resource" "racher-exec" {
       "sudo docker run -d --restart=unless-stopped -p 80:80 -p 443:443 --privileged rancher/rancher"
     ]
   }
+
+  triggers = {
+    cluster_instance_ids = join(",", proxmox_vm_qemu.rancher-vm.*)
+  }
+
+  depends_on = [
+    proxmox_vm_qemu.rancher-vm,
+  ]
 }
 
+resource "dns_a_record_set" "rancher" {
+  count = length(proxmox_vm_qemu.rancher-vm)
+  zone = "ryougi.io."
+  name = "rancher${count.index + 1}"
+  addresses = [
+    proxmox_vm_qemu.rancher-vm[count.index].default_ipv4_address,
+  ]
+  ttl = 300
+}

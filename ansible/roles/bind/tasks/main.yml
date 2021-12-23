@@ -1,0 +1,126 @@
+- name: "Bind Package"
+  become: true
+  apt: 
+    name: bind9
+    state: latest 
+
+- name: Bind db.0 template
+  template:
+    src: db.0
+    dest: /etc/bind/db.0
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  notify:
+    - Restart bind
+      
+- name: Bind db.127 template
+  template:
+    src: db.127
+    dest: /etc/bind/db.127
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  notify:
+    - Restart bind
+
+- name: Bind db.255 template
+  template:
+    src: db.255
+    dest: /etc/bind/db.255
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  notify:
+    - Restart bind
+
+- name: Bind db.empty template
+  template:
+    src: db.empty
+    dest: /etc/bind/db.empty
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  notify:
+    - Restart bind
+
+- name: Bind db.local template
+  template:
+    src: db.local
+    dest: /etc/bind/db.local
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  notify:
+    - Restart bind
+
+- name: Bind db.ryougi.io template
+  template:
+    src: db.ryougi.io
+    dest: /var/lib/bind/db.ryougi.io
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  notify:
+    - Restart bind
+
+- name: Bind db.168.192 template
+  template:
+    src: db.168.192
+    dest: /var/lib/bind/db.168.192
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  notify:
+    - Restart bind
+
+- name: Bind named.conf template
+  template:
+    src: named.conf
+    dest: /etc/bind/named.conf
+    owner: root
+    group: bind
+    mode: '0644'
+  become: true
+  notify:
+    - Restart bind
+
+- name: Bind named.conf.default-zones template
+  template:
+    src: named.conf.default-zones
+    dest: /etc/bind/named.conf.default-zones
+    owner: root
+    group: bind
+    mode: '0644'
+  become: true
+  notify:
+    - Restart bind
+
+- name: Bind named.conf.local template
+  template:
+    src: named.conf.local
+    dest: /etc/bind/named.conf.local
+    owner: root
+    group: bind
+    mode: '0644'
+  become: true
+  notify:
+    - Restart bind
+
+- name: Bind named.conf.options template
+  template:
+    src: named.conf.options
+    dest: /etc/bind/named.conf.options
+    owner: root
+    group: bind
+    mode: '0644'
+  become: true
+  notify:
+    - Restart bind

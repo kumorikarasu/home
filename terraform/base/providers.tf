@@ -20,12 +20,3 @@ provider "proxmox" {
   pm_user         = "TFServiceAccount"
   pm_tls_insecure = true
 }
-
-provider "dns" {
-  update {
-    server        = "192.168.1.1"
-    key_name      = "terraformKey."
-    key_algorithm = "hmac-md5"
-    key_secret    = "QmluZFN1cGVyQ29vbE5vdFZlcnlTZWN1cmVQYXNzCg=="
-  }
-}

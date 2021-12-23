@@ -147,3 +147,13 @@ resource "null_resource" "kube-exec" {
     ]
   }
 }
+
+resource "dns_a_record_set" "kube" {
+  count = length(proxmox_vm_qemu.kube-vm)
+  zone = "ryougi.io."
+  name = "kube${count.index + 1}"
+  addresses = [
+    proxmox_vm_qemu.kube-vm[count.index].default_ipv4_address,
+  ]
+  ttl = 300
+}

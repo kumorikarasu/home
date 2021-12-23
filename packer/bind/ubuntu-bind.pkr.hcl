@@ -10,7 +10,7 @@ variable "source_template" {
 
 variable "template_name" {
   type    = string
-  default = "ubuntu-docker"
+  default = "ubuntu-bind"
 }
 
 variable "url" {
@@ -28,19 +28,19 @@ variable "username" {
   default = "${env("PM_API_TOKEN_ID")}"
 }
 
-source "proxmox-clone" "docker" {
+source "proxmox-clone" "bind" {
   insecure_skip_tls_verify = true
   full_clone = false
 
   template_name = "${var.template_name}"
-  vm_id         = 9010
+  vm_id         = 9011
   clone_vm      = "${var.source_template}"
   
   os              = "l26"
   cores           = "1"
   memory          = "512"
   scsi_controller = "virtio-scsi-pci"
-  qemu_agent = true
+  qemu_agent      = true
 
   network_adapters {
     bridge = "vmbr0"
@@ -57,9 +57,10 @@ source "proxmox-clone" "docker" {
 }
 
 build {
-  sources = ["source.proxmox-clone.docker"]
+  sources = ["source.proxmox-clone.bind"]
 
-  provisioner "shell" {
-    inline         = ["sudo apt install -y docker.io && sudo usermod -aG docker kumori"]
+  provisioner "ansible" {
+    playbook_file = "ansible/bind.yml"
   }
+
 }
