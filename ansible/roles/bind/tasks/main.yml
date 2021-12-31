@@ -4,6 +4,19 @@
     name: bind9
     state: latest 
 
+- name: "get unix time"
+  shell: echo $(date +%s)
+  register: unix_time_stamp
+  delegate_to: localhost
+  run_once: true
+  become: no
+
+- name: "setting execution facts"
+  set_fact:
+    __bind9_zone_serial: "{{ unix_time_stamp.stdout }}"
+  run_once: true
+  become: no
+
 - name: Bind db.0 template
   template:
     src: db.0

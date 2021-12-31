@@ -3,7 +3,7 @@
 ;
 $TTL	604800
 @	IN	SOA	ns1.ryougi.io. localdomain.168.192.in-addr.arpa (
-			      3		      ; Serial
+			      {{ __bind9_zone_serial }}	; Serial
 			      604800		; Refresh
 			      86400		  ; Retry
 			      2419200		; Expire
@@ -15,9 +15,26 @@ $TTL	604800
 
 ; PTR Records 
 1.1   IN      PTR     ns1.ryougi.io.    ; 192.168.1.1
-1.2   IN      PTR     ns2.ryougi.io.    ; 192.168.1.2
+2.1   IN      PTR     ns2.ryougi.io.    ; 192.168.1.2
 
 ; PTR Records
-0.73  IN      PTR     prox.ryougi.io.  ; 192.168.0.73
-0.23  IN      PTR     nas.ryougi.io.   ; 192.168.0.23
-0.1   IN      PTR     router.ryougi.io ; 192.168.0.1
+73.0  IN      PTR     prox.ryougi.io.  ; 192.168.0.73
+23.0  IN      PTR     nas.ryougi.io.   ; 192.168.0.23
+1.0   IN      PTR     router.ryougi.io ; 192.168.0.1
+
+; Kube Ingress PTR Records
+86.0       IN      PTR      kube1.ryougi.io ; 192.168.0.86
+89.0       IN      PTR      kube2.ryougi.io ; 192.168.0.89
+
+89.0       IN      PTR      plex.ryougi.io. ; 192.168.0.89
+86.0       IN      PTR      plex.ryougi.io. ; 192.168.0.86
+89.0       IN      PTR      game.ryougi.io. ; 192.168.0.89
+86.0       IN      PTR      game.ryougi.io. ; 192.168.0.86
+89.0       IN      PTR      terraria.ryougi.io. ; 192.168.0.89
+86.0       IN      PTR      terraria.ryougi.io. ; 192.168.0.86
+89.0       IN      PTR      minecraft.ryougi.io. ; 192.168.0.89
+86.0       IN      PTR      minecraft.ryougi.io. ; 192.168.0.86
+89.0       IN      PTR      satisfactory.ryougi.io. ; 192.168.0.89
+86.0       IN      PTR      satisfactory.ryougi.io. ; 192.168.0.86
+89.0       IN      PTR      satisfactory.ryougi.io. ; 192.168.0.89
+86.0       IN      PTR      satisfactory.ryougi.io. ; 192.168.0.86
