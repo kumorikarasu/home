@@ -22,9 +22,6 @@ spec:
       containers:
       - name: terraria
         image: ich777/terrariaserver:tmodloader
-        resources:
-          requests:
-            memory: "8Gi"
         ports:
         - containerPort: 7777
         - containerPort: 9012
