@@ -1,5 +1,5 @@
 resource "proxmox_vm_qemu" "rancher-vm" {
-  count = 1
+  count = var.rancher_count
   name = "racher${count.index + 1}"
   desc = "A test for using terraform and cloudinit"
 
@@ -30,7 +30,7 @@ resource "proxmox_vm_qemu" "rancher-vm" {
   sockets = 1
   vcpus   = 0
   cpu     = "host"
-  memory  = 2048
+  memory  = 8192
   scsihw  = "virtio-scsi-pci"
 
   ipconfig0 = "ip=192.168.1.${count.index + 10}/23,gw=192.168.0.1"
@@ -39,7 +39,7 @@ resource "proxmox_vm_qemu" "rancher-vm" {
   disk {
     size         = "32G"
     type         = "scsi"
-    storage      = "UNRAID"
+    storage      = "local-lvm"
     ssd          = 0
     discard      = "on"
   }
@@ -56,37 +56,3 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDaLvJnJHpOtJJWsz1v0sg3eid6FxjZaHfqEN5/FQnl
   EOF
 }
 
-resource "null_resource" "racher-exec" {
-  count = 1
-
-  connection {
-    host = proxmox_vm_qemu.rancher-vm[count.index].default_ipv4_address
-    type = "ssh"
-    user = "kumori"
-    private_key = "${file("~/.ssh/id_rsa")}"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "sudo docker run -d --restart=unless-stopped -p 80:80 -p 443:443 --privileged rancher/rancher"
-    ]
-  }
-
-  triggers = {
-    cluster_instance_ids = join(",", proxmox_vm_qemu.rancher-vm.*)
-  }
-
-  depends_on = [
-    proxmox_vm_qemu.rancher-vm,
-  ]
-}
-
-resource "dns_a_record_set" "rancher" {
-  count = length(proxmox_vm_qemu.rancher-vm)
-  zone = "ryougi.io."
-  name = "rancher${count.index + 1}"
-  addresses = [
-    proxmox_vm_qemu.rancher-vm[count.index].default_ipv4_address,
-  ]
-  ttl = 300
-}

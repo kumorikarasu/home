@@ -8,8 +8,13 @@ terraform {
       source  = "kreuzwerker/docker"
       version = "2.15.0"
     }
+    rancher2 = {
+      source = "rancher/rancher2"
+      version = "1.22.2"
+    }
   }
 }
+
 
 provider "proxmox" {
   # TODO: DNS Server

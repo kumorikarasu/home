@@ -47,7 +47,7 @@ build {
 
   provisioner "shell" {
     //expect_disconnect = true
-    inline = ["sudo cloud-init clean"]
+    inline = ["sudo sed -i 's/#DNS=/DNS=192.168.1.1/g' /etc/systemd/resolved.conf && sudo service systemd-resolved restart && sudo cloud-init clean"]
     /*
     inline = [<<EOF
     sudo cloud-init clean \

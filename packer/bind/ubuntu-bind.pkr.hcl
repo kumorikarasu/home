@@ -5,7 +5,7 @@ variable "host_node" {
 
 variable "source_template" {
   type = string
-  default = "ubuntu-cloudinit"
+  default = "ubuntu-base"
 }
 
 variable "template_name" {
@@ -58,6 +58,10 @@ source "proxmox-clone" "bind" {
 
 build {
   sources = ["source.proxmox-clone.bind"]
+
+  provisioner "shell" {
+    inline = ["sudo cloud-init clean"]
+  }
 
   provisioner "ansible" {
     playbook_file = "ansible/bind.yml"

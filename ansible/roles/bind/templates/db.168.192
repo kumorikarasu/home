@@ -23,18 +23,21 @@ $TTL	604800
 1.0   IN      PTR     router.ryougi.io ; 192.168.0.1
 
 ; Kube Ingress PTR Records
-86.0       IN      PTR      kube1.ryougi.io ; 192.168.0.86
-89.0       IN      PTR      kube2.ryougi.io ; 192.168.0.89
+100.1       IN      PTR     kube1.ryougi.io ; 192.168.0.86
+101.1       IN      PTR     kube2.ryougi.io ; 192.168.0.89
+102.1       IN      PTR     kube3.ryougi.io ; 192.168.0.86
+10.1        IN      PTR      rancher1.ryougi.io
+11.1        IN      PTR      rancher2.ryougi.io
 
-89.0       IN      PTR      plex.ryougi.io. ; 192.168.0.89
-86.0       IN      PTR      plex.ryougi.io. ; 192.168.0.86
-89.0       IN      PTR      game.ryougi.io. ; 192.168.0.89
-86.0       IN      PTR      game.ryougi.io. ; 192.168.0.86
-89.0       IN      PTR      terraria.ryougi.io. ; 192.168.0.89
-86.0       IN      PTR      terraria.ryougi.io. ; 192.168.0.86
-89.0       IN      PTR      minecraft.ryougi.io. ; 192.168.0.89
-86.0       IN      PTR      minecraft.ryougi.io. ; 192.168.0.86
-89.0       IN      PTR      satisfactory.ryougi.io. ; 192.168.0.89
-86.0       IN      PTR      satisfactory.ryougi.io. ; 192.168.0.86
-89.0       IN      PTR      satisfactory.ryougi.io. ; 192.168.0.89
-86.0       IN      PTR      satisfactory.ryougi.io. ; 192.168.0.86
+100.1       IN      PTR      plex.ryougi.io. ; 192.168.0.89
+101.1       IN      PTR      plex.ryougi.io. ; 192.168.0.86
+100.1       IN      PTR      game.ryougi.io. ; 192.168.0.89
+101.1       IN      PTR      game.ryougi.io. ; 192.168.0.86
+100.1       IN      PTR      terraria.ryougi.io. ; 192.168.0.89
+101.1       IN      PTR      terraria.ryougi.io. ; 192.168.0.86
+100.1       IN      PTR      minecraft.ryougi.io. ; 192.168.0.89
+101.1       IN      PTR      minecraft.ryougi.io. ; 192.168.0.86
+100.1       IN      PTR      satisfactory.ryougi.io. ; 192.168.0.89
+101.1       IN      PTR      satisfactory.ryougi.io. ; 192.168.0.86
+100.1       IN      PTR      satisfactory.ryougi.io. ; 192.168.0.89
+101.1       IN      PTR      satisfactory.ryougi.io. ; 192.168.0.86

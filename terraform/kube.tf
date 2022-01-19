@@ -1,7 +1,7 @@
 
 
 resource "proxmox_vm_qemu" "kube-master-vm" {
-  count = 1
+  count = var.kube_master_count
   name = "kube-master${count.index + 1}"
   desc = "A test for using terraform and cloudinit"
 
@@ -34,6 +34,8 @@ resource "proxmox_vm_qemu" "kube-master-vm" {
   cpu     = "host"
   memory  = 4096
   scsihw  = "virtio-scsi-pci"
+
+  ipconfig0 = "ip=192.168.1.${count.index + 90}/23,gw=192.168.0.1"
 
   # Setup the disk
   disk {
@@ -68,13 +70,13 @@ resource "null_resource" "kube-exec-master" {
 
   provisioner "remote-exec" {
     inline = [
-      "sudo docker run -d --privileged --restart=unless-stopped --net=host -v /etc/kubernetes:/etc/kubernetes -v /var/run:/var/run  rancher/rancher-agent:v2.6.2 --server https://192.168.0.78 --token fjzmjclmzzf9nk5cdhvcdldzq66v2fw944297g4jzv2jd8g99l499w --ca-checksum f008fbf93dda11077c7353aca7407e878d179bca0169dfd41501b566cb1998c4 --etcd --controlplane --node-name kube-master${count.index + 1}"
+      "${rancher2_cluster.home_kube.cluster_registration_token[0].node_command} --etcd --controlplane --node-name kube-master${count.index + 1}"
     ]
   }
 }
 
 resource "proxmox_vm_qemu" "kube-vm" {
-  count = 2
+  count = var.kube_nodes_count
   name = "kube${count.index + 1}"
   desc = "A test for using terraform and cloudinit"
 
@@ -117,7 +119,7 @@ resource "proxmox_vm_qemu" "kube-vm" {
     discard      = "on"
   }
 
-  ipconfig0 = "ip=dhcp"
+  ipconfig0 = "ip=192.168.1.${count.index + 100}/23,gw=192.168.0.1"
 
   # Setup the network interface and assign a vlan tag: 256
   network {
@@ -143,17 +145,7 @@ resource "null_resource" "kube-exec" {
 
   provisioner "remote-exec" {
     inline = [
-      "sudo docker run -d --privileged --restart=unless-stopped --net=host -v /etc/kubernetes:/etc/kubernetes -v /var/run:/var/run  rancher/rancher-agent:v2.6.2 --server https://192.168.0.78 --token fjzmjclmzzf9nk5cdhvcdldzq66v2fw944297g4jzv2jd8g99l499w --ca-checksum f008fbf93dda11077c7353aca7407e878d179bca0169dfd41501b566cb1998c4 --etcd --controlplane --worker --node-name kube${count.index + 1}"
+      "${rancher2_cluster.home_kube.cluster_registration_token[0].node_command} --etcd --controlplane --worker --node-name kube${count.index + 1}"
     ]
   }
-}
-
-resource "dns_a_record_set" "kube" {
-  count = length(proxmox_vm_qemu.kube-vm)
-  zone = "ryougi.io."
-  name = "kube${count.index + 1}"
-  addresses = [
-    proxmox_vm_qemu.kube-vm[count.index].default_ipv4_address,
-  ]
-  ttl = 300
 }
