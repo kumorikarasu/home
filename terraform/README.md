@@ -2,7 +2,7 @@
 
 ## Setup TF Account
 ```
-pveum role add TFServiceAccount -privs "VM.Allocate VM.Clone VM.Config.CDROM VM.Config.CPU VM.Config.Cloudinit VM.Config.Disk VM.Config.HWType VM.Config.Memory VM.Config.Network VM.Config.Options VM.Monitor VM.Audit VM.PowerMgmt Datastore.AllocateSpace Datastore.Audit Pool.Allocate"
+pveum role add TFServiceAccountRole -privs "VM.Allocate VM.Clone VM.Config.CDROM VM.Config.CPU VM.Config.Cloudinit VM.Config.Disk VM.Config.HWType VM.Config.Memory VM.Config.Network VM.Config.Options VM.Monitor VM.Audit VM.PowerMgmt Datastore.AllocateSpace Datastore.Audit Pool.Allocate"
 pveum user add terraform-service-account@pve
 pveum aclmod / -user terraform-service-account@pve -role TFServiceAccountRole
 pveum user token add terraform-service-account@pve token

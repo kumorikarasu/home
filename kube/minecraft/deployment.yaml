@@ -23,8 +23,12 @@ spec:
       - name: minecraft
         image: itzg/minecraft-server:java15
         resources:
+          limits:
+            memory: "48Gi"
+            cpu: 20000m
           requests:
             memory: "48Gi"
+            cpu: 20000m
         ports:
         - containerPort: 25565
         env:

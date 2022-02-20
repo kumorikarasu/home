@@ -1,7 +1,9 @@
 
 
 resource "proxmox_vm_qemu" "kube-master-vm" {
+  depends_on = [ proxmox_vm_qemu.rancher-vm ]
   count = var.kube_master_count
+
   name = "kube-master${count.index + 1}"
   desc = "A test for using terraform and cloudinit"
 
@@ -54,7 +56,7 @@ resource "proxmox_vm_qemu" "kube-master-vm" {
 
   ciuser  = "kumori"
   sshkeys = <<EOF
-ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDaLvJnJHpOtJJWsz1v0sg3eid6FxjZaHfqEN5/FQnldwOXtYKeI4M2YEBII4BSHnhr5ZpreFEvuVJuxh8qpzLzF8r7A0FAmeEEh6uBc+y9lLhdMaqTEBBpTFArarrcfKzKm+NBYYvVXAsoeY/8OwRj3+WlCLQWT6tT60w3SN6dwtQgaJa1lTH43umCXz+bwcI5VqJnkEFj3Z9wLoyEVOrQpwQaj5ELW1XDVhE0EZlyxFFzGoQVd6iCRzPmRhndgi3/L5A+dNS6SlUoYMhW+JyE6M3UHHqlYfJ0aOR6Pw5QmZcNXK2WwWU+wepW2Ktod6K0EcrRseoavo5dR0/FlPc1 kumori@DESKTOP-3N1AKAV
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINOwoZ0u3t1QuHtElHSKaw2P6kUYF9cLnUcGjcKXErqZ kumori@DESKTOP-3N1AKAV
   EOF
 }
 
@@ -65,7 +67,7 @@ resource "null_resource" "kube-exec-master" {
     host = proxmox_vm_qemu.kube-master-vm[count.index].default_ipv4_address
     type = "ssh"
     user = "kumori"
-    private_key = "${file("~/.ssh/id_rsa")}"
+    private_key = "${file("~/.ssh/id_ed25519")}"
   }
 
   provisioner "remote-exec" {
@@ -76,7 +78,9 @@ resource "null_resource" "kube-exec-master" {
 }
 
 resource "proxmox_vm_qemu" "kube-vm" {
+  depends_on = [ proxmox_vm_qemu.kube-master-vm ]
   count = var.kube_nodes_count
+
   name = "kube${count.index + 1}"
   desc = "A test for using terraform and cloudinit"
 
@@ -129,7 +133,7 @@ resource "proxmox_vm_qemu" "kube-vm" {
 
   ciuser  = "kumori"
   sshkeys = <<EOF
-ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDaLvJnJHpOtJJWsz1v0sg3eid6FxjZaHfqEN5/FQnldwOXtYKeI4M2YEBII4BSHnhr5ZpreFEvuVJuxh8qpzLzF8r7A0FAmeEEh6uBc+y9lLhdMaqTEBBpTFArarrcfKzKm+NBYYvVXAsoeY/8OwRj3+WlCLQWT6tT60w3SN6dwtQgaJa1lTH43umCXz+bwcI5VqJnkEFj3Z9wLoyEVOrQpwQaj5ELW1XDVhE0EZlyxFFzGoQVd6iCRzPmRhndgi3/L5A+dNS6SlUoYMhW+JyE6M3UHHqlYfJ0aOR6Pw5QmZcNXK2WwWU+wepW2Ktod6K0EcrRseoavo5dR0/FlPc1 kumori@DESKTOP-3N1AKAV
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINOwoZ0u3t1QuHtElHSKaw2P6kUYF9cLnUcGjcKXErqZ kumori@DESKTOP-3N1AKAV
   EOF
 }
 
@@ -140,7 +144,7 @@ resource "null_resource" "kube-exec" {
     host = proxmox_vm_qemu.kube-vm[count.index].default_ipv4_address
     type = "ssh"
     user = "kumori"
-    private_key = "${file("~/.ssh/id_rsa")}"
+    private_key = "${file("~/.ssh/id_ed25519")}"
   }
 
   provisioner "remote-exec" {

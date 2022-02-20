@@ -6,7 +6,7 @@ resource "null_resource" "rancher-exec" {
     host = proxmox_vm_qemu.rancher-vm[count.index].default_ipv4_address
     type = "ssh"
     user = "kumori"
-    private_key = "${file("~/.ssh/id_rsa")}"
+    private_key = "${file("~/.ssh/id_ed25519")}"
   }
 
   provisioner "remote-exec" {
@@ -24,6 +24,7 @@ resource "null_resource" "rancher-exec" {
   ]
 }
 
+# We have to put a manual wait as it takes some time to install rancher. Rancher tends to crash once on startup, so we have to wait until after that crash to continue.
 resource "time_sleep" "rancher_startup" {
   create_duration = "300s"
 

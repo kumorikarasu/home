@@ -28,7 +28,7 @@ source "proxmox-clone" "test-cloud-init" {
   scsi_controller = "virtio-scsi-pci"
 
   ssh_username         = "kumori"
-  ssh_private_key_file = "/home/kumori/.ssh/id_rsa"
+  ssh_private_key_file = "/home/kumori/.ssh/id_ed25519"
   qemu_agent = true
 
   network_adapters {
