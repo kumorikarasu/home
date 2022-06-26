@@ -1,0 +1,121 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: terraria14-deployment
+  labels:
+    app: terraria14
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: terraria14
+  template:
+    metadata:
+      labels:
+        app: terraria14
+    spec:
+      volumes:
+      - name: terraria14
+        persistentVolumeClaim:
+          claimName: terraria14-pvc
+      - name: terraria14-log
+        persistentVolumeClaim:
+          claimName: terraria14-log-pvc
+      containers:
+      - name: terraria14
+        image: kumorikarasu/tmodloader
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 7777
+        - containerPort: 9012
+        volumeMounts:
+        - mountPath: "/serverdata"
+          name: terraria14
+        - mountPath: "/terrariadata/tModLoader/tModLoader-Logs"
+          name: terraria14-log
+        
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: terraria14-pvc
+spec:
+  volumeName: terraria14-pv
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  resources:
+    requests:
+      storage: 1000Gi
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  finalizers:
+  - kubernetes.io/pv-protection
+  name: terraria14-pv
+spec:
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 1000Gi
+  nfs:
+    path: /mnt/user/appdata/terraria14/tmodloader
+    server: 192.168.0.23
+  persistentVolumeReclaimPolicy: Retain
+  volumeMode: Filesystem
+status:
+  phase: Available
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: terraria14-log-pvc
+spec:
+  volumeName: terraria14-log-pv
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  resources:
+    requests:
+      storage: 100Gi
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  finalizers:
+  - kubernetes.io/pv-protection
+  name: terraria14-log-pv
+spec:
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 100Gi
+  nfs:
+    path: /mnt/user/appdata/terraria14/tmodloader-logs
+    server: 192.168.0.23
+  persistentVolumeReclaimPolicy: Retain
+  volumeMode: Filesystem
+status:
+  phase: Available
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: terraria14-service
+spec:
+  type: NodePort
+  selector:
+    app: terraria14
+  ports:
+    - name: app
+      protocol: TCP
+      port: 7777
+      targetPort: 7777
+      nodePort: 31251
