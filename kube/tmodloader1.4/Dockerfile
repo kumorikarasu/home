@@ -3,7 +3,7 @@ FROM steamcmd/steamcmd:ubuntu-20
 LABEL maintainer="kumori@ryougi.com"
 
 RUN apt-get update && \
-    apt-get -y install --no-install-recommends wget unzip curl libicu-dev && \
+    apt-get -y install --no-install-recommends screen wget unzip curl libicu-dev && \
     rm -rf /var/lib/apt/lists/*
 
 ENV DATA_DIR=/serverdata
@@ -14,10 +14,6 @@ RUN mkdir /terrariadata && \
     mkdir ${DATA_DIR}
 
 WORKDIR /terrariadata
-
-RUN wget --no-check-certificate https://terraria.org/api/download/pc-dedicated-server/terraria-server-${SERV_VER}.zip && \
-    unzip terraria-server-${SERV_VER}.zip -d Terraria && \
-    rm terraria-server-${SERV_VER}.zip
 
 RUN wget --no-check-certificate https://github.com/tModLoader/tModLoader/releases/download/${TMOD_VER}/tModLoader.zip && \
     unzip tModLoader.zip -d tModLoader && \

@@ -26,6 +26,9 @@ spec:
       - name: terraria14
         image: kumorikarasu/tmodloader
         imagePullPolicy: Always
+        env:
+        - name: DATA_DIR
+          value: "/serverdata"
         ports:
         - containerPort: 7777
         - containerPort: 9012
