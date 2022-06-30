@@ -33,7 +33,7 @@ resource "proxmox_vm_qemu" "rancher-vm" {
   memory  = 8192
   scsihw  = "virtio-scsi-pci"
 
-  ipconfig0 = "ip=192.168.1.${count.index + 10}/23,gw=192.168.0.1"
+  ipconfig0 = "ip=192.168.0.${count.index + 120}/24,gw=192.168.0.1"
 
   # Setup the disk
   disk {

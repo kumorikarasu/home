@@ -34,9 +34,9 @@ resource "proxmox_vm_qemu" "bind-vm" {
   cpu     = "host"
   memory  = 2048
   scsihw  = "virtio-scsi-pci"
+  onboot  = "true"
 
-  # 192.168.1.0/30
-  ipconfig0 = "ip=192.168.1.${count.index + 1}/23,gw=192.168.0.1"
+  ipconfig0 = "ip=192.168.0.254/24,gw=192.168.0.1"
 
   # Setup the disk
   disk {

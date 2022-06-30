@@ -37,7 +37,7 @@ resource "proxmox_vm_qemu" "kube-master-vm" {
   memory  = 4096
   scsihw  = "virtio-scsi-pci"
 
-  ipconfig0 = "ip=192.168.1.${count.index + 90}/23,gw=192.168.0.1"
+  ipconfig0 = "ip=192.168.0.${count.index + 110}/24,gw=192.168.0.1"
 
   # Setup the disk
   disk {
@@ -123,7 +123,7 @@ resource "proxmox_vm_qemu" "kube-vm" {
     discard      = "on"
   }
 
-  ipconfig0 = "ip=192.168.1.${count.index + 100}/23,gw=192.168.0.1"
+  ipconfig0 = "ip=192.168.0.${count.index + 100}/24,gw=192.168.0.1"
 
   # Setup the network interface and assign a vlan tag: 256
   network {
