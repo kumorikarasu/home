@@ -1,0 +1,25 @@
+vrrp_instance VI_1 {
+  state MASTER         # or state BACKUP
+  interface eth0
+  virtual_router_id 50
+  priority 100         # highest priority will become the master
+  advert_int 1
+  virtual_ipaddress {
+    192.168.0.201
+  }
+}
+
+# Added configuration, defining two real servers under the same
+# virtual IP from above
+virtual_server 192.168.0.201 34197 {
+  delay_loop 2
+  lb_kind dr   # direct routing
+  protocol UDP
+
+  real_server 192.168.0.100 32264 {
+
+  }
+  real_server 192.168.0.101 32264 {
+
+  }
+}

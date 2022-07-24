@@ -1,0 +1,21 @@
+- name: "Add specified repository into sources list"
+  become: true
+  apt_repository:
+    repo: ppa:vbernat/haproxy-2.6
+    state: present
+
+- name: "Install haproxy package"
+  become: true
+  apt:
+    name: haproxy
+    state: present
+
+- name: "HAProxy Template File"
+  become: true
+  template:
+    src: templates/haproxy.conf.j2
+    dest: /etc/haproxy/haproxy.cfg
+    owner: root
+    mode: '0644'
+  notify: Restart HAProxy
+  tags: haproxy

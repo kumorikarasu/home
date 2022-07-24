@@ -1,0 +1,140 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: corekeeper-deployment
+  labels:
+    app: corekeeper
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: corekeeper
+  template:
+    metadata:
+      labels:
+        app: corekeeper
+    spec:
+      volumes:
+      - name: corekeeper-data
+        persistentVolumeClaim:
+          claimName: corekeeper-data-pvc
+      - name: corekeeper-files
+        persistentVolumeClaim:
+          claimName: corekeeper-files-pvc
+      containers:
+      - name: corekeeper
+        image: escaping/core-keeper-dedicated
+        ports:
+        - containerPort: 27015
+          # Workaround rogers pos modem until I can afford a real router
+          hostPort: 27015
+        - containerPort: 27016
+          hostPort: 27016
+        env:
+        - name: WORLD_INDEX
+          value: '0'
+        - name: WORLD_NAME
+          value: 'Core Keeper Server'
+        - name: WORLD_SEED
+          value: '0'
+        - name: GAME_ID
+          value: ''
+        - name: DATA_PATH
+          value: '/server-data'
+        - name: MAX_PLAYERS
+          value: '10'
+        volumeMounts:
+        - mountPath: "/home/steam/core-keeper-data"
+          name: corekeeper-data
+        - mountPath: "/home/steam/core-keeper-files"
+          name: corekeeper-files
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: corekeeper-files-pvc
+spec:
+  volumeName: corekeeper-files-pv
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  resources:
+    requests:
+      storage: 1000Gi
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  finalizers:
+  - kubernetes.io/pv-protection
+  name: corekeeper-files-pv
+spec:
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 1000Gi
+  nfs:
+    path: /mnt/user/appdata/corekeeper/serverfiles
+    server: 192.168.0.23
+  persistentVolumeReclaimPolicy: Retain
+  volumeMode: Filesystem
+status:
+  phase: Available
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: corekeeper-data-pvc
+spec:
+  volumeName: corekeeper-data-pv
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  resources:
+    requests:
+      storage: 100Gi
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  finalizers:
+  - kubernetes.io/pv-protection
+  name: corekeeper-data-pv
+spec:
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 100Gi
+  nfs:
+    path: /mnt/user/appdata/corekeeper/serverdata
+    server: 192.168.0.23
+  persistentVolumeReclaimPolicy: Retain
+  volumeMode: Filesystem
+status:
+  phase: Available
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: corekeeper-service
+spec:
+  type: NodePort
+  selector:
+    app: corekeeper
+  ports:
+    - name: game
+      protocol: TCP
+      port: 27015
+      targetPort: 27015
+      nodePort: 32261
+    - name: gameudp
+      protocol: UDP
+      port: 34197
+      targetPort: 34197
+      nodePort: 32262

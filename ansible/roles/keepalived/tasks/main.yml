@@ -1,0 +1,16 @@
+- name: "Install keepalived package"
+  become: true
+  apt:
+    name: keepalived
+    state: present
+  tags: keepalived
+
+- name: "Keepalived Template File"
+  become: true
+  template:
+    src: templates/keepalived.conf.j2
+    dest: /etc/keepalived/keepalived.conf
+    owner: root
+    mode: '0644'
+  notify: restart keepalived
+  tags: keepalived

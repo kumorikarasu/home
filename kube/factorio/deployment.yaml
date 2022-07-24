@@ -1,0 +1,103 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: factorio-modded-deployment
+  labels:
+    app: factorio-modded
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: factorio-modded
+  template:
+    metadata:
+      labels:
+        app: factorio-modded
+    spec:
+      volumes:
+      - name: factorio-modded
+        persistentVolumeClaim:
+          claimName: factorio-modded-pvc
+      containers:
+      - name: factorio-modded
+        image: factoriotools/factorio:1.1
+        ports:
+        - containerPort: 34197
+        - containerPort: 27015
+        env:
+        - name: GENERATE_NEW_SAVE
+          value: "false"
+        - name: SAVE_NAME
+          value: "factorio_modded_server"
+        - name: LOAD_LATEST_SAVE
+          value: "false"
+        - name: UPDATE_MODS_ON_START
+          value: "false"
+        - name: USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: factorio-modded-secret
+              key: username
+        - name: TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: factorio-modded-secret
+              key: token
+        volumeMounts:
+        - mountPath: "/factorio"
+          name: factorio-modded
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: factorio-modded-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  resources:
+    requests:
+      storage: 1000Gi
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  finalizers:
+  - kubernetes.io/pv-protection
+  name: factorio-modded-pv
+spec:
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 1000Gi
+  nfs:
+    path: /mnt/user/appdata/factorio/modded
+    server: 192.168.0.23
+  persistentVolumeReclaimPolicy: Retain
+  volumeMode: Filesystem
+status:
+  phase: Available
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: factorio-modded-service
+spec:
+  type: NodePort
+  selector:
+    app: factorio-modded
+  ports:
+    - name: game
+      protocol: TCP
+      port: 27015
+      targetPort: 27015
+      nodePort: 32263
+    - name: gameudp
+      protocol: UDP
+      port: 34197
+      targetPort: 34197
+      nodePort: 32264

@@ -24,7 +24,7 @@ spec:
           claimName: terraria14-log-pvc
       containers:
       - name: terraria14
-        image: kumorikarasu/tmodloader
+        image: kumorikarasu/tmodloader:v2022.06.96.4
         imagePullPolicy: Always
         env:
         - name: DATA_DIR

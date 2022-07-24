@@ -1,6 +1,6 @@
-resource "proxmox_vm_qemu" "rancher-vm" {
-  count = var.rancher_count
-  name = "racher${count.index + 1}"
+resource "proxmox_vm_qemu" "haproxy-vm" {
+  count = 1
+  name = "haproxy${count.index + 1}"
   desc = "A test for using terraform and cloudinit"
 
   # Node name has to be the same name as within the cluster
@@ -13,7 +13,9 @@ resource "proxmox_vm_qemu" "rancher-vm" {
   # provider fails if I try touch pools again
   lifecycle {
     ignore_changes = [
-      pool
+      pool,
+      ciuser,
+      sshkeys,
     ]
   }
 
@@ -30,10 +32,11 @@ resource "proxmox_vm_qemu" "rancher-vm" {
   sockets = 1
   vcpus   = 0
   cpu     = "host"
-  memory  = 8192
+  memory  = 2048
   scsihw  = "virtio-scsi-pci"
+  onboot  = "true"
 
-  ipconfig0 = "ip=192.168.0.${count.index + 120}/24,gw=192.168.0.1"
+  ipconfig0 = "ip=192.168.1.200/24,gw=192.168.1.1"
 
   # Setup the disk
   disk {
@@ -50,9 +53,4 @@ resource "proxmox_vm_qemu" "rancher-vm" {
     bridge = "vmbr0"
   }
 
-  ciuser  = "kumori"
-  sshkeys = <<EOF
-ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINOwoZ0u3t1QuHtElHSKaw2P6kUYF9cLnUcGjcKXErqZ kumori@DESKTOP-3N1AKAV
-  EOF
 }
-

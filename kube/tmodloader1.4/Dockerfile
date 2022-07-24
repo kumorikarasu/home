@@ -8,7 +8,7 @@ RUN apt-get update && \
 
 ENV DATA_DIR=/serverdata
 ENV SERV_VER=1423
-ENV TMOD_VER=v2022.05.103.34
+ENV TMOD_VER=v2022.06.96.4
 
 RUN mkdir /terrariadata && \
     mkdir ${DATA_DIR}
