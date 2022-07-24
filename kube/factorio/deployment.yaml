@@ -75,7 +75,7 @@ spec:
     storage: 1000Gi
   nfs:
     path: /mnt/user/appdata/factorio/modded
-    server: 192.168.0.23
+    server: 192.168.1.20
   persistentVolumeReclaimPolicy: Retain
   volumeMode: Filesystem
 status:

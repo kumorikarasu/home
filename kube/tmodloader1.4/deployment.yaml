@@ -67,7 +67,7 @@ spec:
     storage: 1000Gi
   nfs:
     path: /mnt/user/appdata/terraria14/tmodloader
-    server: 192.168.0.23
+    server: 192.168.1.20
   persistentVolumeReclaimPolicy: Retain
   volumeMode: Filesystem
 status:
@@ -101,7 +101,7 @@ spec:
     storage: 100Gi
   nfs:
     path: /mnt/user/appdata/terraria14/tmodloader-logs
-    server: 192.168.0.23
+    server: 192.168.1.20
   persistentVolumeReclaimPolicy: Retain
   volumeMode: Filesystem
 status:
