@@ -15,6 +15,7 @@ spec:
       labels:
         app: factorio-modded
     spec:
+      hostNetwork: true
       volumes:
       - name: factorio-modded
         persistentVolumeClaim:
@@ -24,7 +25,9 @@ spec:
         image: factoriotools/factorio:1.1
         ports:
         - containerPort: 34197
+          hostPort: 34197
         - containerPort: 27015
+          hostPort: 27015
         env:
         - name: GENERATE_NEW_SAVE
           value: "false"
