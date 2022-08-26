@@ -1,0 +1,81 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sonarr-deployment
+  labels:
+    app: sonarr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sonarr
+  template:
+    metadata:
+      labels:
+        app: sonarr
+    spec:
+      volumes:
+      - name: qbt
+        persistentVolumeClaim:
+          claimName: qbt-pvc
+      - name: qbt-media
+        persistentVolumeClaim:
+          claimName: qbt-media-pvc
+      containers:
+      - name: sonarr
+        image: binhex/arch-sonarr
+        ports:
+        - containerPort: 8989
+        env:
+        - name: UMASK
+          value: "000"
+        - name: PUID
+          value: "0"
+        - name: PGID
+          value: "0"
+        volumeMounts:
+        - mountPath: "/Media"
+          subPath: "TV"
+          name: qbt-media
+        - mountPath: "/data"
+          subPath: "qbt/config/qBittorrent/downloads"
+          name: qbt
+        - mountPath: "/config"
+          subPath: "sonarr/config"
+          name: qbt
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sonarr-service
+spec:
+  selector:
+    app: sonarr
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8989
+      targetPort: 8989
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    ingress.kubernetes.io/rewrite-target: /
+  name: sonarr-ingress
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: sonarr.ryougi.io
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: sonarr-service
+            port:
+              number: 8989
