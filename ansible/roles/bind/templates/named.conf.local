@@ -10,7 +10,7 @@
 zone "ryougi.io" {
     type master;
     file "/var/lib/bind/db.ryougi.io";      # zone file path
-    allow-transfer { 192.168.1.2; };        # ns2 private IP address - secondary
+    allow-transfer { 192.168.1.253; };        # ns2 private IP address - secondary
 
     update-policy {
       grant terraformKey zonesub any;
@@ -21,7 +21,7 @@ zone "ryougi.io" {
 zone "168.192.in-addr.arpa" {
     type master;
     file "/var/lib/bind/db.168.192";        # 192.168.0.0/16 subnet
-    allow-transfer { 192.168.1.2; };        # ns2 private IP address - secondary
+    allow-transfer { 192.168.1.253; };        # ns2 private IP address - secondary
 
     update-policy {
       grant terraformKey zonesub any;

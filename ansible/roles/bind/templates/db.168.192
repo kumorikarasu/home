@@ -13,31 +13,30 @@ $TTL	604800
 @     IN      NS      ns1.ryougi.io.
 @     IN      NS      ns2.ryougi.io.
 
-; PTR Records 
-1.1   IN      PTR     ns1.ryougi.io.    ; 192.168.1.1
-2.1   IN      PTR     ns2.ryougi.io.    ; 192.168.1.2
+; name servers - A records
+254.1   IN    PTR     ns1.ryougi.io.
+253.1   IN    PTR     ns2.ryougi.io.
 
-; PTR Records
-73.0  IN      PTR     prox.ryougi.io.  ; 192.168.0.73
-23.0  IN      PTR     nas.ryougi.io.   ; 192.168.0.23
-1.0   IN      PTR     router.ryougi.io ; 192.168.0.1
+; Physical/Virtual equipment
+10.1  IN    PTR     prox.ryougi.io.
+20.1  IN    PTR     nas.ryougi.io.
+1.1   IN    PTR     router.ryougi.io.
+11.1  IN    PTR     kumori.ryougi.io.
+14.1  IN    PTR     kumori.linux.ryougi.io.
+200.1   IN    PTR     unifi.ryougi.io.
 
-; Kube Ingress PTR Records
-100.1       IN      PTR     kube1.ryougi.io ; 192.168.0.86
-101.1       IN      PTR     kube2.ryougi.io ; 192.168.0.89
-102.1       IN      PTR     kube3.ryougi.io ; 192.168.0.86
-10.1        IN      PTR      rancher1.ryougi.io
-11.1        IN      PTR      rancher2.ryougi.io
+; Kubernetes
+50.1  IN    PTR     kube1.ryougi.io.
+51.1  IN    PTR     kube2.ryougi.io.
+65.1  IN    PTR     kube-master1.ryougi.io.
+66.1  IN    PTR     kube-master2.ryougi.io.
+60.1  IN    PTR     rancher1.ryougi.io.
 
-100.1       IN      PTR      plex.ryougi.io. ; 192.168.0.89
-101.1       IN      PTR      plex.ryougi.io. ; 192.168.0.86
-100.1       IN      PTR      game.ryougi.io. ; 192.168.0.89
-101.1       IN      PTR      game.ryougi.io. ; 192.168.0.86
-100.1       IN      PTR      terraria.ryougi.io. ; 192.168.0.89
-101.1       IN      PTR      terraria.ryougi.io. ; 192.168.0.86
-100.1       IN      PTR      minecraft.ryougi.io. ; 192.168.0.89
-101.1       IN      PTR      minecraft.ryougi.io. ; 192.168.0.86
-100.1       IN      PTR      satisfactory.ryougi.io. ; 192.168.0.89
-101.1       IN      PTR      satisfactory.ryougi.io. ; 192.168.0.86
-100.1       IN      PTR      satisfactory.ryougi.io. ; 192.168.0.89
-101.1       IN      PTR      satisfactory.ryougi.io. ; 192.168.0.86
+
+; Kube Services
+50.1  IN    PTR     plex.ryougi.io.
+50.1  IN    PTR     factorio.ryougi.io.
+50.1  IN    PTR     terraria.ryougi.io.
+50.1  IN    PTR     minecraft.ryougi.io.
+50.1  IN    PTR     satisfactory.ryougi.io.
+50.1  IN    PTR     game.ryougi.io.
