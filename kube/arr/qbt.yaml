@@ -16,12 +16,12 @@ spec:
         app: qbt
     spec:
       volumes:
-      - name: qbt
+      - name: appdata
         persistentVolumeClaim:
-          claimName: qbt-pvc
-      - name: qbt-media
+          claimName: appdata-pvc
+      - name: media
         persistentVolumeClaim:
-          claimName: qbt-media-pvc
+          claimName: media-pvc
       containers:
       - name: qbt
         image: binhex/arch-qbittorrentvpn
@@ -69,13 +69,13 @@ spec:
           value: "0"
         volumeMounts:
         - mountPath: "/Media"
-          name: qbt-media
+          name: media
         - mountPath: "/data"
-          subPath: "qbt/data"
-          name: qbt
+          subPath: "qbt/qbt/data"
+          name: appdata
         - mountPath: "/config"
-          subPath: "qbt/config"
-          name: qbt
+          subPath: "qbt/qbt/config"
+          name: appdata
 
 
 ---

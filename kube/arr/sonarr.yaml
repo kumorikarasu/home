@@ -16,12 +16,12 @@ spec:
         app: sonarr
     spec:
       volumes:
-      - name: qbt
+      - name: appdata
         persistentVolumeClaim:
-          claimName: qbt-pvc
-      - name: qbt-media
+          claimName: appdata-pvc
+      - name: media
         persistentVolumeClaim:
-          claimName: qbt-media-pvc
+          claimName: media-pvc
       containers:
       - name: sonarr
         image: binhex/arch-sonarr
@@ -37,13 +37,13 @@ spec:
         volumeMounts:
         - mountPath: "/Media"
           subPath: "TV"
-          name: qbt-media
+          name: media
         - mountPath: "/data"
-          subPath: "qbt/config/qBittorrent/downloads"
-          name: qbt
+          subPath: "qbt/qbt/config/qBittorrent/downloads"
+          name: appdata
         - mountPath: "/config"
-          subPath: "sonarr/config"
-          name: qbt
+          subPath: "qbt/sonarr/config"
+          name: appdata
 
 ---
 apiVersion: v1
