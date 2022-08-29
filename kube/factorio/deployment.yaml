@@ -22,7 +22,7 @@ spec:
           claimName: appdata-pvc
       containers:
       - name: factorio-modded
-        image: factoriotools/factorio:1.1
+        image: factoriotools/factorio:1.1.68
         ports:
         - containerPort: 34198
           hostPort: 34198
@@ -30,9 +30,9 @@ spec:
           hostPort: 27017
         env:
         - name: PUID
-          value: "1000"
+          value: "99"
         - name: PGID
-          value: "1000"
+          value: "100"
         - name: PORT
           value: "34198"
         - name: RCON_PORT

@@ -153,6 +153,6 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: plex-tcp
+            name: plex-service
             port:
               number: 32400

@@ -27,12 +27,24 @@ spec:
         - containerPort: 443
         env:
         - name: PUID
-          value: "1000"
+          value: "99"
         - name: PGID
-          value: "1000"
+          value: "100"
         volumeMounts:
-        - mountPath: "/config"
-          subPath: "heimdall/"
+        - mountPath: "/config/keys"
+          subPath: "heimdall/keys"
+          name: appdata
+        - mountPath: "/config/log"
+          subPath: "heimdall/log"
+          name: appdata
+        - mountPath: "/config/nginx"
+          subPath: "heimdall/nginx"
+          name: appdata
+        - mountPath: "/config/php"
+          subPath: "heimdall/php"
+          name: appdata
+        - mountPath: "/config/www"
+          subPath: "heimdall/www"
           name: appdata
 
 ---
