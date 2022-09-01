@@ -13,9 +13,7 @@ resource "proxmox_vm_qemu" "bind-vm" {
   # provider fails if I try touch pools again
   lifecycle {
     ignore_changes = [
-      pool,
-      ciuser,
-      sshkeys,
+      pool
     ]
   }
 
@@ -36,13 +34,13 @@ resource "proxmox_vm_qemu" "bind-vm" {
   scsihw  = "virtio-scsi-pci"
   onboot  = "true"
 
-  ipconfig0 = "ip=192.168.0.254/24,gw=192.168.0.1"
+  ipconfig0 = "ip=192.168.1.254/24,gw=192.168.1.1"
 
   # Setup the disk
   disk {
     size         = "32G"
     type         = "scsi"
-    storage      = "UNRAID"
+    storage      = "local-lvm"
     ssd          = 0
     discard      = "on"
   }
@@ -52,5 +50,10 @@ resource "proxmox_vm_qemu" "bind-vm" {
     model  = "virtio"
     bridge = "vmbr0"
   }
+
+  ciuser  = "kumori"
+  sshkeys = <<EOF
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINOwoZ0u3t1QuHtElHSKaw2P6kUYF9cLnUcGjcKXErqZ kumori@DESKTOP-3N1AKAV
+  EOF
 
 }

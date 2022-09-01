@@ -16,7 +16,7 @@ provider "proxmox" {
   # pm_api_token_id = PM_API_TOKEN_ID env
   # pm_api_token_secret = PM_API_TOKEN_SECRET env
 
-  pm_api_url      = "https://192.168.0.73:8006/api2/json"
+  pm_api_url      = "https://192.168.1.10:8006/api2/json"
   pm_user         = "TFServiceAccount"
   pm_tls_insecure = true
 }
