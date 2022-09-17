@@ -70,8 +70,11 @@ metadata:
   name: heimdall-ingress
 spec:
   ingressClassName: nginx
+  tls:
+    - hosts:
+      - ryougi.ca
   rules:
-  - host: ryougi.io
+  - host: ryougi.ca
     http:
       paths:
       - path: /
@@ -81,7 +84,7 @@ spec:
             name: heimdall-service
             port:
               number: 80
-  - host: heimdall.ryougi.io
+  - host: heimdall.ryougi.ca
     http:
       paths:
       - path: /

@@ -68,8 +68,21 @@ metadata:
   name: sonarr-ingress
 spec:
   ingressClassName: nginx
+  tls:
+    - hosts:
+      - ryougi.ca
   rules:
   - host: sonarr.ryougi.io
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: sonarr-service
+            port:
+              number: 8989
+  - host: sonarr.ryougi.ca
     http:
       paths:
       - path: /

@@ -105,8 +105,21 @@ metadata:
   name: qbt-ingress
 spec:
   ingressClassName: nginx
+  tls:
+    - hosts:
+      - ryougi.ca
   rules:
   - host: qbt.ryougi.io
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: qbt-service
+            port:
+              number: 8080
+  - host: qbt.ryougi.ca
     http:
       paths:
       - path: /

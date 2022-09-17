@@ -68,8 +68,21 @@ metadata:
   name: prowlarr-ingress
 spec:
   ingressClassName: nginx
+  tls:
+    - hosts:
+      - ryougi.ca
   rules:
   - host: prowlarr.ryougi.io
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: prowlarr-service
+            port:
+              number: 9696
+  - host: prowlarr.ryougi.ca
     http:
       paths:
       - path: /

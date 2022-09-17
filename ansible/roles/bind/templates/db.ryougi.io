@@ -20,6 +20,7 @@ ns2.ryougi.io.           IN      A       192.168.1.253
 ; Physical/Virtual equipment
 prox.ryougi.io.          IN      A      192.168.1.10
 nas.ryougi.io.           IN      A      192.168.1.20
+tower.ryougi.io.           IN      A      192.168.1.20
 router.ryougi.io.        IN      A      192.168.1.1
 kumori.ryougi.io.        IN      A      192.168.1.11
 fgmb.ryougi.io.          IN      A      192.168.1.15
@@ -55,6 +56,8 @@ factorio.ryougi.io.      IN      A      192.168.1.50
 ; MetalLB - 192.168.2.0/24
 ; Required for TV, It needs a direct IP
 plex.static.ryougi.io.        IN      A      192.168.2.10
+
+terraria.ryougi.io.           IN      A      192.168.2.13
 
 ; Required as it must use host networking due to k8s NAT
 factorio.static.ryougi.io.    IN      A      192.168.2.11
