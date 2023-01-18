@@ -2,18 +2,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: factorio-modded-deployment
+  name: factorio-plus-deployment
   labels:
-    app: factorio-modded
+    app: factorio
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: factorio-modded
+      app: factorio-plus
   template:
     metadata:
       labels:
-        app: factorio-modded
+        app: factorio-plus
     spec:
       hostNetwork: true
       volumes:
@@ -21,26 +21,26 @@ spec:
         persistentVolumeClaim:
           claimName: appdata-pvc
       containers:
-      - name: factorio-modded
+      - name: factorio
         image: factoriotools/factorio:1.1.69
         ports:
-        - containerPort: 34198
-          hostPort: 34198
-        - containerPort: 27017
-          hostPort: 27017
+        - containerPort: 34199
+          hostPort: 34199
+        - containerPort: 27019
+          hostPort: 27019
         env:
         - name: PUID
           value: "99"
         - name: PGID
           value: "100"
         - name: PORT
-          value: "34198"
+          value: "34199"
         - name: RCON_PORT
-          value: "27017"
+          value: "27018"
         - name: GENERATE_NEW_SAVE
-          value: "false"
+          value: "true"
         - name: SAVE_NAME
-          value: "factorio_modded_server"
+          value: "factorio_server"
         - name: LOAD_LATEST_SAVE
           value: "false"
         - name: UPDATE_MODS_ON_START
@@ -57,25 +57,26 @@ spec:
               key: token
         volumeMounts:
         - mountPath: "/factorio"
-          subPath: "factorio/modded"
+          subPath: "factorio/vanilla-plus"
           name: appdata
+
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: factorio-modded-service
+  name: factorio-plus-service
 spec:
+  loadBalancerIP: 192.168.2.14
   type: LoadBalancer
-  loadBalancerIP: 192.168.2.11
   selector:
-    app: factorio-modded
+    app: factorio-plus
   ports:
     - name: game
       protocol: TCP
-      port: 27017
-      targetPort: 27017
+      port: 27018
+      targetPort: 27018
     - name: gameudp
       protocol: UDP
-      port: 34198
-      targetPort: 34198
+      port: 34199
+      targetPort: 34199
