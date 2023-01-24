@@ -2,15 +2,15 @@ terraform {
   required_providers {
     proxmox = {
       source  = "telmate/proxmox"
-      version = "2.9.4"
+      version = "2.9.11"
     }
     docker = {
       source  = "kreuzwerker/docker"
-      version = "2.15.0"
+      version = "3.0.1"
     }
     rancher2 = {
       source = "rancher/rancher2"
-      version = "1.22.2"
+      version = "1.25.0"
     }
   }
 }

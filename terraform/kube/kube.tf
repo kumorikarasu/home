@@ -58,8 +58,15 @@ resource "proxmox_vm_qemu" "kube-master-vm" {
   sshkeys = <<EOF
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINOwoZ0u3t1QuHtElHSKaw2P6kUYF9cLnUcGjcKXErqZ kumori@DESKTOP-3N1AKAV
   EOF
+
+  timeouts {
+    create = "60m"
+    delete = "2h"
+  }
+
 }
 
+/*
 resource "null_resource" "kube-exec-master" {
   count = length(proxmox_vm_qemu.kube-master-vm)
 
@@ -72,10 +79,11 @@ resource "null_resource" "kube-exec-master" {
 
   provisioner "remote-exec" {
     inline = [
-      "${rancher2_cluster.home_kube.cluster_registration_token[0].node_command} --etcd --controlplane --node-name kube-master${count.index + 1}"
+      //"${rancher2_cluster.home_kube.cluster_registration_token[0].node_command} --etcd --controlplane --node-name kube-master${count.index + 1} --address ${proxmox_vm_qemu.kube-master-vm[count.index].default_ipv4_address} --internal-address ${proxmox_vm_qemu.kube-master-vm[count.index].default_ipv4_address}"
     ]
   }
 }
+*/
 
 resource "proxmox_vm_qemu" "kube-vm" {
   depends_on = [ proxmox_vm_qemu.kube-master-vm ]
@@ -114,11 +122,10 @@ resource "proxmox_vm_qemu" "kube-vm" {
   memory  = 65536
   scsihw  = "virtio-scsi-pci"
 
-  # Setup the disk
   disk {
-    size         = "32G"
+    size         = "64G"
     type         = "scsi"
-    storage      = "UNRAID"
+    storage      = "local-lvm"
     ssd          = 0
     discard      = "on"
   }
@@ -135,8 +142,15 @@ resource "proxmox_vm_qemu" "kube-vm" {
   sshkeys = <<EOF
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINOwoZ0u3t1QuHtElHSKaw2P6kUYF9cLnUcGjcKXErqZ kumori@DESKTOP-3N1AKAV
   EOF
+
+  timeouts {
+    create = "60m"
+    delete = "2h"
+  }
 }
 
+
+/*
 resource "null_resource" "kube-exec" {
   count = length(proxmox_vm_qemu.kube-vm)
 
@@ -149,7 +163,8 @@ resource "null_resource" "kube-exec" {
 
   provisioner "remote-exec" {
     inline = [
-      "${rancher2_cluster.home_kube.cluster_registration_token[0].node_command} --etcd --controlplane --worker --node-name kube${count.index + 1}"
+      "${rancher2_cluster.home_kube.cluster_registration_token[0].node_command} --etcd --controlplane --worker --node-name kube${count.index + 1} --address ${proxmox_vm_qemu.kube-vm[count.index].default_ipv4_address} --internal-address ${proxmox_vm_qemu.kube-vm[count.index].default_ipv4_address}"
     ]
   }
 }
+*/

@@ -26,7 +26,7 @@ resource "null_resource" "rancher-exec" {
 
 # We have to put a manual wait as it takes some time to install rancher. Rancher tends to crash once on startup, so we have to wait until after that crash to continue.
 resource "time_sleep" "rancher_startup" {
-  create_duration = "300s"
+  create_duration = "500s"
 
   depends_on = [ null_resource.rancher-exec ]
 }
