@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: system-appset
+spec:
+  generators:
+  - git:
+      repoURL: https://github.com/kumorikarasu/home.git
+      revision: HEAD
+      directories:
+      - path: argocd/system/*
+  template:
+    metadata:
+      name: '{{`system-{{path.basename}}`}}'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/kumorikarasu/home.git
+        targetRevision: HEAD
+        path: '{{`{{path}}`}}'
+        helm: 
+          valueFiles:
+          - values.yaml
+      destination:
+        name: in-cluster
+        namespace: '{{`system-{{path.basename}}`}}'
+      syncPolicy:
+        automated:
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - PruneLast=true
+          - ApplyOutOfSyncOnly=true
