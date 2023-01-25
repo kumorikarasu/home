@@ -15,3 +15,8 @@ spec:
       - values.yaml
     path: argocd/argo
     repoURL: https://github.com/kumorikarasu/home.git
+  syncPolicy:
+    automated:
+      selfHeal: true
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
