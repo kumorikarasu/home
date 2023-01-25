@@ -6,7 +6,7 @@ variable "rancher_pass" {
 
 variable "rancher_count" {
   type = number
-  default = 1
+  default = 0
 }
 
 variable "kube_nodes_count" {

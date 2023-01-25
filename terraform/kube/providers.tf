@@ -2,7 +2,7 @@ terraform {
   required_providers {
     proxmox = {
       source  = "telmate/proxmox"
-      version = "2.9.11"
+      version = "2.9.4"
     }
     docker = {
       source  = "kreuzwerker/docker"
@@ -23,6 +23,7 @@ provider "proxmox" {
 
   pm_api_url      = "https://192.168.1.10:8006/api2/json"
   pm_tls_insecure = true
+  pm_timeout      = 6000
 }
 
 provider "dns" {

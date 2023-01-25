@@ -1,9 +1,26 @@
+[all]
+node2 ansible_host=192.168.1.65 etcd_member_name=etcd1
+node3 ansible_host=192.168.1.66 etcd_member_name=etcd2
+node1 ansible_host=192.168.1.50 etcd_member_name=etcd3
 
-[kube]
-192.168.1.50
-192.168.1.51
-192.168.1.65
-192.168.1.66
+[kube_node]
+node1
+
+[kube_control_plane]
+node2
+node3
+
+[etcd]
+node2
+node3
+node1
+
+[calico_rr]
+
+[k8s_cluster:children]
+kube_control_plane
+kube_node
+calico_rr
 
 [haproxy]
 192.168.1.200
