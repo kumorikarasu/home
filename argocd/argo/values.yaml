@@ -1,0 +1,6 @@
+argo-cd:
+  server:
+    ingress:                                                                                                                                                                                                                                                      
+      enabled: true
+      hosts: ["argocd.ryougi.ca"]
+      ingressClassName: "nginx"
