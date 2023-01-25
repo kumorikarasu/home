@@ -20,7 +20,7 @@ $TTL	604800
 253.1   IN    PTR     ns2.ryougi.io.
 
 ; Physical/Virtual equipment
-10.1  IN    PTR     prox.ryougi.io.
+15.1  IN    PTR     prox.ryougi.io.
 20.1  IN    PTR     nas.ryougi.io.
 1.1   IN    PTR     router.ryougi.io.
 11.1  IN    PTR     kumori.ryougi.io.
@@ -42,3 +42,6 @@ $TTL	604800
 50.1  IN    PTR     minecraft.ryougi.io.
 50.1  IN    PTR     satisfactory.ryougi.io.
 50.1  IN    PTR     game.ryougi.io.
+
+; 10.2 Ingress LB IP
+10.2  IN    PTR     argocd.ryougi.cio

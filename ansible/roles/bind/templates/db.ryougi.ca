@@ -53,8 +53,10 @@ plex.ryougi.ca.          IN      A      192.168.1.50
 facotrio.ryougi.ca.      IN      A      192.168.1.50
 
 ; MetalLB - 192.168.2.0/24
+argocd.ryougi.ca.             IN      A      192.168.2.10
+
 ; Required for TV, It needs a direct IP
-plex.static.ryougi.ca.        IN      A      192.168.2.10
+plex.static.ryougi.ca.        IN      A      192.168.2.15
 
 terraria.ryougi.ca.           IN      A      192.168.2.13
 

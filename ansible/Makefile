@@ -1,3 +1,5 @@
+bind:
+	ansible-playbook bind.yml -i ansible.hosts
 
 kube:
 	git -C kubespray pull || git clone https://github.com/kubernetes-sigs/kubespray.git kubespray
