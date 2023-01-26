@@ -37,3 +37,12 @@ spec:
     name: letsencrypt-production
     kind: ClusterIssuer
     group: cert-manager.io
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cloudflare-api-token-secret
+type: Opaque
+data:
+  api-token: {{ .Values.cloudflare.token | b64enc }}
