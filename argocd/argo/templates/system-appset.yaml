@@ -18,9 +18,6 @@ spec:
         repoURL: https://github.com/kumorikarasu/home.git
         targetRevision: HEAD
         path: '{{`{{path}}`}}'
-        helm: 
-          valueFiles:
-          - values.yaml
       destination:
         name: in-cluster
         namespace: '{{`system-{{path.basename}}`}}'
