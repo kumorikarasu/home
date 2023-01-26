@@ -1,7 +1,6 @@
 
 
 resource "proxmox_vm_qemu" "kube-master-vm" {
-  depends_on = [ proxmox_vm_qemu.rancher-vm ]
   count = var.kube_master_count
 
   name = "kube-master${count.index + 1}"

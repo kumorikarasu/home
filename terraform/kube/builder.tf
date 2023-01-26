@@ -1,6 +1,6 @@
 resource "proxmox_vm_qemu" "build-vm" {
   count = 0
-  name = "racher${count.index + 1}"
+  name = "builder${count.index + 1}"
   desc = "A test for using terraform and cloudinit"
 
   # Node name has to be the same name as within the cluster
