@@ -34,7 +34,7 @@ data "aws_iam_policy_document" "argocd" {
       "kms:DescribeKey"
     ]
     effect    = "Allow"
-    resources = ["arn:aws:kms:ca-central-1:490881312659:alias/Deployment"]
+    resources = ["*"]
 
     condition {
       test     = "ForAnyValue:StringLike"
