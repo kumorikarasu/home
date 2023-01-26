@@ -10,6 +10,9 @@ data:
       name: sops
     spec:
       version: v1.0
+      init:
+        command: ["/bin/sh", "-c"]
+        args: ["helm dependency build"]
       generate:
         command: ["sh", "-c"]
         args: ["sops exec-file --filename secrets.json secrets.enc.yaml \"helm template --include-crds --namespace ${ARGOCD_APP_NAMESPACE} --release-name ${ARGOCD_APP_NAME} . --values {} --values values.yaml\""]
