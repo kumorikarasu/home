@@ -23,18 +23,32 @@ argo-cd:
           secretKeyRef:
             name: aws-token-secret
             key: AWS_SECRET_ACCESS_KEY
+      - name: HELM_CACHE_HOME
+        value: /helm-working-dir
+      - name: HELM_CONFIG_HOME
+        value: /helm-working-dir
+      - name: HELM_DATA_HOME
+        value: /helm-working-dir
       securityContext:
         runAsNonRoot: true
         runAsUser: 999
       volumeMounts:
-        - mountPath: /var/run/argocd
-          name: var-files
-        - mountPath: /home/argocd/cmp-server/plugins
-          name: plugins
-        - mountPath: /home/argocd/cmp-server/config/plugin.yaml # Plugin config file can either be volume mapped or baked into image
+        - name: var-files
+          mountPath: /var/run/argocd
+        - name: plugins
+          mountPath: /home/argocd/cmp-server/plugins
+        - name: cmp-plugin
+          mountPath: /home/argocd/cmp-server/config/plugin.yaml # Plugin config file can either be volume mapped or baked into image
           subPath: plugin.yaml
-          name: cmp-plugin
+        - name: cmp-tmp
+          mountPath: /tmp
+        - name: helm-temp-dir
+          mountPath: /helm-working-dir
     volumes:
-      - configMap:
+      - name: cmp-plugin
+        configMap:
           name: cmp-plugin
-        name: cmp-plugin
+      - name: cmp-tmp
+        emptyDir: {}
+      - name: helm-temp-dir
+        emptyDir: {}
