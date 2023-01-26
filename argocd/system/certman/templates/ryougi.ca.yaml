@@ -1,0 +1,71 @@
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-production
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: kumori@ryougi.com
+    privateKeySecretRef:
+      name: letsencrypt-production
+    solvers:
+      - selector:
+          dnsNames:
+            - 'ryougi.ca'
+            - '*.ryougi.ca'
+            - 'masterexploder.ca'
+            - '*.masterexploder.ca'
+        dns01:
+          cloudflare:
+            apiTokenSecretRef:
+              name: cloudflare-api-token-secret
+              key: api-token
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: ryougi.ca
+  namespace: default
+spec:
+  secretName: cert-ryougi-ca
+  dnsNames:
+  - 'ryougi.ca'
+  - '*.ryougi.ca'
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+    group: cert-manager.io
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: ryougi.ca
+  namespace: ingress
+spec:
+  secretName: cert-ryougi-ca
+  dnsNames:
+  - 'ryougi.ca'
+  - '*.ryougi.ca'
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+    group: cert-manager.io
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: ryougi.ca
+  namespace: apps
+spec:
+  secretName: cert-ryougi-ca
+  dnsNames:
+  - 'ryougi.ca'
+  - '*.ryougi.ca'
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+    group: cert-manager.io
