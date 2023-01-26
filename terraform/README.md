@@ -18,5 +18,3 @@ export PM_API_TOKEN_SECRET=""
 # Template
 Create the template from here. https://dev.to/mike1237/create-proxmox-cloud-init-templates-for-use-with-packer-193a
 Just add `virt-customize --run-command 'systemctl start qemu-guest-agent' -a $IMG_NAME` to the virt steps
-
-

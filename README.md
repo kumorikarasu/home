@@ -19,18 +19,10 @@ PM_API_TOKEN_SECRET=""
 ```
 # Install ArgoCD
 helm install argocd ./argocd/argo --namespace argocd --create-namespace
-# Setup AWS Credentials for ArgoCD
+# Setup AWS credentials for ArgoCD
+# All other credentials required are stored in the git repo under secrets.enc.yaml files
 kubectl -n argocd create secret generic aws-token-secret --from-literal=AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} --from-literal=AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
 ```
-
-### Cloudflare
-Create a secret for the cloudflare api token
-```
-kubectl create namespace system-certman
-kubectl -n system-certman create secret generic cloudflare-api-token-secret --from-literal=api-token=${CLOUDFLARE_API_TOKEN}
-```
-
-
 
 # Image Map
 
