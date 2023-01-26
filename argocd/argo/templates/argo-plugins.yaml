@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cmp-plugin
+data:
+  plugin.yaml: |
+    apiVersion: argoproj.io/v1alpha1
+    kind: ConfigManagementPlugin
+    metadata:
+      name: sops
+    spec:
+      version: v1.0
+      generate:
+        command: ["sh", "-c"]
+        args: ["sops exec-file --filename secrets.json secrets.enc.yaml \"helm template --include-crds --namespace ${ARGOCD_APP_NAMESPACE} --release-name ${ARGOCD_APP_NAME} . --values {} --values values.yaml\""]
+      discover:
+        fileName: 'secrets.enc.yaml'
+      allowConcurrency: true
+      lockRepo: true
