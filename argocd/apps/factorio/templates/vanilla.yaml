@@ -1,0 +1,82 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: factorio-deployment
+  labels:
+    app: factorio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: factorio
+  template:
+    metadata:
+      labels:
+        app: factorio
+    spec:
+      hostNetwork: true
+      volumes:
+      - name: appdata
+        persistentVolumeClaim:
+          claimName: appdata-pvc
+      containers:
+      - name: factorio
+        image: factoriotools/factorio:1.1.74
+        ports:
+        - containerPort: 34197
+          hostPort: 34197
+        - containerPort: 27016
+          hostPort: 27016
+        env:
+        - name: PUID
+          value: "99"
+        - name: PGID
+          value: "100"
+        - name: PORT
+          value: "34197"
+        - name: RCON_PORT
+          value: "27016"
+        - name: GENERATE_NEW_SAVE
+          value: "true"
+        - name: SAVE_NAME
+          value: "factorio_server"
+        - name: LOAD_LATEST_SAVE
+          value: "false"
+        - name: UPDATE_MODS_ON_START
+          value: "false"
+        - name: USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: factorio-modded-secret
+              key: username
+        - name: TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: factorio-modded-secret
+              key: token
+        volumeMounts:
+        - mountPath: "/factorio"
+          subPath: "factorio/vanilla"
+          name: appdata
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: factorio-service
+spec:
+  loadBalancerIP: 192.168.2.12
+  type: LoadBalancer
+  selector:
+    app: factorio
+  ports:
+    - name: game
+      protocol: TCP
+      port: 27016
+      targetPort: 27016
+    - name: gameudp
+      protocol: UDP
+      port: 34197
+      targetPort: 34197
