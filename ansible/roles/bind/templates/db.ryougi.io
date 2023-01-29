@@ -18,6 +18,7 @@ ns1.ryougi.io.           IN      A       192.168.1.254
 ns2.ryougi.io.           IN      A       192.168.1.253
 
 ; Physical/Virtual equipment
+pfsense.ryougi.io.        IN      A      192.168.1.1
 prox.ryougi.io.          IN      A      192.168.1.10
 nas.ryougi.io.           IN      A      192.168.1.20
 tower.ryougi.io.           IN      A      192.168.1.20
@@ -51,7 +52,6 @@ heimdall.ryougi.io.      IN      A      192.168.1.50
 ryougi.io.               IN      A      192.168.1.50
 bruna.ryougi.io.         IN      A      192.168.1.50
 plex.ryougi.io.          IN      A      192.168.1.50
-factorio.ryougi.io.      IN      A      192.168.1.50
 
 ; MetalLB - 192.168.2.0/24
 ; Required for TV, It needs a direct IP

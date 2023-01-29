@@ -18,6 +18,7 @@ ns1.ryougi.ca.           IN      A       192.168.1.254
 ns2.ryougi.ca.           IN      A       192.168.1.253
 
 ; Physical/Virtual equipment
+pfsense.ryougi.ca.       IN      A      192.168.1.1
 prox.ryougi.ca.          IN      A      192.168.1.10
 nas.ryougi.ca.           IN      A      192.168.1.20
 tower.ryougi.ca.         IN      A      192.168.1.20
@@ -50,7 +51,6 @@ heimdall.ryougi.ca.      IN      A      192.168.1.50
 ryougi.ca.               IN      A      192.168.1.50
 bruna.ryougi.ca.         IN      A      192.168.1.50
 plex.ryougi.ca.          IN      A      192.168.1.50
-facotrio.ryougi.ca.      IN      A      192.168.1.50
 
 ; MetalLB - 192.168.2.0/24
 argocd.ryougi.ca.             IN      A      192.168.2.10

@@ -20,6 +20,7 @@ $TTL	604800
 253.1   IN    PTR     ns2.ryougi.io.
 
 ; Physical/Virtual equipment
+1.1  IN    PTR      pfsense.ryougi.io.
 15.1  IN    PTR     prox.ryougi.io.
 20.1  IN    PTR     nas.ryougi.io.
 1.1   IN    PTR     router.ryougi.io.
