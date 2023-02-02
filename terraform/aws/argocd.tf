@@ -24,7 +24,6 @@ resource "aws_iam_policy" "argocd" {
   }
 }
 
-
 data "aws_iam_policy_document" "argocd" {
   statement {
     sid = "ArgoCDDecryptor"
