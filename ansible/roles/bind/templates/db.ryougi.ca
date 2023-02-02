@@ -41,16 +41,16 @@ rancher1.ryougi.ca.      IN      A      192.168.1.60
 minecraft.ryougi.ca.     IN      A      192.168.1.50
 satisfactory.ryougi.ca.  IN      A      192.168.1.50
 game.ryougi.ca.          IN      A      192.168.1.50
-qbt.ryougi.ca.           IN      A      192.168.1.50
-radarr.ryougi.ca.        IN      A      192.168.1.50
-sonarr.ryougi.ca.        IN      A      192.168.1.50
-prowlarr.ryougi.ca.      IN      A      192.168.1.50
-flaresolverr.ryougi.ca.  IN      A      192.168.1.50
-overseerr.ryougi.ca.     IN      A      192.168.1.50
-heimdall.ryougi.ca.      IN      A      192.168.1.50
-ryougi.ca.               IN      A      192.168.1.50
-bruna.ryougi.ca.         IN      A      192.168.1.50
-plex.ryougi.ca.          IN      A      192.168.1.50
+qbt.ryougi.ca.           IN      A      192.168.2.10
+radarr.ryougi.ca.        IN      A      192.168.2.10
+sonarr.ryougi.ca.        IN      A      192.168.2.10
+prowlarr.ryougi.ca.      IN      A      192.168.2.10
+flaresolverr.ryougi.ca.  IN      A      192.168.2.10
+overseerr.ryougi.ca.     IN      A      192.168.2.10
+heimdall.ryougi.ca.      IN      A      192.168.2.10
+ryougi.ca.               IN      A      192.168.2.10
+bruna.ryougi.ca.         IN      A      192.168.2.10
+plex.ryougi.ca.          IN      A      192.168.2.15
 
 ; MetalLB - 192.168.2.0/24
 argocd.ryougi.ca.             IN      A      192.168.2.10
