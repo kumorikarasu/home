@@ -1,0 +1,67 @@
+{{- if .Values.ATM8.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minecraft-deployment
+  labels:
+    app: minecraft
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minecraft
+  template:
+    metadata:
+      labels:
+        app: minecraft
+    spec:
+      volumes:
+      - name: minecraft
+        persistentVolumeClaim:
+          claimName: appdata-pvc
+      containers:
+      - name: minecraft
+        image: itzg/minecraft-server:java17
+        resources:
+          limits:
+            memory: "48Gi"
+            cpu: 10000m
+          requests:
+            memory: "48Gi"
+            cpu: 10000m
+        ports:
+        - containerPort: 25565
+        env:
+        - name: EULA
+          value: "TRUE"
+        - name: TYPE
+          value: "FORGE"
+        - name: FORGE_INSTALLER
+          value: "forge-1.19.2-43.2.4-installer.jar"
+        - name: MEMORY
+          value: 48G
+        - name: JVM_DD_OPTS
+          value: "fml.queryResult:confirm"
+        - name: OPS
+          value: kumorikarasu
+        volumeMounts:
+        - mountPath: "/data"
+          subPath: "minecraft/ATM8"
+          name: minecraft
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minecraft-atm-service
+spec:
+  type: LoadBalancer
+  loadBalancerIP: 192.168.2.21
+  selector:
+    app: minecraft
+  ports:
+    - protocol: TCP
+      port: 25565
+      targetPort: 25565
+{{- end }}
