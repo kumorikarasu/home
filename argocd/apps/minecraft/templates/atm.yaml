@@ -16,6 +16,7 @@ spec:
       labels:
         app: minecraft
     spec:
+      hostNetwork: true
       volumes:
       - name: minecraft
         persistentVolumeClaim:
@@ -32,7 +33,12 @@ spec:
             cpu: 10000m
         ports:
         - containerPort: 25565
+          hostPort: 25565
         env:
+        - name: UID
+          value: "99"
+        - name: GID
+          value: "100"
         - name: EULA
           value: "TRUE"
         - name: TYPE
@@ -42,7 +48,7 @@ spec:
         - name: MEMORY
           value: 48G
         - name: JVM_DD_OPTS
-          value: "fml.queryResult:confirm"
+          value: "fml.queryResult:confirm,fml.readTimeout=999"
         - name: OPS
           value: kumorikarasu
         volumeMounts:
