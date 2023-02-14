@@ -15,7 +15,7 @@ variable "template_name" {
 
 variable "url" {
   type    = string
-  default = "https://192.168.0.73:8006/api2/json"
+  default = "https://192.168.1.10:8006/api2/json"
 }
 
 variable "token" {
@@ -64,7 +64,9 @@ build {
   }
 
   provisioner "ansible" {
-    playbook_file = "ansible/bind.yml"
+    host_alias = "bind"
+    playbook_file = "../ansible/bind.yml"
+    ansible_ssh_extra_args = ["-oHostKeyAlgorithms=+ssh-rsa -oPubkeyAcceptedKeyTypes=+ssh-rsa -o IdentitiesOnly=yes"]
+    extra_arguments =  [ "--scp-extra-args", "'-O'" ]
   }
-
 }

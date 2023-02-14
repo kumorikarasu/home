@@ -5,7 +5,7 @@ variable "host_node" {
 
 variable "source_template" {
   type = string
-  default = "ubuntu-cloudinit"
+  default = "ubuntu-base"
 }
 
 variable "template_name" {
@@ -15,7 +15,7 @@ variable "template_name" {
 
 variable "url" {
   type    = string
-  default = "https://192.168.0.73:8006/api2/json"
+  default = "https://192.168.1.10:8006/api2/json"
 }
 
 variable "token" {
@@ -40,7 +40,7 @@ source "proxmox-clone" "docker" {
   cores           = "1"
   memory          = "512"
   scsi_controller = "virtio-scsi-pci"
-  qemu_agent = true
+  qemu_agent      = true
 
   network_adapters {
     bridge = "vmbr0"
