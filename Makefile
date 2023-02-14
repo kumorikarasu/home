@@ -1,8 +1,6 @@
 .ONESHELL:
 .PHONY: packer	
 
-all: packer tfrun
-
 plan: tfplan
 
 tfbase:
@@ -22,11 +20,6 @@ tfapply:
 	cd terraform
 	terraform apply
 
-deploy: tf
-
-tf:
-	cd terraform
-	terraform apply -auto-approve
 
 # Only run this when there is a new image from ubuntu
 packer-os:
@@ -45,11 +38,6 @@ packer-docker:
 	ssh root@192.168.0.73 "qm destroy 9010"
 	packer build packer/docker/ubuntu-docker.pkr.hcl
 
-kube:
-	kubectl apply -f kube/minecraft
-	kubectl apply -f kube/satisfactory
-
 # Bind servers will be static on 192.168.1.1 and 1.2 when I get a pi
 ansible-bind:
 	ansible-playbook ansible/bind.yml -i 192.168.1.1,
-

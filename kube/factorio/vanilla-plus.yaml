@@ -22,7 +22,7 @@ spec:
           claimName: appdata-pvc
       containers:
       - name: factorio
-        image: factoriotools/factorio:1.1.69
+        image: factoriotools/factorio:1.1.74
         ports:
         - containerPort: 34199
           hostPort: 34199

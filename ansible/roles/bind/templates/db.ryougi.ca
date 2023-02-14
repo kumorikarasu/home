@@ -20,6 +20,7 @@ ns2.ryougi.ca.           IN      A       192.168.1.253
 ; Physical/Virtual equipment
 pfsense.ryougi.ca.       IN      A      192.168.1.1
 prox.ryougi.ca.          IN      A      192.168.1.10
+pve.ryougi.ca.           IN      A      192.168.1.10
 nas.ryougi.ca.           IN      A      192.168.1.20
 tower.ryougi.ca.         IN      A      192.168.1.20
 router.ryougi.ca.        IN      A      192.168.1.1

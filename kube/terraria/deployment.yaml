@@ -1,0 +1,105 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: terraria-vanilla-deployment
+  labels:
+    app: terraria-vanilla
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: terraria-vanilla
+  template:
+    metadata:
+      labels:
+        app: terraria-vanilla
+    spec:
+      volumes:
+      - name: terraria-vanilla
+        persistentVolumeClaim:
+          claimName: terraria-vanilla-pvc
+      containers:
+      - name: terraria-vanilla
+        image: hexlo/terraria-server-docker:latest
+        ports:
+        - containerPort: 7777
+        - containerPort: 9012
+        env:
+          - name: world 
+            value: /root/.local/share/Terraria/Worlds/world1.wld
+          - name: autocreate 
+            value: "2"
+          - name: worldname 
+            value: world1
+          - name: difficulty 
+            value: "1"
+          - name: maxplayers 
+            value: "8"
+          - name: port 
+            value: "7777"
+          - name: password 
+            value: WHALPass
+          - name: motd 
+            value: "Terraria Server! :D"
+          - name: UID
+            value: "99"
+          - name: GID
+            value: "100"
+        volumeMounts:
+        - mountPath: "/root/.local/share/Terraria/Worlds"
+          name: terraria-vanilla
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: terraria-vanilla-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  resources:
+    requests:
+      storage: 1000Gi
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  finalizers:
+  - kubernetes.io/pv-protection
+  name: terraria-vanilla-pv
+spec:
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 1000Gi
+  nfs:
+    path: /mnt/user/appdata/terraria-vanilla
+    server: 192.168.1.20
+  persistentVolumeReclaimPolicy: Retain
+  volumeMode: Filesystem
+status:
+  phase: Available
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: terraria-vanilla-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: terraria-vanilla
+  ports:
+    - name: app
+      protocol: TCP
+      port: 7777
+      targetPort: 7777
+      nodePort: 31251
+    - name: rcon
+      protocol: TCP
+      port: 9012
+      targetPort: 9012
+      nodePort: 31252

@@ -2,3 +2,13 @@
 terraform.tfstate*
 creds.*
 pass.*
+
+config-pfsense.*.xml
+network_backup_*.unf
+
+# Helm
+Chart.lock
+charts/
+
+# Ansible
+ansible/kubespray
