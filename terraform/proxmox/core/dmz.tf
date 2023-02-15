@@ -19,7 +19,7 @@ resource "proxmox_vm_qemu" "haproxy-vm" {
 
   # The template name to clone this vm from
   # This is currently setup manually as a template image
-  clone = "ubuntu"
+  clone = "ubuntu-base"
 
   # Activate QEMU agent for this VM
   agent = 1
@@ -34,7 +34,7 @@ resource "proxmox_vm_qemu" "haproxy-vm" {
   scsihw  = "virtio-scsi-pci"
   onboot  = "true"
 
-  ipconfig0 = "ip=192.168.1.254/24,gw=192.168.1.1"
+  ipconfig0 = "ip=192.168.1.70/24,gw=192.168.1.1"
 
   # Setup the disk
   disk {
