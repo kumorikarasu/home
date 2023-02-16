@@ -1,8 +1,8 @@
 ;
-; BIND reverse data file for ryougi.io
+; BIND reverse data file for home.ryougi.ca
 ;
 $TTL	604800
-@	IN	SOA	ns1.ryougi.io. localdomain.168.192.in-addr.arpa (
+@	IN	SOA	ns1.home.ryougi.ca. localdomain.168.192.in-addr.arpa (
 			      {{ __bind9_zone_serial }}	; Serial
 			      604800		; Refresh
 			      86400		  ; Retry
@@ -10,39 +10,38 @@ $TTL	604800
 			      604800 )	; Negative Cache TTL
 ;
 ; name servers - NS records
-@     IN      NS      ns1.ryougi.io.
-@     IN      NS      ns2.ryougi.io.
-@     IN      NS      ns1.ryougi.ca.
-@     IN      NS      ns2.ryougi.ca.
+@     IN      NS      ns1.home.ryougi.ca.
+@     IN      NS      ns2.home.ryougi.ca.
+
 
 ; name servers - A records
-254.1   IN    PTR     ns1.ryougi.io.
-253.1   IN    PTR     ns2.ryougi.io.
+254.1   IN    PTR     ns1.home.ryougi.ca.
+253.1   IN    PTR     ns2.home.ryougi.ca.
 
 ; Physical/Virtual equipment
-1.1  IN    PTR      pfsense.ryougi.io.
-15.1  IN    PTR     prox.ryougi.io.
-20.1  IN    PTR     nas.ryougi.io.
-1.1   IN    PTR     router.ryougi.io.
-11.1  IN    PTR     kumori.ryougi.io.
-14.1  IN    PTR     kumori.linux.ryougi.io.
-200.1   IN    PTR     unifi.ryougi.io.
+1.1  IN    PTR      pfsense.home.ryougi.ca.
+15.1  IN    PTR     prox.home.ryougi.ca.
+20.1  IN    PTR     nas.home.ryougi.ca.
+1.1   IN    PTR     router.home.ryougi.ca.
+11.1  IN    PTR     kumori.home.ryougi.ca.
+14.1  IN    PTR     kumori.linux.home.ryougi.ca.
+200.1   IN    PTR     unifi.home.ryougi.ca.
 
 ; Kubernetes
-50.1  IN    PTR     kube1.ryougi.io.
-51.1  IN    PTR     kube2.ryougi.io.
-65.1  IN    PTR     kube-master1.ryougi.io.
-66.1  IN    PTR     kube-master2.ryougi.io.
-60.1  IN    PTR     rancher1.ryougi.io.
+50.1  IN    PTR     kube1.home.ryougi.ca.
+51.1  IN    PTR     kube2.home.ryougi.ca.
+65.1  IN    PTR     kube-master1.home.ryougi.ca.
+66.1  IN    PTR     kube-master2.home.ryougi.ca.
+60.1  IN    PTR     rancher1.home.ryougi.ca.
 
 
 ; Kube Services
-50.1  IN    PTR     plex.ryougi.io.
-50.1  IN    PTR     factorio.ryougi.io.
-50.1  IN    PTR     terraria.ryougi.io.
-50.1  IN    PTR     minecraft.ryougi.io.
-50.1  IN    PTR     satisfactory.ryougi.io.
-50.1  IN    PTR     game.ryougi.io.
+50.1  IN    PTR     plex.home.ryougi.ca.
+50.1  IN    PTR     factorio.home.ryougi.ca.
+50.1  IN    PTR     terraria.home.ryougi.ca.
+50.1  IN    PTR     minecraft.home.ryougi.ca.
+50.1  IN    PTR     satisfactory.home.ryougi.ca.
+50.1  IN    PTR     game.home.ryougi.ca.
 
 ; 10.2 Ingress LB IP
-10.2  IN    PTR     argocd.ryougi.cio
+10.2  IN    PTR     argocd.home.ryougi.cio

@@ -7,20 +7,9 @@
 //include "/etc/bind/zones.rfc1918";
 
 # Local Domain
-zone "ryougi.io" {
+zone "home.ryougi.ca" {
     type master;
-    file "/var/lib/bind/db.ryougi.io";      # zone file path
-    allow-transfer { 192.168.1.253; };        # ns2 private IP address - secondary
-
-    update-policy {
-      grant terraformKey zonesub any;
-    };
-};
-
-# Local Domain
-zone "ryougi.ca" {
-    type master;
-    file "/var/lib/bind/db.ryougi.ca";      # zone file path
+    file "/var/lib/bind/db.home.ryougi.ca";      # zone file path
     allow-transfer { 192.168.1.253; };        # ns2 private IP address - secondary
 
     update-policy {

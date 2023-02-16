@@ -72,21 +72,10 @@
   notify:
     - Restart bind
 
-- name: Bind db.ryougi.io template
-  template:
-    src: db.ryougi.io
-    dest: /var/lib/bind/db.ryougi.io
-    owner: root
-    group: root
-    mode: '0644'
-  become: true
-  notify:
-    - Restart bind
-
 - name: Bind db.ryougi.ca template
   template:
-    src: db.ryougi.ca
-    dest: /var/lib/bind/db.ryougi.ca
+    src: db.home.ryougi.ca
+    dest: /var/lib/bind/db.home.ryougi.ca
     owner: root
     group: root
     mode: '0644'

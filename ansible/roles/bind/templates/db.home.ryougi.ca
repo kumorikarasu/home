@@ -1,0 +1,66 @@
+;
+; BIND data file for home.ryougi.ca
+;
+$TTL	604800
+@           10800 IN	SOA	ns1.home.ryougi.ca. home.ryougi.ca. (
+			      {{ __bind9_zone_serial }}	; Serial
+			      604800		; Refresh
+			      86400		  ; Retry
+			      2419200		; Expire
+			      604800 )	; Negative Cache TTL
+;
+; name servers - NS records
+                         IN      NS      ns1.home.ryougi.ca.
+                         IN      NS      ns2.home.ryougi.ca.
+
+; name servers - A records
+ns1.home.ryougi.ca.           IN      A       192.168.1.254
+ns2.home.ryougi.ca.           IN      A       192.168.1.253
+
+; Physical/Virtual equipment
+pfsense.home.ryougi.ca.       IN      A      192.168.1.1
+prox.home.ryougi.ca.          IN      A      192.168.1.10
+pve.home.ryougi.ca.           IN      A      192.168.1.10
+nas.home.ryougi.ca.           IN      A      192.168.1.20
+tower.home.ryougi.ca.         IN      A      192.168.1.20
+router.home.ryougi.ca.        IN      A      192.168.1.1
+kumori.home.ryougi.ca.        IN      A      192.168.1.11
+fgmb.home.ryougi.ca.          IN      A      192.168.1.15
+kumori.linux.home.ryougi.ca.  IN      A      192.168.1.14
+unifi.home.ryougi.ca.         IN      A      192.168.1.200
+
+; Kubernetes
+kube1.home.ryougi.ca.         IN      A      192.168.1.50
+kube2.home.ryougi.ca.         IN      A      192.168.1.51
+kube-master1.home.ryougi.ca.  IN      A      192.168.1.65
+kube-master2.home.ryougi.ca.  IN      A      192.168.1.66
+rancher.home.ryougi.ca.       IN      A      192.168.1.60
+rancher1.home.ryougi.ca.      IN      A      192.168.1.60
+
+
+; Kube Services
+minecraft.home.ryougi.ca.     IN      A      192.168.1.50
+satisfactory.home.ryougi.ca.  IN      A      192.168.1.50
+game.home.ryougi.ca.          IN      A      192.168.1.50
+qbt.home.ryougi.ca.           IN      A      192.168.2.10
+radarr.home.ryougi.ca.        IN      A      192.168.2.10
+sonarr.home.ryougi.ca.        IN      A      192.168.2.10
+prowlarr.home.ryougi.ca.      IN      A      192.168.2.10
+flaresolverr.home.ryougi.ca.  IN      A      192.168.2.10
+overseerr.home.ryougi.ca.     IN      A      192.168.2.10
+heimdall.home.ryougi.ca.      IN      A      192.168.2.10
+home.ryougi.ca.               IN      A      192.168.2.10
+bruna.home.ryougi.ca.         IN      A      192.168.2.10
+plex.home.ryougi.ca.          IN      A      192.168.2.15
+
+; MetalLB - 192.168.2.0/24
+argocd.home.ryougi.ca.             IN      A      192.168.2.10
+
+; Required for TV, It needs a direct IP
+plex.static.home.ryougi.ca.        IN      A      192.168.2.15
+
+terraria.home.ryougi.ca.           IN      A      192.168.2.13
+
+; Required as it must use host networking due to k8s NAT
+factorio.static.home.ryougi.ca.    IN      A      192.168.2.11
+factorio2.static.home.ryougi.ca.   IN      A      192.168.2.12
