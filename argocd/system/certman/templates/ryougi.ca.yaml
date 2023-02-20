@@ -14,6 +14,8 @@ spec:
           dnsNames:
             - 'ryougi.ca'
             - '*.ryougi.ca'
+            - 'home.ryougi.ca'
+            - '*.home.ryougi.ca'
             - 'masterexploder.ca'
             - '*.masterexploder.ca'
         dns01:
@@ -31,6 +33,8 @@ metadata:
 spec:
   secretName: cert-ryougi-ca
   dnsNames:
+  - '*.home.ryougi.ca'
+  - 'home.ryougi.ca'
   - 'ryougi.ca'
   - '*.ryougi.ca'
   issuerRef:
