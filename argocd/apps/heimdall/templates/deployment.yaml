@@ -74,7 +74,7 @@ spec:
     - hosts:
       - ryougi.ca
   rules:
-  - host: ryougi.ca
+  - host: home.ryougi.ca
     http:
       paths:
       - path: /
@@ -84,7 +84,7 @@ spec:
             name: heimdall-service
             port:
               number: 80
-  - host: heimdall.ryougi.ca
+  - host: heimdall.home.ryougi.ca
     http:
       paths:
       - path: /

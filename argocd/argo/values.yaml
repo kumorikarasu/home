@@ -4,7 +4,7 @@ argo-cd:
       - --insecure
     ingress:                                                                                                                                                                                                                                                      
       enabled: true
-      hosts: ["argocd.ryougi.ca"]
+      hosts: ["argocd.home.ryougi.ca", "argocd.ryougi.ca"]
       ingressClassName: "nginx"
 
   repoServer:
