@@ -14,7 +14,6 @@ spec:
           dnsNames:
             - 'ryougi.ca'
             - '*.ryougi.ca'
-            - 'home.ryougi.ca'
             - '*.home.ryougi.ca'
             - 'masterexploder.ca'
             - '*.masterexploder.ca'
@@ -34,9 +33,8 @@ spec:
   secretName: cert-ryougi-ca
   dnsNames:
   - '*.home.ryougi.ca'
-  - 'home.ryougi.ca'
-  - 'ryougi.ca'
   - '*.ryougi.ca'
+  - 'ryougi.ca'
   issuerRef:
     name: letsencrypt-production
     kind: ClusterIssuer
