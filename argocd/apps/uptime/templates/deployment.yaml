@@ -62,6 +62,7 @@ spec:
   tls:
     - hosts:
       - ryougi.ca
+  rules:
   - host: uptime.home.ryougi.ca
     http:
       paths:
