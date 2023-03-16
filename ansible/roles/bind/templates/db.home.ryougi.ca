@@ -52,6 +52,7 @@ heimdall.home.ryougi.ca.      IN      A      192.168.2.10
 dashy.home.ryougi.ca.         IN      A      192.168.2.10
 home.ryougi.ca.               IN      A      192.168.2.10
 bruna.home.ryougi.ca.         IN      A      192.168.2.10
+uptime.home.ryougi.ca.        IN      A      192.168.2.10
 plex.home.ryougi.ca.          IN      A      192.168.2.15
 
 ; MetalLB - 192.168.2.0/24
