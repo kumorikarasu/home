@@ -21,7 +21,7 @@ ns2.home.ryougi.ca.           IN      A       192.168.1.253
 pfsense.home.ryougi.ca.       IN      A      192.168.1.1
 prox.home.ryougi.ca.          IN      A      192.168.1.10
 pve.home.ryougi.ca.           IN      A      192.168.1.10
-nas.home.ryougi.ca.           IN      A      192.168.1.20
+nas.home.ryougi.ca.           IN      A      192.168.1.21
 tower.home.ryougi.ca.         IN      A      192.168.1.20
 router.home.ryougi.ca.        IN      A      192.168.1.1
 kumori.home.ryougi.ca.        IN      A      192.168.1.11

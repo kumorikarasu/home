@@ -21,7 +21,8 @@ $TTL	604800
 ; Physical/Virtual equipment
 1.1  IN    PTR      pfsense.home.ryougi.ca.
 15.1  IN    PTR     prox.home.ryougi.ca.
-20.1  IN    PTR     nas.home.ryougi.ca.
+20.1  IN    PTR     tower.home.ryougi.ca.
+21.1  IN    PTR     nas.home.ryougi.ca.
 1.1   IN    PTR     router.home.ryougi.ca.
 11.1  IN    PTR     kumori.home.ryougi.ca.
 14.1  IN    PTR     kumori.linux.home.ryougi.ca.
