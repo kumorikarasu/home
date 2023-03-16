@@ -1,0 +1,87 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dashy-deployment
+  labels:
+    app: dashy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dashy
+  template:
+    metadata:
+      labels:
+        app: dashy
+    spec:
+      volumes:
+      - name: appdata
+        persistentVolumeClaim:
+          claimName: appdata-pvc
+      containers:
+      - name: dashy
+        image: lissy93/dashy
+        ports:
+        - containerPort: 4000
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: UMASK
+          value: "000"
+        - name: PORT
+          value: "4000"
+        volumeMounts:
+        - mountPath: "/app/public/conf.yml"
+          subPath: "dashy/conf.yml"
+          name: appdata
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dashy-service
+spec:
+  selector:
+    app: dashy
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 4000
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    ingress.kubernetes.io/rewrite-target: /
+  name: dashy-ingress
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+      - ryougi.ca
+  rules:
+# - host: home.ryougi.ca
+#   http:
+#     paths:
+#     - path: /
+#       pathType: Prefix
+#       backend:
+#         service:
+#           name: dashy-service
+#           port:
+#             number: 80
+  - host: dashy.home.ryougi.ca
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: dashy-service
+            port:
+              number: 80

@@ -27,7 +27,7 @@ router.home.ryougi.ca.        IN      A      192.168.1.1
 kumori.home.ryougi.ca.        IN      A      192.168.1.11
 fgmb.home.ryougi.ca.          IN      A      192.168.1.15
 kumori.linux.home.ryougi.ca.  IN      A      192.168.1.14
-unifi.home.ryougi.ca.         IN      A      192.168.1.200
+unifi.home.ryougi.ca.         IN      A      192.168.1.4
 
 ; Kubernetes
 kube1.home.ryougi.ca.         IN      A      192.168.1.50
@@ -49,6 +49,7 @@ prowlarr.home.ryougi.ca.      IN      A      192.168.2.10
 flaresolverr.home.ryougi.ca.  IN      A      192.168.2.10
 overseerr.home.ryougi.ca.     IN      A      192.168.2.10
 heimdall.home.ryougi.ca.      IN      A      192.168.2.10
+dashy.home.ryougi.ca.         IN      A      192.168.2.10
 home.ryougi.ca.               IN      A      192.168.2.10
 bruna.home.ryougi.ca.         IN      A      192.168.2.10
 plex.home.ryougi.ca.          IN      A      192.168.2.15
