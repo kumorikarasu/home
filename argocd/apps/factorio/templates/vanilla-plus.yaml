@@ -30,9 +30,11 @@ spec:
           hostPort: 27019
         env:
         - name: PUID
-          value: "99"
+          value: "1000"
         - name: PGID
-          value: "100"
+          value: "1000"
+        - name: UMASK
+          value: "000"
         - name: PORT
           value: "34199"
         - name: RCON_PORT
