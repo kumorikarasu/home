@@ -27,9 +27,11 @@ spec:
         - containerPort: 443
         env:
         - name: PUID
-          value: "99"
+          value: "1000"
         - name: PGID
-          value: "100"
+          value: "1000"
+        - name: UMASK
+          value: "000"
         volumeMounts:
         - mountPath: "/config/keys"
           subPath: "heimdall/keys"
