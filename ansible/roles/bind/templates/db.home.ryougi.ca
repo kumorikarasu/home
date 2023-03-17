@@ -45,6 +45,7 @@ game.home.ryougi.ca.          IN      A      192.168.1.50
 qbt.home.ryougi.ca.           IN      A      192.168.2.10
 radarr.home.ryougi.ca.        IN      A      192.168.2.10
 sonarr.home.ryougi.ca.        IN      A      192.168.2.10
+readarr.home.ryougi.ca.       IN      A      192.168.2.10
 prowlarr.home.ryougi.ca.      IN      A      192.168.2.10
 flaresolverr.home.ryougi.ca.  IN      A      192.168.2.10
 overseerr.home.ryougi.ca.     IN      A      192.168.2.10
@@ -53,7 +54,7 @@ dashy.home.ryougi.ca.         IN      A      192.168.2.10
 home.ryougi.ca.               IN      A      192.168.2.10
 bruna.home.ryougi.ca.         IN      A      192.168.2.10
 uptime.home.ryougi.ca.        IN      A      192.168.2.10
-plex.home.ryougi.ca.          IN      A      192.168.2.15
+plex.home.ryougi.ca.          IN      A      192.168.2.10
 
 ; MetalLB - 192.168.2.0/24
 argocd.home.ryougi.ca.             IN      A      192.168.2.10

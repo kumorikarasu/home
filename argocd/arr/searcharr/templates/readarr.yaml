@@ -1,0 +1,99 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: readarr-deployment
+  labels:
+    app: readarr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: readarr
+  template:
+    metadata:
+      labels:
+        app: readarr
+    spec:
+      volumes:
+      - name: appdata
+        persistentVolumeClaim:
+          claimName: appdata-pvc
+      - name: media
+        persistentVolumeClaim:
+          claimName: media-pvc
+      containers:
+      - name: readarr
+        image: binhex/arch-readarr
+        resources:
+          requests:
+            memory: "4G"
+          limits:
+            memory: "4G"
+        ports:
+        - containerPort: 8787
+        env:
+        - name: UMASK
+          value: "000"
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        volumeMounts:
+        - mountPath: "/Media"
+          subPath: "Books"
+          name: media
+        - mountPath: "/data"
+          subPath: "qbt/qbt/config/qBittorrent/downloads"
+          name: appdata
+        - mountPath: "/config"
+          subPath: "qbt/readarr/config"
+          name: appdata
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: readarr-service
+spec:
+  selector:
+    app: readarr
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8787
+      targetPort: 8787
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    ingress.kubernetes.io/rewrite-target: /
+  name: readarr-ingress
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+      - ryougi.ca
+  rules:
+  - host: readarr.ryougi.ca
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: readarr-service
+            port:
+              number: 8787
+  - host: readarr.home.ryougi.ca
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: readarr-service
+            port:
+              number: 8787
