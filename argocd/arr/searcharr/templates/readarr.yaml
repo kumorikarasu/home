@@ -43,6 +43,9 @@ spec:
         - mountPath: "/Media"
           subPath: "Books"
           name: media
+        - mountPath: "/nzb"
+          subPath: "Downloads"
+          name: media
         - mountPath: "/data"
           subPath: "qbt/qbt/config/qBittorrent/downloads"
           name: appdata
