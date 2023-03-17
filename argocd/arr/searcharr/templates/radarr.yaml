@@ -36,9 +36,9 @@ spec:
         - name: UMASK
           value: "000"
         - name: PUID
-          value: "0"
+          value: "1000"
         - name: PGID
-          value: "0"
+          value: "1000"
         volumeMounts:
         - mountPath: "/Media"
           subPath: "Movies"
