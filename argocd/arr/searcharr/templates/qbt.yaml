@@ -1,0 +1,131 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qbt-deployment
+  labels:
+    app: qbt
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qbt
+  template:
+    metadata:
+      labels:
+        app: qbt
+    spec:
+      volumes:
+      - name: appdata
+        persistentVolumeClaim:
+          claimName: appdata-pvc
+      - name: media
+        persistentVolumeClaim:
+          claimName: media-pvc
+      containers:
+      - name: qbt
+        image: binhex/arch-qbittorrentvpn
+        securityContext:
+          capabilities:
+            add: ["NET_ADMIN", "SYS_TIME"]
+        ports:
+        - containerPort: 8080
+        env:
+        - name: VPN_ENABLED
+          value: "yes"
+        - name: VPN_PROV
+          value: "pia"
+        - name: VPN_CLIENT
+          value: "openvpn"
+        - name: VPN_USER
+          valueFrom:
+            secretKeyRef:
+              name: qbt-secret
+              key: username
+        - name: VPN_PASS
+          valueFrom:
+            secretKeyRef:
+              name: qbt-secret
+              key: password
+        - name: ENABLE_PRIVOXY
+          value: "yes"
+        - name: LAN_NETWORK
+          value: "192.168.1.0/24"
+        - name: NAME_SERVERS
+          value: "84.200.69.80,37.235.1.174,1.1.1.1,37.235.1.177,84.200.70.40,1.0.0.1"
+        - name: VPN_INPUT_PORTS
+          value: "1234"
+        - name: VPN_OUTPUT_PORTS
+          value: "5678"
+        - name: DEBUG
+          value: "false"
+        - name: WEBUI_PORT
+          value: "8080"
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: UMASK
+          value: "000"
+        volumeMounts:
+        - mountPath: "/Media"
+          name: media
+        - mountPath: "/data"
+          subPath: "qbt/qbt/data"
+          name: appdata
+        - mountPath: "/config"
+          subPath: "qbt/qbt/config"
+          name: appdata
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: qbt-service
+spec:
+  selector:
+    app: qbt
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_set_header Host $host;
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+  name: qbt-ingress
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+      - ryougi.ca
+  rules:
+  - host: qbt.ryougi.ca
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: qbt-service
+            port:
+              number: 8080
+  - host: qbt.home.ryougi.ca
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: qbt-service
+            port:
+              number: 8080

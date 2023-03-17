@@ -1,0 +1,63 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: appdata-pvc
+spec:
+  volumeName: appdata-arr-pv
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  resources:
+    requests:
+      storage: 1000Gi
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  finalizers:
+  - kubernetes.io/pv-protection
+  name: appdata-arr-pv
+spec:
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 1000Gi
+  nfs:
+    path: /mnt/Storage/appdata
+    server: 192.168.1.21
+  persistentVolumeReclaimPolicy: Retain
+  volumeMode: Filesystem
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: media-pvc
+spec:
+  volumeName: media-pv
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  resources:
+    requests:
+      storage: 1000Gi
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  finalizers:
+  - kubernetes.io/pv-protection
+  name: media-pv
+spec:
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 1000Gi
+  nfs:
+    path: /mnt/Storage/Media
+    server: 192.168.1.21
+  persistentVolumeReclaimPolicy: Retain
+  volumeMode: Filesystem

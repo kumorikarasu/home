@@ -1,0 +1,96 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prowlarr-deployment
+  labels:
+    app: prowlarr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prowlarr
+  template:
+    metadata:
+      labels:
+        app: prowlarr
+    spec:
+      volumes:
+      - name: appdata
+        persistentVolumeClaim:
+          claimName: appdata-pvc
+      - name: media
+        persistentVolumeClaim:
+          claimName: media-pvc
+      containers:
+      - name: prowlarr
+        image: binhex/arch-prowlarr
+        ports:
+        - containerPort: 9696
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: UMASK
+          value: "000"
+        volumeMounts:
+        - mountPath: "/Media"
+          subPath: "Movies"
+          name: media
+        - mountPath: "/data"
+          subPath: "qbt/prowlarr/data"
+          name: appdata
+        - mountPath: "/config"
+          subPath: "qbt/prowlarr/config"
+          name: appdata
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prowlarr-service
+spec:
+  selector:
+    app: prowlarr
+  ports:
+    - name: http
+      protocol: TCP
+      port: 9696
+      targetPort: 9696
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    ingress.kubernetes.io/rewrite-target: /
+  name: prowlarr-ingress
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+      - ryougi.ca
+  rules:
+  - host: prowlarr.ryougi.ca
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: prowlarr-service
+            port:
+              number: 9696
+  - host: prowlarr.home.ryougi.ca
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: prowlarr-service
+            port:
+              number: 9696
+
+

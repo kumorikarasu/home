@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: arr-appset
+spec:
+  generators:
+  - git:
+      repoURL: https://github.com/kumorikarasu/home.git
+      revision: HEAD
+      directories:
+      - path: argocd/arr/*
+  template:
+    metadata:
+      name: '{{`arr-{{path.basename}}`}}'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/kumorikarasu/home.git
+        targetRevision: HEAD
+        path: '{{`{{path}}`}}'
+      destination:
+        name: in-cluster
+        namespace: '{{`arr`}}'
