@@ -76,7 +76,7 @@ spec:
     - hosts:
       - ryougi.ca
   rules:
-  - host: home.ryougi.ca
+  - host: heimdall.ryougi.ca
     http:
       paths:
       - path: /

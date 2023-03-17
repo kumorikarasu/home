@@ -65,16 +65,16 @@ spec:
     - hosts:
       - ryougi.ca
   rules:
-# - host: home.ryougi.ca
-#   http:
-#     paths:
-#     - path: /
-#       pathType: Prefix
-#       backend:
-#         service:
-#           name: dashy-service
-#           port:
-#             number: 80
+  - host: home.ryougi.ca
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: dashy-service
+            port:
+              number: 80
   - host: dashy.home.ryougi.ca
     http:
       paths:
