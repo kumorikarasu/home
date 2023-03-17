@@ -180,14 +180,13 @@ nodelocaldns_health_port: 9254
 nodelocaldns_second_health_port: 9256
 nodelocaldns_bind_metrics_host_ip: false
 nodelocaldns_secondary_skew_seconds: 5
-# nodelocaldns_external_zones:
-# - zones:
-#   - example.com
-#   - example.io:1053
-#   nameservers:
-#   - 1.1.1.1
-#   - 2.2.2.2
-#   cache: 5
+nodelocaldns_external_zones:
+- zones:
+  - home.ryougi.ca
+  nameservers:
+  - 192.168.1.254
+  - 192.168.1.253
+  cache: 5
 # - zones:
 #   - https://mycompany.local:4453
 #   nameservers:
