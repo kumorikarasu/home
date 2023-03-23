@@ -20,24 +20,6 @@ tfapply:
 	cd terraform
 	terraform apply
 
-
-# Only run this when there is a new image from ubuntu
-packer-os:
-	cd packer
-	./init-base-cloudimg.sh
-
-packer-base:
-	ssh root@192.168.0.73 "qm destroy 9001"
-	packer build packer/base.pkr.hcl
-
-packer-bind:
-	ssh root@192.168.0.73 "qm destroy 9011"
-	packer build packer/bind/ubuntu-bind.pkr.hcl
-
-packer-docker:
-	ssh root@192.168.0.73 "qm destroy 9010"
-	packer build packer/docker/ubuntu-docker.pkr.hcl
-
-# Bind servers will be static on 192.168.1.1 and 1.2 when I get a pi
+# Bind servers will be static on 192.168.1.254 (VM) and 1.253 (PI)
 ansible-bind:
-	ansible-playbook ansible/bind.yml -i 192.168.1.1,
+	ansible-playbook ansible/bind.yml -i 192.168.1.254,

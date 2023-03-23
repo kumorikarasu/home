@@ -43,16 +43,19 @@ minecraft.home.ryougi.ca.     IN      A      192.168.1.50
 satisfactory.home.ryougi.ca.  IN      A      192.168.1.50
 game.home.ryougi.ca.          IN      A      192.168.1.50
 qbt.home.ryougi.ca.           IN      A      192.168.2.10
+nzb.home.ryougi.ca.           IN      A      192.168.2.10
 radarr.home.ryougi.ca.        IN      A      192.168.2.10
 sonarr.home.ryougi.ca.        IN      A      192.168.2.10
 readarr.home.ryougi.ca.       IN      A      192.168.2.10
+bazarr.home.ryougi.ca.        IN      A      192.168.2.10
+lidarr.home.ryougi.ca.        IN      A      192.168.2.10
 prowlarr.home.ryougi.ca.      IN      A      192.168.2.10
 flaresolverr.home.ryougi.ca.  IN      A      192.168.2.10
 overseerr.home.ryougi.ca.     IN      A      192.168.2.10
 heimdall.home.ryougi.ca.      IN      A      192.168.2.10
 dashy.home.ryougi.ca.         IN      A      192.168.2.10
+ha.home.ryougi.ca.            IN      A      192.168.2.10
 home.ryougi.ca.               IN      A      192.168.2.10
-bruna.home.ryougi.ca.         IN      A      192.168.2.10
 uptime.home.ryougi.ca.        IN      A      192.168.2.10
 plex.home.ryougi.ca.          IN      A      192.168.2.10
 

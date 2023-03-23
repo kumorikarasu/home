@@ -1,14 +1,28 @@
-.terraform*
-terraform.tfstate*
+# Terraform
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.*
+.terraformrc
+crash.log
 creds.*
 pass.*
 
+# Network Config Files
 config-pfsense.*.xml
 network_backup_*.unf
 
 # Helm
+*.tgz
+*.lock
 Chart.lock
 charts/
 
 # Ansible
+*.retry
 ansible/kubespray
+
+
+
