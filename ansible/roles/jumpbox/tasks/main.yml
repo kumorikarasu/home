@@ -1,0 +1,25 @@
+# Ansible
+- name: Install Git
+  become: true
+  ansible.builtin.apt:
+    name: "git"
+    state: latest
+
+- name: Copy private SSH Key
+  ansible.builtin.copy:
+    src: /home/kumori/.ssh/id_ed25519
+    dest: /home/kumori/.ssh/id_ed25519
+    mode: 0600
+
+- name: Clone dotfiles
+  ansible.builtin.git:
+    repo: git@github.com:kumorikarasu/dotfiles.git
+    dest: /home/kumori/dotfiles
+    accept_hostkey: yes
+    key_file: /home/kumori/.ssh/id_ed25519
+
+- name: Install dotfiles
+  ansible.builtin.shell: /home/kumori/dotfiles/setup_env.sh
+  args:
+    chdir: /home/kumori/dotfiles
+    executable: /bin/bash

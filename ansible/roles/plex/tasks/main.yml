@@ -1,0 +1,36 @@
+- name: Plex apt key
+  become: true
+  ansible.builtin.apt_key:
+    url: https://downloads.plex.tv/plex-keys/PlexSign.key
+    state: present
+
+
+- name: "Add plex repo into sources list"
+  become: true
+  apt_repository:
+    repo: deb https://downloads.plex.tv/repo/deb public main
+    state: present
+
+- name: Install required packages
+  become: true
+  ansible.builtin.apt:
+    name: 
+      - nfs-common
+      - plexmediaserver
+    state: latest
+
+- name: Create media mount point
+  become: true
+  ansible.builtin.file:
+    path: /mnt/media
+    state: directory
+    mode: '0755'
+
+- name: Mount nfs volumes
+  become: true
+  ansible.posix.mount:
+    fstype: nfs
+    opts: rw,sync,hard
+    src: "192.168.1.21:/mnt/Storage/Media"
+    path: /mnt/media
+    state: mounted

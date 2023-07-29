@@ -1,9 +1,9 @@
 ---
-- name: Bind Playbook
-  hosts: bind
+- name: Plex Playbook
+  hosts: plex
   gather_facts: true  
   vars:
     ansible_python_interpreter: /usr/bin/python3
   roles:
     - common
-    - bind
+    - plex

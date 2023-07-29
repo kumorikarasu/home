@@ -22,11 +22,20 @@ kube_control_plane
 kube_node
 calico_rr
 
-[haproxy]
-192.168.1.200
+[dmz]
+192.168.1.70
 
 [bind]
 192.168.1.254
 
 [rancher]
 192.168.1.60
+
+[jumpbox]
+192.168.1.200
+
+[plex]
+192.168.1.201
+
+[llvm]
+192.168.1.202

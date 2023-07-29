@@ -1,5 +1,16 @@
+all: jumpbox bind llvm plex
+
 bind:
 	ansible-playbook bind.yml -i ansible.hosts
+
+llvm:
+	ansible-playbook llvm.yml -i ansible.hosts
+
+jumpbox:
+	ansible-playbook jumpbox.yml -i ansible.hosts
+
+plex:
+	ansible-playbook plex.yml -i ansible.hosts
 
 kube:
 	git -C kubespray pull || git clone https://github.com/kubernetes-sigs/kubespray.git kubespray
