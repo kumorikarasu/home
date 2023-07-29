@@ -1,3 +1,5 @@
+.gitconfig
+
 # Terraform
 .terraform/
 .terraform.lock.hcl
