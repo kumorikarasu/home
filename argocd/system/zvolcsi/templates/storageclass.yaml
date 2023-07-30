@@ -1,0 +1,24 @@
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+  name: hpe
+provisioner: csi.hpe.com
+parameters:
+  csi.storage.k8s.io/controller-expand-secret-name: "{{ .Release.Name }}-truenas-secret"
+  csi.storage.k8s.io/controller-expand-secret-namespace: {{ .Release.Namespace }}
+  csi.storage.k8s.io/controller-publish-secret-name: "{{ .Release.Name }}-truenas-secret"
+  csi.storage.k8s.io/controller-publish-secret-namespace: {{ .Release.Namespace }}
+  csi.storage.k8s.io/node-publish-secret-name: "{{ .Release.Name }}-truenas-secret"
+  csi.storage.k8s.io/node-publish-secret-namespace: {{ .Release.Namespace }}
+  csi.storage.k8s.io/node-stage-secret-name: "{{ .Release.Name }}-truenas-secret"
+  csi.storage.k8s.io/node-stage-secret-namespace: {{ .Release.Namespace }}
+  csi.storage.k8s.io/provisioner-secret-name: "{{ .Release.Name }}-truenas-secret"
+  csi.storage.k8s.io/provisioner-secret-namespace: {{ .Release.Namespace }}
+  csi.storage.k8s.io/fstype: xfs
+  allowOverrides: sparse,compression,deduplication,volblocksize,sync,description
+  root: Storage/csi-volumes
+reclaimPolicy: Delete
+allowVolumeExpansion: true
