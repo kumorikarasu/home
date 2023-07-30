@@ -16,12 +16,12 @@ spec:
         app: registry
     spec:
       volumes:
-      - name: appdata
+      - name: registry-volume
         persistentVolumeClaim:
-          claimName: appdata-pvc
+          claimName: registry-pvc
       containers:
       - name: registry
-        image: registry
+        image: registry:2
         ports:
         - containerPort: 5000
         env:
@@ -35,8 +35,20 @@ spec:
           value: "4000"
         volumeMounts:
         - mountPath: "/var/lib/registry"
-          subPath: "registry"
-          name: appdata
+          name: registry-volume
+
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: registry-pvc
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 128Gi
 
 ---
 apiVersion: v1
