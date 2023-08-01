@@ -24,6 +24,7 @@ spec:
           name: tmodloader-config
       containers:
       - name: tmodloader
+        imagePullPolicy: Always
         image: kumorikarasu/tmodloader:v2023.06.25.27
         args:
           - '-password $(password)'
