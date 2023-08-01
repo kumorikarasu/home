@@ -1,4 +1,4 @@
-all: jumpbox bind llvm plex
+all: requirements jumpbox bind llvm plex nexus
 
 bind:
 	ansible-playbook bind.yml -i ansible.hosts
@@ -11,6 +11,12 @@ jumpbox:
 
 plex:
 	ansible-playbook plex.yml -i ansible.hosts
+	
+nexus: requirements
+	ansible-playbook nexus.yml -i ansible.hosts
+
+requirements:
+	ansible-galaxy install -r requirements.yml
 
 kube:
 	git -C kubespray pull || git clone https://github.com/kubernetes-sigs/kubespray.git kubespray

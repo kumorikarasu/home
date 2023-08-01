@@ -57,7 +57,10 @@ dashy.home.ryougi.ca.         IN      A      192.168.2.10
 ha.home.ryougi.ca.            IN      A      192.168.2.10
 home.ryougi.ca.               IN      A      192.168.2.10
 uptime.home.ryougi.ca.        IN      A      192.168.2.10
-plex.home.ryougi.ca.          IN      A      192.168.1.10
+plex.home.ryougi.ca.          IN      A      192.168.2.10
+nexus.home.ryougi.ca.         IN      A      192.168.2.10
+tavern-kube.home.ryougi.ca.   IN      A      192.168.2.10
+docker-kube.home.ryougi.ca.   IN      A      192.168.2.10
 
 ; VM Services
 tavern.home.ryougi.ca.        IN      A      192.168.1.240
@@ -65,13 +68,12 @@ st.home.ryougi.ca.            IN      A      192.168.1.241
 kobold.home.ryougi.ca.        IN      A      192.168.1.135
 jump.home.ryougi.ca.          IN      A      192.168.1.200
 llvm.home.ryougi.ca.          IN      A      192.168.1.202
+plex.static.home.ryougi.ca.        IN      A      192.168.1.201
+nexus.static.home.ryougi.ca.       IN      A      192.168.1.203
+docker.home.ryougi.ca.                  IN      A      192.168.1.203
 
 ; MetalLB - 192.168.2.0/24
 argocd.home.ryougi.ca.             IN      A      192.168.2.10
-
-; Plex actual IP address
-plex.static.home.ryougi.ca.        IN      A      192.168.1.201
-
 terraria.home.ryougi.ca.           IN      A      192.168.2.13
 
 ; Required as it must use host networking due to k8s NAT

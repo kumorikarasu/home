@@ -1,0 +1,6 @@
+- src: https://github.com/geerlingguy/ansible-role-java
+  name: geerlingguy.java
+
+- src: https://github.com/ansible-ThoTeam/nexus3-oss.git
+  name: ansible-thoteam.nexus3-oss
+

@@ -1,11 +1,11 @@
-resource "proxmox_vm_qemu" "llvm-vm" {
+resource "proxmox_vm_qemu" "nexus-vm" {
   count = 1
-  name = "llvm${count.index + 1}"
+  name = "nexus${count.index + 1}"
   desc = "A test for using terraform and cloudinit"
 
   # Node name has to be the same name as within the cluster
   # this might not include the FQDN
-  target_node = "pve2"
+  target_node = "pve"
 
   # The destination resource pool for the new VM
   # pool = "kube"
@@ -13,8 +13,7 @@ resource "proxmox_vm_qemu" "llvm-vm" {
   # provider fails if I try touch pools again
   lifecycle {
     ignore_changes = [
-      pool,
-      hostpci
+      pool
     ]
   }
 
@@ -27,19 +26,19 @@ resource "proxmox_vm_qemu" "llvm-vm" {
 
   os_type = "cloud-init"
   qemu_os = "l26"
-  cores   = 12
+  cores   = 10
   sockets = 1
   vcpus   = 0
   cpu     = "host"
-  memory  = 63536
+  memory  = 8192
   scsihw  = "virtio-scsi-pci"
   onboot  = "true"
 
-  ipconfig0 = "ip=192.168.1.202/24,gw=192.168.1.1"
+  ipconfig0 = "ip=192.168.1.203/24,gw=192.168.1.1"
 
   # Setup the disk
   disk {
-    size         = "128G"
+    size         = "96G"
     type         = "scsi"
     storage      = "local-lvm"
     ssd          = 0
@@ -51,26 +50,6 @@ resource "proxmox_vm_qemu" "llvm-vm" {
     model  = "virtio"
     bridge = "vmbr0"
   }
-
-  # Unfortunatly, only root can access the GPU
-  # So this has to be done manually
-  #
-  # # 2080
-  # hostpci {
-  #   host = "0000:09:00.0"
-  #   rombar = 1
-  #   pcie = 0
-  # }
-
-  # # 1070
-  # hostpci {
-  #   host = "0000:04:00.0"
-  #   rombar = 1
-  #   pcie = 0
-  # }
-
-
-  
 
   ciuser  = "kumori"
   sshkeys = <<EOF

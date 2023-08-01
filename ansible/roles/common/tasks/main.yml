@@ -3,3 +3,10 @@
   ansible.builtin.apt:
     name: "*"
     state: latest
+
+- name: Install rsync
+  become: true
+  when: rsync_install is defined and rsync_install
+  ansible.builtin.apt:
+    name: "rsync"
+    state: latest

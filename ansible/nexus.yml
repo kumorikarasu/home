@@ -1,0 +1,17 @@
+---
+- name: Plex Playbook
+  hosts: nexus
+  gather_facts: true  
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    rsync_install: true
+  roles:
+    - role: common
+    - role: geerlingguy.java
+      become: yes
+      java_packages:
+        - openjdk-8-jdk
+    - role: ansible-thoteam.nexus3-oss
+      tags: ['ansible-thoteam.nexus3-oss']
+      become: yes
+  # - nexus
