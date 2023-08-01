@@ -1,0 +1,58 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tmodloader-deployment
+  labels:
+    app: tmodloader
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tmodloader
+  template:
+    metadata:
+      labels:
+        app: tmodloader
+    spec:
+      volumes:
+      - name: appdata
+        persistentVolumeClaim:
+          claimName: appdata-pvc
+      containers:
+      - name: tmodloader
+        image: kumorikarasu/tmodloader:v2023.06.25.27
+        ports:
+        - containerPort: 7777
+        env:
+        - name: DATA_DIR
+          value: "/serverdata"
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: UMASK
+          value: "000"
+        volumeMounts:
+        - mountPath: "/serverdata"
+          subPath: tmodloader/serverdata
+          name: appdata
+        - mountPath: "/terrariadata/tModLoader/tModLoader-Logs"
+          subPath: tmodloader/logs
+          name: appdata
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tmodloader-service
+spec:
+  type: LoadBalancer
+  loadBalancerIP: 192.168.2.13
+  selector:
+    app: tmodloader
+  ports:
+    - name: app
+      protocol: TCP
+      port: 7777
+      targetPort: 7777
