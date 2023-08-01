@@ -52,7 +52,7 @@ spec:
           subPath: tmodloader/logs
           name: appdata
         - name: serverconfig
-          mountPath: "serverconfig.txt"
+          mountPath: "terrariadata/tModLoader/serverconfig.txt"
           subPath: "serverconfig.txt"
 
           
