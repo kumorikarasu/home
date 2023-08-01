@@ -19,12 +19,22 @@ spec:
       - name: appdata
         persistentVolumeClaim:
           claimName: appdata-pvc
+      - name: serverconfig
+        configMap:
+          name: tmodloader-config
       containers:
       - name: tmodloader
         image: kumorikarasu/tmodloader:v2023.06.25.27
+        args:
+          - '-password $(password)'
         ports:
         - containerPort: 7777
         env:
+        - name: password
+          valueFrom:
+            secretKeyRef:
+              name: tmodloader-secret
+              key: password
         - name: DATA_DIR
           value: "/serverdata"
         - name: PUID
@@ -40,6 +50,12 @@ spec:
         - mountPath: "/terrariadata/tModLoader/tModLoader-Logs"
           subPath: tmodloader/logs
           name: appdata
+        - name: serverconfig
+          mountPath: "serverconfig.txt"
+          subPath: "serverconfig.txt"
+
+          
+
 
 ---
 apiVersion: v1
@@ -56,3 +72,34 @@ spec:
       protocol: TCP
       port: 7777
       targetPort: 7777
+
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tmodloader-config
+data:
+  serverconfig.txt: |
+    # tModLoader Server Config
+    # This is the config file for tModLoader Server.
+    autocreate=3
+    world=/serverdata/worlds/world1.wld
+    worldpath=/serverdata/worlds
+    worldname=WHAL
+    seed=world1seed
+    difficulty=1
+    maxplayers=8
+    motd=Welcome to Terraria!
+    port=7777
+    autoshutdown=0
+    priority=1
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: tmodloader-secret
+data:
+  password: {{ .Values.tmodloader.password | b64enc }}
+type: Opaque
