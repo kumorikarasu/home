@@ -8,7 +8,7 @@ RUN apt-get update && \
 
 ENV DATA_DIR=/serverdata
 ENV SERV_VER=1449
-ENV TMOD_VER=v2023.06.25.27
+ENV TMOD_VER=v2023.06.25.28
 
 RUN mkdir /terrariadata && \
     mkdir ${DATA_DIR}
@@ -25,4 +25,4 @@ RUN chmod +x tModLoader/LaunchUtils/*.sh
 WORKDIR /terrariadata/tModLoader
 
 COPY docker-entrypoint.sh docker-entrypoint.sh
-ENTRYPOINT "./docker-entrypoint.sh"
+ENTRYPOINT ["/terrariadata/tModLoader/docker-entrypoint.sh"]

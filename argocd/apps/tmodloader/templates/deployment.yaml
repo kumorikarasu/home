@@ -15,6 +15,7 @@ spec:
       labels:
         app: tmodloader
     spec:
+      hostNetwork: true
       volumes:
       - name: appdata
         persistentVolumeClaim:
@@ -25,7 +26,7 @@ spec:
       containers:
       - name: tmodloader
         imagePullPolicy: Always
-        image: kumorikarasu/tmodloader:v2023.06.25.27
+        image: kumorikarasu/tmodloader:v2023.06.25.28
         args:
           - '-pass $(password)'
         ports:
