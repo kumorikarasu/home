@@ -137,3 +137,23 @@ spec:
             name: "{{ .Release.Name }}-service"
             port:
               number: 80
+  - host: st.home.ryougi.ca
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: "{{ .Release.Name }}-service"
+            port:
+              number: 80
+  - host: st.ryougi.ca
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: "{{ .Release.Name }}-service"
+            port:
+              number: 80
