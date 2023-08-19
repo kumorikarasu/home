@@ -1,0 +1,139 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ .Release.Name }}-deployment"
+  labels:
+    app: tavern
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tavern
+  template:
+    metadata:
+      labels:
+        app: tavern
+    spec:
+      volumes:
+      - name: appdata
+        persistentVolumeClaim:
+          claimName: appdata-pvc
+      - name: "{{ .Release.Name }}-config"
+        configMap:
+          name: "{{ .Release.Name }}-config"
+          items:
+          - key: config.conf
+            path: config.conf
+    # - name: "{{ .Release.Name }}-volume
+    #   persistentVolumeClaim:
+    #     claimName: "{{ .Release.Name }}-pvc
+      containers:
+      - name: tavern
+        image: registry.home.ryougi.ca/st
+        ports:
+        - containerPort: 8000
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: UMASK
+          value: "000"
+        - name: PORT
+          value: "8000"
+        volumeMounts:
+      # - mountPath: "/home/node/app/config"
+      #   name: "{{ .Release.Name }}-volume
+        - mountPath: "/home/node/app/config"
+          subPath: "st/kumori"
+          name: appdata
+        - name: "{{ .Release.Name }}-config"
+          mountPath: /home/node/app/config/config.conf
+          subPath: config.conf
+      
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ .Release.Name }}-service"
+spec:
+  selector:
+    app: tavern
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 8000
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ .Release.Name }}-config"
+data:
+  config.conf: |
+    const port = 8000;
+    const whitelist = ['127.0.0.1']; //Example for add several IP in whitelist: ['127.0.0.1', '192.168.0.10']
+    const whitelistMode = false; //Disabling enabling the ip whitelist mode. true/false
+    const basicAuthMode = false; //Toggle basic authentication for endpoints.
+    const basicAuthUser = {username: "user", password: "password"}; //Login credentials when basicAuthMode is true.
+    const disableThumbnails = false; //Disables the generation of thumbnails, opting to use the raw images instead
+    const autorun = false; //Autorun in the browser. true/false
+    const enableExtensions = true; //Enables support for TavernAI-extras project
+    const listen = true; // If true, Can be access from other device or PC. otherwise can be access only from hosting machine.
+    const allowKeysExposure = false; // If true, private API keys could be fetched to the frontend.
+    const skipContentCheck = false; // If true, no new default content will be delivered to you.
+
+    // If true, Allows insecure settings for listen, whitelist, and authentication.
+    // Change this setting only on "trusted networks". Do not change this value unless you are aware of the issues that can arise from changing this setting and configuring a insecure setting.
+    const securityOverride = true;
+
+    module.exports = {
+      port,
+      whitelist,
+      whitelistMode,
+      basicAuthMode,
+      basicAuthUser,
+      autorun,
+      enableExtensions,
+      listen,
+      disableThumbnails,
+      allowKeysExposure,
+      securityOverride,
+      skipContentCheck,
+    };
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    ingress.kubernetes.io/rewrite-target: /
+  name: "{{ .Release.Name }}-ingress"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+      - ryougi.ca
+  rules:
+  - host: st.kube.home.ryougi.ca
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: "{{ .Release.Name }}-service"
+            port:
+              number: 80
+  - host: st.kube.ryougi.ca
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: "{{ .Release.Name }}-service"
+            port:
+              number: 80
