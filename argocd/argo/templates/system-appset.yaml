@@ -21,10 +21,3 @@ spec:
       destination:
         name: in-cluster
         namespace: '{{`system-{{path.basename}}`}}'
-      syncPolicy:
-        automated:
-          selfHeal: true
-        syncOptions:
-          - CreateNamespace=true
-          - PruneLast=true
-          - ApplyOutOfSyncOnly=true
