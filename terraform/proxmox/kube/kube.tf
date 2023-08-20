@@ -22,7 +22,7 @@ resource "proxmox_vm_qemu" "kube-master-vm" {
 
   # The template name to clone this vm from
   # This is currently setup manually as a template image
-  clone = "ubuntu-docker"
+  clone = "ubuntu-base"
 
   # Activate QEMU agent for this VM
   agent = 1
@@ -85,10 +85,9 @@ resource "null_resource" "kube-exec-master" {
 */
 
 resource "proxmox_vm_qemu" "kube-vm" {
-  depends_on = [ proxmox_vm_qemu.kube-master-vm ]
   count = var.kube_nodes_count
 
-  name = "kube${count.index + 1}"
+  name = "kube${count.index + 2}"
   desc = "A test for using terraform and cloudinit"
 
   # Node name has to be the same name as within the cluster
@@ -107,18 +106,18 @@ resource "proxmox_vm_qemu" "kube-vm" {
 
   # The template name to clone this vm from
   # This is currently setup manually as a template image
-  clone = "ubuntu-docker"
+  clone = "ubuntu-base"
 
   # Activate QEMU agent for this VM
   agent = 1
 
   os_type = "cloud-init"
   qemu_os = "l26"
-  cores   = 10 
-  sockets = 2
+  cores   = 20
+  sockets = 1
   vcpus   = 0
   cpu     = "host"
-  memory  = 65536
+  memory  = 98304
   scsihw  = "virtio-scsi-pci"
 
   disk {

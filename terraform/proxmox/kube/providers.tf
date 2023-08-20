@@ -8,10 +8,6 @@ terraform {
       source  = "kreuzwerker/docker"
       version = "3.0.1"
     }
-    rancher2 = {
-      source = "rancher/rancher2"
-      version = "1.25.0"
-    }
   }
 }
 

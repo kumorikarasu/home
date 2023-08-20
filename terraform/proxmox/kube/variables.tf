@@ -16,7 +16,7 @@ variable "kube_nodes_count" {
 
 variable "kube_master_count" {
   type = number
-  default = 2
+  default = 0
 }
 
 variable "public_key" {

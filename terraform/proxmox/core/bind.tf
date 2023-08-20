@@ -1,5 +1,5 @@
 resource "proxmox_vm_qemu" "bind-vm" {
-  count = 1
+  count = 2
   name = "bind${count.index + 1}"
   desc = "A test for using terraform and cloudinit"
 
@@ -19,7 +19,7 @@ resource "proxmox_vm_qemu" "bind-vm" {
 
   # The template name to clone this vm from
   # This is currently setup manually as a template image
-  clone = "ubuntu-bind"
+  clone = "ubuntu-base"
 
   # Activate QEMU agent for this VM
   agent = 1
@@ -34,7 +34,7 @@ resource "proxmox_vm_qemu" "bind-vm" {
   scsihw  = "virtio-scsi-pci"
   onboot  = "true"
 
-  ipconfig0 = "ip=192.168.1.254/24,gw=192.168.1.1"
+  ipconfig0 = "ip=192.168.1.${254 - count.index}/24,gw=192.168.1.1"
 
   # Setup the disk
   disk {

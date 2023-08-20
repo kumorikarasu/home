@@ -4,8 +4,8 @@ git clone https://github.com/SillyTavern/SillyTavern.git --depth 1 --branch rele
 cd SillyTavern
 
 # Build the image
-docker build -t registry.home.ryougi.ca/sillytavern:latest .
-docker push registry.home.ryougi.ca/sillytavern:latest
+docker build -t registry.home.ryougi.ca/st .
+docker push registry.home.ryougi.ca/st
 
 # Cleanup
 cd ..
