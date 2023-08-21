@@ -1,0 +1,61 @@
+- name: Install build tools
+  become: true
+  ansible.builtin.apt:
+    name: 
+      - "build-essential"
+      - "cmake"
+      - "git"
+    state: latest
+
+- name: Download CUDA Toolkit Repository
+  become: true
+  ansible.builtin.get_url:
+    url: "https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-ubuntu2204.pin"
+    dest: "/etc/apt/preferences.d/cuda-repository-pin-600"
+    mode: '0644'
+
+- name: Download CUDA Toolkit
+  become: true
+  ansible.builtin.get_url:
+    url: "https://developer.download.nvidia.com/compute/cuda/12.2.1/local_installers/cuda-repo-ubuntu2204-12-2-local_12.2.1-535.86.10-1_amd64.deb"
+    dest: "/root/cuda-repo-ubuntu2204-12-2-local_12.2.1-535.86.10-1_amd64.deb"
+    mode: '0644'
+
+- name: Install CUDA Toolkit
+  become: true
+  ansible.builtin.apt:
+    deb: "/root/cuda-repo-ubuntu2204-12-2-local_12.2.1-535.86.10-1_amd64.deb"
+    update_cache: no
+
+- name: Find keyring file
+  ansible.builtin.find:
+    paths: "/var/cuda-repo-ubuntu2204-12-2-local"
+    patterns: "cuda-*-keyring.gpg"
+  register: keyring
+
+- name: Copy keyring file
+  become: true
+  ansible.builtin.copy:
+    src: "{{ item.path }}"
+    dest: "/usr/share/keyrings"
+    mode: '0644'
+    remote_src: yes
+  with_items: "{{ keyring.files }}"
+
+- name: Install CUDA
+  become: true
+  notify: "Reboot"
+  ansible.builtin.apt:
+    name:
+      - "cuda"
+    state: latest
+    update_cache: yes
+
+- name: Add CUDA to PATH
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/profile.d/cuda.sh
+    content: 'PATH=$PATH:/usr/local/cuda/bin'
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers

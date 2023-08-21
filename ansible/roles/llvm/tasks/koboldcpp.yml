@@ -1,0 +1,79 @@
+- name: Install Python3
+  become: true
+  ansible.builtin.apt:
+    name: "python3"
+    state: latest
+
+- name: Install pip3
+  become: true
+  ansible.builtin.apt:
+    name: "python3-pip"
+    state: latest
+
+- name: Install gitlfs
+  become: true
+  ansible.builtin.apt:
+    name: "git-lfs"
+    state: latest
+
+- name: Install blast
+  become: true
+  ansible.builtin.apt:
+    name: 
+      - "libclblast-dev"
+      - "libopenblas-dev"
+    state: latest
+
+- name: Make dev directory
+  ansible.builtin.file:
+    path: /home/{{ lookup('env', 'USER') }}/dev
+    state: directory
+    mode: '0755'
+    owner: "{{ lookup('env', 'USER') }}"
+    group: "{{ lookup('env', 'USER') }}"
+
+- name: Clone koboldcpp
+  ansible.builtin.git:
+    repo: https://github.com/LostRuins/koboldcpp.git 
+    dest: /home/{{ lookup('env', 'USER') }}/dev/koboldcpp
+
+- name: Install pip3 requirements
+  ansible.builtin.pip:
+    requirements: /home/{{ lookup('env', 'USER') }}/dev/koboldcpp/requirements.txt
+    state: present
+
+- name: Install koboldcpp
+  environment:
+    PATH: /usr/local/cuda/bin:{{ ansible_env.PATH }}
+  ansible.builtin.make:
+    chdir: /home/{{ lookup('env', 'USER') }}/dev/koboldcpp
+    params:
+      LLAMA_OPENBLAS: 1
+      LLAMA_CLBLAST: 1
+      LLAMA_CUBLAS: 1
+
+- name: Ensure models folder exists
+  ansible.builtin.file:
+    path: /home/{{ lookup('env', 'USER') }}/dev/koboldcpp/models
+    state: directory
+    mode: '0755'
+    owner: "{{ lookup('env', 'USER') }}"
+    group: "{{ lookup('env', 'USER') }}"
+
+- name: Download Model
+  ansible.builtin.get_url:
+    url: https://huggingface.co/TheBloke/WizardLM-13B-V1.2-GGML/resolve/main/wizardlm-13b-v1.2.ggmlv3.q5_1.bin
+    dest: /home/{{ lookup('env', 'USER') }}/dev/koboldcpp/models/wizardlm-13b-v1.2.ggmlv3.q5_1.bin
+
+- name: Create kobold service
+  notify:
+    - "Reload Unit Files"
+    - "Restart Kobold Service"
+  become: true
+  ansible.builtin.template:
+    src: kobold.service.j2
+    dest: /etc/systemd/system/kobold.service
+    owner: root
+    group: root
+    mode: '0644'
+

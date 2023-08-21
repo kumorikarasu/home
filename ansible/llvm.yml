@@ -4,6 +4,8 @@
   gather_facts: true  
   vars:
     ansible_python_interpreter: /usr/bin/python3
+    cuda_install: true
+    koboldcpp_install: true
   roles:
     - common
     - llvm

@@ -1,0 +1,31 @@
+# Service file for running koboldcpp with python3
+# ==================================
+[Unit]
+Description=Koboldcpp
+After=network.target
+
+[Service]
+Type=simple
+User={{ lookup('env','USER') }}
+WorkingDirectory=/home/{{ lookup('env','USER') }}/dev/koboldcpp
+ExecStart=/usr/bin/python3 /home/{{ lookup('env','USER') }}//dev/koboldcpp/koboldcpp.py --threads 6 --gpulayers 50 --usecublas normal 0 --host 0.0.0.0 --stream --blasbatchsize 1024 --contextsize 4096 ./models/wizardlm-13b-v1.2.ggmlv3.q5_1.bin 
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+
+# ==================================
+# ./koboldcpp.py \
+#   --threads 6 \
+#   --gpulayers 100 \
+#   --usecublas normal 0 \
+#   --host 0.0.0.0 \
+#   --stream ./models/wizardlm-13b-v1.2.ggmlv3.q5_1.bin \
+#   --blasbatchsize 1024 \
+#   --highpriority \
+#   --contextsize 4096
+#    --tensor_split 15 0 \
+# 
+#   --smartcontext \
+#   --contextsize 8192

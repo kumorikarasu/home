@@ -1,5 +1,7 @@
-- name: Update all packages to their latest version
-  become: true
-  ansible.builtin.apt:
-    name: "*"
-    state: latest
+- name: Install CUDA
+  include_tasks: cuda.yml
+  when: cuda_install is defined and cuda_install
+
+- name: Install Koboldcpp
+  include_tasks: koboldcpp.yml
+  when: koboldcpp_install is defined and koboldcpp_install

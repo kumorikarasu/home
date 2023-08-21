@@ -1,1 +1,25 @@
+- name: Reboot
+  reboot:
+    reboot_timeout: 600
+    msg: "Reboot initiated by Ansible for CUDA installation"
+    connect_timeout: 5
+    reboot_timeout: 600
+    pre_reboot_delay: 0
+    post_reboot_delay: 30
+    test_command: uptime
+    test_command_timeout: 5
+    force: yes
+  when: reboot_required | default(false)
 
+- name: Reload Unit Files
+  become: true
+  systemd:
+    daemon_reload: yes
+  when: koboldcpp_install is defined and koboldcpp_install
+
+- name: Restart Kobold Service
+  become: true
+  service:
+    name: kobold
+    state: restarted
+  when: koboldcpp_install is defined and koboldcpp_install
