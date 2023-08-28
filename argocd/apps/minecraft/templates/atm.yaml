@@ -43,16 +43,16 @@ spec:
         - name: TYPE
           value: "FORGE"
         - name: FORGE_INSTALLER
-          value: "forge-1.19.2-43.2.4-installer.jar"
+          value: "forge-1.20.1-47.1.3-installer.jar"
         - name: MEMORY
-          value: 48G
+          value: 32G
         - name: JVM_DD_OPTS
           value: "fml.queryResult:confirm,fml.readTimeout=999"
         - name: OPS
           value: kumorikarasu
         volumeMounts:
         - mountPath: "/data"
-          subPath: "minecraft/ATM8"
+          subPath: "minecraft/ATM9"
           name: minecraft
 
 ---
