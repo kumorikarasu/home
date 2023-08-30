@@ -1,14 +1,21 @@
 [all]
 node1 ansible_host=192.168.1.50 etcd_member_name=etcd1
+node2 ansible_host=192.168.1.55 etcd_member_name=etcd2
+node3 ansible_host=192.168.1.60 etcd_member_name=etcd2
 
 [kube_node]
 node1
+node2
 
 [kube_control_plane]
 node1
+node2
+node3
 
 [etcd]
 node1
+node2
+node3
 
 [calico_rr]
 

@@ -31,6 +31,7 @@ kube:
 
 kubespray: kube
   #export ANSIBLE_TIMEOUT=120; cd kubespray && ansible-playbook -i inventory/mycluster/hosts.yaml  --become --become-user=root cluster.yml
+	ansible-playbook kube.yml -i ansible.hosts
 	export ANSIBLE_TIMEOUT=120; cd kubespray && ansible-playbook -i inventory/mycluster/hosts.ini --become --become-user=root cluster.yml
 
 kubeconf:

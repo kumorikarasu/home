@@ -31,9 +31,11 @@ resource "proxmox_vm_qemu" "llvm-vm" {
   sockets = 1
   vcpus   = 0
   cpu     = "host"
-  memory  = 63536
+  # memory  = 63536
+  memory  = 32768
   scsihw  = "virtio-scsi-pci"
-  onboot  = "true"
+  onboot  = "false"
+  oncreate = "false"
 
   ipconfig0 = "ip=192.168.1.202/24,gw=192.168.1.1"
 

@@ -10,3 +10,9 @@
   ansible.builtin.apt:
     name: "rsync"
     state: latest
+
+- name: Install qemu-guest-agent
+  become: true
+  ansible.builtin.apt:
+    name: "qemu-guest-agent"
+    state: latest
