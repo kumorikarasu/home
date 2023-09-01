@@ -21,3 +21,6 @@ spec:
       destination:
         name: in-cluster
         namespace: '{{`arr`}}'
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
