@@ -21,13 +21,20 @@ spec:
       - name: minecraft
         persistentVolumeClaim:
           claimName: appdata-pvc
+      tolerations:
+      - key: "gpu"
+        effect: "NoSchedule"
+        operator: "Exists"
       containers:
       - name: minecraft
         image: itzg/minecraft-server:java17
         resources:
           requests:
-            memory: "48Gi"
-            cpu: 10000m
+            memory: "28Gi"
+            cpu: 3000m
+          limits:
+            memory: "32Gi"
+            cpu: 6000m
         ports:
         - containerPort: 25565
           hostPort: 25565
