@@ -21,6 +21,6 @@ spec:
       destination:
         name: in-cluster
         namespace: '{{`apps`}}'
-  syncPolicy:
-    syncOptions:
-      - ApplyOutOfSyncOnly=true
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true

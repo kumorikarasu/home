@@ -21,6 +21,7 @@ spec:
       destination:
         name: in-cluster
         namespace: '{{`system-{{path.basename}}`}}'
-  syncPolicy:
-    syncOptions:
-      - ApplyOutOfSyncOnly=true
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+          - CreateNamespace=true
