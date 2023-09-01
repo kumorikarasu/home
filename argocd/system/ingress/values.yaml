@@ -1,6 +1,6 @@
 ingress-nginx:
   controller:
     service:
-      loadBalancerIP: 192.168.2.10
+      loadBalancerIP: 192.168.3.10
     extraArgs:
       default-ssl-certificate: "default/cert-ryougi-ca"
