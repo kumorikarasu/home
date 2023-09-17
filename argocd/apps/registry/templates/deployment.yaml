@@ -70,6 +70,7 @@ kind: Ingress
 metadata:
   annotations:
     ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/proxy-body-size: 0m
   name: registry-ingress
 spec:
   ingressClassName: nginx
