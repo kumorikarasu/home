@@ -1,0 +1,12 @@
+---
+- name: Kube Common Playbook
+  hosts: 
+    - kube_node
+    - kube_control_plane
+    - etcd
+  gather_facts: true  
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    nfs: true
+  roles:
+    - common

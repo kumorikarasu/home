@@ -1,9 +1,6 @@
 
-
 resource "proxmox_vm_qemu" "kube-master-vm" {
-  count = var.kube_master_count
-
-  name = "kube-master${count.index + 1}"
+  name = "kube-master-1"
   desc = "A test for using terraform and cloudinit"
 
   # Node name has to be the same name as within the cluster
@@ -36,7 +33,7 @@ resource "proxmox_vm_qemu" "kube-master-vm" {
   memory  = 4096
   scsihw  = "virtio-scsi-pci"
 
-  ipconfig0 = "ip=192.168.1.${count.index + 60}/24,gw=192.168.1.1"
+  ipconfig0 = "ip=192.168.16.22/20,gw=192.168.16.1"
 
   # Setup the disk
   disk {
@@ -47,10 +44,11 @@ resource "proxmox_vm_qemu" "kube-master-vm" {
     discard      = "on"
   }
 
-  # Setup the network interface and assign a vlan tag: 256
+  #VLAN ID
   network {
     model  = "virtio"
     bridge = "vmbr0"
+    tag    = 2
   }
 
   ciuser  = "kumori"
@@ -65,29 +63,10 @@ ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINOwoZ0u3t1QuHtElHSKaw2P6kUYF9cLnUcGjcKXErqZ
 
 }
 
-/*
-resource "null_resource" "kube-exec-master" {
-  count = length(proxmox_vm_qemu.kube-master-vm)
-
-  connection {
-    host = proxmox_vm_qemu.kube-master-vm[count.index].default_ipv4_address
-    type = "ssh"
-    user = "kumori"
-    private_key = "${file("~/.ssh/id_ed25519")}"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      //"${rancher2_cluster.home_kube.cluster_registration_token[0].node_command} --etcd --controlplane --node-name kube-master${count.index + 1} --address ${proxmox_vm_qemu.kube-master-vm[count.index].default_ipv4_address} --internal-address ${proxmox_vm_qemu.kube-master-vm[count.index].default_ipv4_address}"
-    ]
-  }
-}
-*/
-
 resource "proxmox_vm_qemu" "kube-vm" {
   count = var.kube_nodes_count
 
-  name = "kube${count.index + 2}"
+  name = "kube-1"
   desc = "A test for using terraform and cloudinit"
 
   # Node name has to be the same name as within the cluster
@@ -128,12 +107,12 @@ resource "proxmox_vm_qemu" "kube-vm" {
     discard      = "on"
   }
 
-  ipconfig0 = "ip=192.168.1.${count.index + 50}/24,gw=192.168.1.1"
+  ipconfig0 = "ip=192.168.16.20/20,gw=192.168.16.1"
 
-  # Setup the network interface and assign a vlan tag: 256
   network {
     model  = "virtio"
     bridge = "vmbr0"
+    tag    = 2
   }
 
   ciuser  = "kumori"
@@ -148,9 +127,7 @@ ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINOwoZ0u3t1QuHtElHSKaw2P6kUYF9cLnUcGjcKXErqZ
 }
 
 resource "proxmox_vm_qemu" "kube-pve2-vm" {
-  count = var.kube_nodes_count
-
-  name = "kube${count.index + 1}"
+  name = "kube-2"
   desc = "A test for using terraform and cloudinit"
 
   # Node name has to be the same name as within the cluster
@@ -176,7 +153,7 @@ resource "proxmox_vm_qemu" "kube-pve2-vm" {
 
   os_type = "cloud-init"
   qemu_os = "l26"
-  cores   = 4
+  cores   = 6
   sockets = 1
   vcpus   = 0
   cpu     = "host"
@@ -191,12 +168,12 @@ resource "proxmox_vm_qemu" "kube-pve2-vm" {
     discard      = "on"
   }
 
-  ipconfig0 = "ip=192.168.1.${count.index + 55}/24,gw=192.168.1.1"
+  ipconfig0 = "ip=192.168.16.21/20,gw=192.168.16.1"
 
-  # Setup the network interface and assign a vlan tag: 256
   network {
     model  = "virtio"
     bridge = "vmbr0"
+    tag    = 2
   }
 
   ciuser  = "kumori"
@@ -209,23 +186,3 @@ ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINOwoZ0u3t1QuHtElHSKaw2P6kUYF9cLnUcGjcKXErqZ
     delete = "10m"
   }
 }
-
-
-/*
-resource "null_resource" "kube-exec" {
-  count = length(proxmox_vm_qemu.kube-vm)
-
-  connection {
-    host = proxmox_vm_qemu.kube-vm[count.index].default_ipv4_address
-    type = "ssh"
-    user = "kumori"
-    private_key = "${file("~/.ssh/id_ed25519")}"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "${rancher2_cluster.home_kube.cluster_registration_token[0].node_command} --etcd --controlplane --worker --node-name kube${count.index + 1} --address ${proxmox_vm_qemu.kube-vm[count.index].default_ipv4_address} --internal-address ${proxmox_vm_qemu.kube-vm[count.index].default_ipv4_address}"
-    ]
-  }
-}
-*/

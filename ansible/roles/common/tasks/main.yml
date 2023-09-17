@@ -1,8 +1,9 @@
-- name: Update all packages to their latest version
+- name: Upgrade all packages to their latest version
   become: true
   ansible.builtin.apt:
     name: "*"
     state: latest
+    update_cache: yes
 
 - name: Install rsync
   become: true
@@ -15,4 +16,19 @@
   become: true
   ansible.builtin.apt:
     name: "qemu-guest-agent"
+    state: latest
+  
+- name: Install nfs-common
+  become: true
+  when: nfs is defined and nfs
+  ansible.builtin.apt:
+    name: "nfs-common"
+    state: latest
+
+- name: Install useful packages
+  become: true
+  ansible.builtin.apt:
+    name: 
+      - "vim"
+      - "dnsutils"
     state: latest

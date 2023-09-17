@@ -15,7 +15,6 @@ spec:
       labels:
         app: factorio-plus
     spec:
-      hostNetwork: true
       volumes:
       - name: appdata
         persistentVolumeClaim:
@@ -25,9 +24,7 @@ spec:
         image: factoriotools/factorio:1.1.87
         ports:
         - containerPort: 34199
-          hostPort: 34199
         - containerPort: 27019
-          hostPort: 27019
         env:
         - name: PUID
           value: "1000"

@@ -62,8 +62,9 @@
 
 - name: Download Model
   ansible.builtin.get_url:
-    url: https://huggingface.co/TheBloke/WizardLM-13B-V1.2-GGML/resolve/main/wizardlm-13b-v1.2.ggmlv3.q5_1.bin
-    dest: /home/{{ lookup('env', 'USER') }}/dev/koboldcpp/models/wizardlm-13b-v1.2.ggmlv3.q5_1.bin
+    url: "{{ model_url }}"
+    dest: /home/{{ lookup('env', 'USER') }}/dev/koboldcpp/models/{{ model_url | basename }}
+  register: download_model
 
 - name: Create kobold service
   notify:

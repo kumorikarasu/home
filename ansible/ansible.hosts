@@ -1,7 +1,7 @@
 [all]
-node1 ansible_host=192.168.1.50 etcd_member_name=etcd1
-node2 ansible_host=192.168.1.55 etcd_member_name=etcd2
-node3 ansible_host=192.168.1.60 etcd_member_name=etcd2
+node1 ansible_host=192.168.16.20 etcd_member_name=etcd1 local_as=64513
+node2 ansible_host=192.168.16.21 etcd_member_name=etcd2 local_as=64512
+node3 ansible_host=192.168.16.22 etcd_member_name=etcd3 local_as=64515
 
 [kube_node]
 node1
@@ -31,9 +31,6 @@ calico_rr
 192.168.1.254
 192.168.1.253
 
-[rancher]
-192.168.1.60
-
 [jumpbox]
 192.168.1.200
 
@@ -41,7 +38,7 @@ calico_rr
 192.168.1.201
 
 [llvm]
-192.168.1.202
+192.168.16.30
 
 [nexus]
 192.168.1.203

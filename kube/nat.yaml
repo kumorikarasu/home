@@ -1,0 +1,146 @@
+---
+apiVersion: crd.projectcalico.org/v1
+kind: IPPool
+metadata:
+  name: nat-outgoing-pool-1
+spec:
+  cidr: 0.0.0.0/1
+  disabled: true
+
+---
+apiVersion: crd.projectcalico.org/v1
+kind: IPPool
+metadata:
+  name: nat-outgoing-pool-2
+spec:
+  cidr: 128.0.0.0/2
+  disabled: true
+
+---
+apiVersion: crd.projectcalico.org/v1
+kind: IPPool
+metadata:
+  name: nat-outgoing-pool-3
+spec: 
+  cidr: 192.0.0.0/9
+  disabled: true
+
+---
+apiVersion: crd.projectcalico.org/v1
+kind: IPPool
+metadata:
+  name: nat-outgoing-pool-4
+spec:
+  cidr: 192.128.0.0/11
+  disabled: true
+
+---
+apiVersion: crd.projectcalico.org/v1
+kind: IPPool
+metadata:
+  name: nat-outgoing-pool-5
+spec:
+  cidr: 192.160.0.0/13
+  disabled: true
+
+---
+apiVersion: crd.projectcalico.org/v1
+kind: IPPool
+metadata:
+  name: nat-outgoing-pool-7
+spec:
+  cidr:  192.169.0.0/16
+  disabled: true
+
+---
+apiVersion: crd.projectcalico.org/v1
+kind: IPPool
+metadata:
+  name: nat-outgoing-pool-8
+spec:
+  cidr: 192.170.0.0/15
+  disabled: true
+
+---
+apiVersion: crd.projectcalico.org/v1
+kind: IPPool
+metadata:
+  name: nat-outgoing-pool-9
+spec:
+  cidr: 192.172.0.0/14
+  disabled: true
+
+---
+apiVersion: crd.projectcalico.org/v1
+kind: IPPool
+metadata:
+  name: nat-outgoing-pool-10
+spec:
+  cidr: 192.176.0.0/12
+  disabled: true
+
+---
+apiVersion: crd.projectcalico.org/v1
+kind: IPPool
+metadata:
+  name: nat-outgoing-pool-11
+spec:
+  cidr: 192.192.0.0/10
+  disabled: true
+
+---
+apiVersion: crd.projectcalico.org/v1
+kind: IPPool
+metadata:
+  name: nat-outgoing-pool-12
+spec:
+  cidr: 193.0.0.0/8
+  disabled: true
+
+---
+apiVersion: crd.projectcalico.org/v1
+kind: IPPool
+metadata:
+  name: nat-outgoing-pool-13
+spec:
+  cidr: 194.0.0.0/7
+  disabled: true
+
+---
+apiVersion: crd.projectcalico.org/v1
+kind: IPPool
+metadata:
+  name: nat-outgoing-pool-14
+spec:
+  cidr: 196.0.0.0/6
+  disabled: true
+
+
+---
+apiVersion: crd.projectcalico.org/v1
+kind: IPPool
+metadata:
+  name: nat-outgoing-pool-15
+spec:
+  cidr: 200.0.0.0/5
+  disabled: true
+
+
+---
+apiVersion: crd.projectcalico.org/v1
+kind: IPPool
+metadata:
+  name: nat-outgoing-pool-16
+spec:
+  cidr: 208.0.0.0/4
+  disabled: true
+
+
+---
+apiVersion: crd.projectcalico.org/v1
+kind: IPPool
+metadata:
+  name: nat-outgoing-pool-17
+spec:
+  cidr: 224.0.0.0/3
+  disabled: true

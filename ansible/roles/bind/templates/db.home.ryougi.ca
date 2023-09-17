@@ -30,43 +30,39 @@ kumori.linux.home.ryougi.ca.  IN      A      192.168.1.14
 unifi.home.ryougi.ca.         IN      A      192.168.1.4
 
 ; Kubernetes
-kube1.home.ryougi.ca.         IN      A      192.168.1.50
-kube2.home.ryougi.ca.         IN      A      192.168.1.51
-kube-master1.home.ryougi.ca.  IN      A      192.168.1.65
-kube-master2.home.ryougi.ca.  IN      A      192.168.1.66
-rancher.home.ryougi.ca.       IN      A      192.168.1.60
-rancher1.home.ryougi.ca.      IN      A      192.168.1.60
-
+kube1.home.ryougi.ca.         IN      A      192.168.2.20
+kube2.home.ryougi.ca.         IN      A      192.168.2.21
+kube-master1.home.ryougi.ca.  IN      A      192.168.2.22
 
 ; Kube Services
-minecraft.home.ryougi.ca.     IN      A      192.168.1.50
-satisfactory.home.ryougi.ca.  IN      A      192.168.1.50
-game.home.ryougi.ca.          IN      A      192.168.1.50
-qbt.home.ryougi.ca.           IN      A      192.168.1.50
-nzb.home.ryougi.ca.           IN      A      192.168.1.50
-radarr.home.ryougi.ca.        IN      A      192.168.1.50
-sonarr.home.ryougi.ca.        IN      A      192.168.1.50
-readarr.home.ryougi.ca.       IN      A      192.168.1.50
-bazarr.home.ryougi.ca.        IN      A      192.168.1.50
-lidarr.home.ryougi.ca.        IN      A      192.168.1.50
-prowlarr.home.ryougi.ca.      IN      A      192.168.1.50
-flaresolverr.home.ryougi.ca.  IN      A      192.168.1.50
-overseerr.home.ryougi.ca.     IN      A      192.168.1.50
-heimdall.home.ryougi.ca.      IN      A      192.168.1.50
-dashy.home.ryougi.ca.         IN      A      192.168.1.50
-ha.home.ryougi.ca.            IN      A      192.168.1.50
-home.ryougi.ca.               IN      A      192.168.1.50
-uptime.home.ryougi.ca.        IN      A      192.168.1.50
-plex.home.ryougi.ca.          IN      A      192.168.1.50
-nexus.home.ryougi.ca.         IN      A      192.168.1.50
-st.kube.home.ryougi.ca.       IN      A      192.168.1.50
-tavern.kube.home.ryougi.ca.   IN      A      192.168.1.50
-argocd.home.ryougi.ca.        IN      A      192.168.1.50
-registry.home.ryougi.ca.      IN      A      192.168.1.50
+minecraft.home.ryougi.ca.     IN      A      192.168.19.10
+satisfactory.home.ryougi.ca.  IN      A      192.168.19.10
+game.home.ryougi.ca.          IN      A      192.168.19.10
+qbt.home.ryougi.ca.           IN      A      192.168.19.10
+nzb.home.ryougi.ca.           IN      A      192.168.19.10
+radarr.home.ryougi.ca.        IN      A      192.168.19.10
+sonarr.home.ryougi.ca.        IN      A      192.168.19.10
+readarr.home.ryougi.ca.       IN      A      192.168.19.10
+bazarr.home.ryougi.ca.        IN      A      192.168.19.10
+lidarr.home.ryougi.ca.        IN      A      192.168.19.10
+prowlarr.home.ryougi.ca.      IN      A      192.168.19.10
+flaresolverr.home.ryougi.ca.  IN      A      192.168.19.10
+overseerr.home.ryougi.ca.     IN      A      192.168.19.10
+heimdall.home.ryougi.ca.      IN      A      192.168.19.10
+dashy.home.ryougi.ca.         IN      A      192.168.19.10
+ha.home.ryougi.ca.            IN      A      192.168.19.10
+home.ryougi.ca.               IN      A      192.168.19.10
+uptime.home.ryougi.ca.        IN      A      192.168.19.10
+plex.home.ryougi.ca.          IN      A      192.168.19.10
+nexus.home.ryougi.ca.         IN      A      192.168.19.10
+st.kube.home.ryougi.ca.       IN      A      192.168.19.10
+tavern.kube.home.ryougi.ca.   IN      A      192.168.19.10
+argocd.home.ryougi.ca.        IN      A      192.168.19.10
+registry.home.ryougi.ca.      IN      A      192.168.19.10
 
 ; VM Services
-tavern.home.ryougi.ca.        IN      A      192.168.1.50
-st.home.ryougi.ca.            IN      A      192.168.1.50
+tavern.home.ryougi.ca.        IN      A      192.168.19.10
+st.home.ryougi.ca.            IN      A      192.168.19.10
 jump.home.ryougi.ca.          IN      A      192.168.1.200
 llvm.home.ryougi.ca.          IN      A      192.168.1.202
 kobold.home.ryougi.ca.        IN      A      192.168.1.202
@@ -75,8 +71,17 @@ nexus.static.home.ryougi.ca.  IN      A      192.168.1.203
 docker.home.ryougi.ca.        IN      A      192.168.1.203
 
 ; MetalLB - 192.168.2.0/24
-terraria.home.ryougi.ca.           IN      A      192.168.2.13
+terraria.home.ryougi.ca.           IN      A      192.168.19.13
 
 ; Required as it must use host networking due to k8s NAT
-factorio.static.home.ryougi.ca.    IN      A      192.168.2.11
-factorio2.static.home.ryougi.ca.   IN      A      192.168.2.12
+factorio.static.home.ryougi.ca.    IN      A      192.168.19.11
+factorio2.static.home.ryougi.ca.   IN      A      192.168.19.12
+factorio2.static.home.ryougi.ca.   IN      A      192.168.19.14
+
+; Acme
+_acme-challenge.home.ryougi.ca.        IN      NS   1.1.1.1
+_acme-challenge.kube.home.ryougi.ca.   IN      NS   1.1.1.1
+
+; _acme-challenge.home.ryougi.ca.        IN      TXT   ""
+; _acme-challenge.kube.home.ryougi.ca.   IN      TXT   ""
+

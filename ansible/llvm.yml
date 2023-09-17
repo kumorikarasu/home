@@ -6,6 +6,9 @@
     ansible_python_interpreter: /usr/bin/python3
     cuda_install: true
     koboldcpp_install: true
+    model_url: https://huggingface.co/TheBloke/WizardLM-13B-V1.2-GGUF/resolve/main/wizardlm-13b-v1.2.Q5_K_M.gguf
+    #model_url: https://huggingface.co/TheBloke/Mythalion-13B-GGUF/resolve/main/mythalion-13b.Q5_K_M.gguf
+
   roles:
     - common
     - llvm
