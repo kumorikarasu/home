@@ -69,7 +69,7 @@ kind: Service
 metadata:
   name: factorio-plus-service
 spec:
-  loadBalancerIP: 192.168.2.14
+  loadBalancerIP: 192.168.3.14
   externalTrafficPolicy: Local
   type: LoadBalancer
   selector:
