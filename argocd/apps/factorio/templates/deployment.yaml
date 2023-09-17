@@ -70,6 +70,7 @@ metadata:
 spec:
   type: LoadBalancer
   loadBalancerIP: 192.168.3.11
+  externalTrafficPolicy: Local
   selector:
     app: factorio-modded
   ports:
