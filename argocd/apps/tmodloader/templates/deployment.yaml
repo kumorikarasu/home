@@ -26,7 +26,7 @@ spec:
       containers:
       - name: tmodloader
         imagePullPolicy: Always
-        image: kumorikarasu/tmodloader:v2023.06.25.28
+        image: kumorikarasu/tmodloader:v2023.08.3.4
         args:
           - '-pass $(password)'
         ports:
@@ -66,7 +66,7 @@ metadata:
   name: tmodloader-service
 spec:
   type: LoadBalancer
-  loadBalancerIP: 192.168.2.13
+  loadBalancerIP: 192.168.19.13
   selector:
     app: tmodloader
   ports:
