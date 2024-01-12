@@ -67,6 +67,7 @@ jump.home.ryougi.ca.          IN      A      192.168.1.200
 llvm.home.ryougi.ca.          IN      A      192.168.1.202
 kobold.home.ryougi.ca.        IN      A      192.168.1.202
 plex.static.home.ryougi.ca.   IN      A      192.168.1.201
+plex-static.home.ryougi.ca.   IN      A      192.168.1.201
 nexus.static.home.ryougi.ca.  IN      A      192.168.1.203
 docker.home.ryougi.ca.        IN      A      192.168.1.203
 

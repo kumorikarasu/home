@@ -5,7 +5,7 @@ metadata:
   name: plex-service
 spec:
   type: ExternalName
-  externalName: plex.static.home.ryougi.ca
+  externalName: plex-static.home.ryougi.ca
 
 ---
 apiVersion: networking.k8s.io/v1

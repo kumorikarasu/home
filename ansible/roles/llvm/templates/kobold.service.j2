@@ -8,7 +8,7 @@ After=network.target
 Type=simple
 User={{ lookup('env','USER') }}
 WorkingDirectory=/home/{{ lookup('env','USER') }}/dev/koboldcpp
-ExecStart=/usr/bin/python3 /home/{{ lookup('env','USER') }}/dev/koboldcpp/koboldcpp.py --threads 6 --gpulayers 50 --usecublas normal 0 --host 0.0.0.0 --stream --blasbatchsize 1024 --contextsize 4096 {{ download_model.dest }}
+ExecStart=/usr/bin/python3 /home/{{ lookup('env','USER') }}/dev/koboldcpp/koboldcpp.py --threads 6 --gpulayers 50 --usecublas normal 0 --host 0.0.0.0 --blasbatchsize 1024 --contextsize 4096 {{ download_model.dest }}
 Restart=on-failure
 RestartSec=10
 
