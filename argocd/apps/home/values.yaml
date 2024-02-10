@@ -1,0 +1,13 @@
+home-assistant:
+  ingress:
+    main:
+      enabled: true
+      annotations:
+        nginx.org/websocket-services: home-assistant
+      hosts:
+        - host: ha.ryougi.ca
+          paths:
+            - path: /
+        - host: ha.home.ryougi.ca
+          paths:
+            - path: /

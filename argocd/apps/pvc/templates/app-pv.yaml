@@ -25,7 +25,7 @@ spec:
   capacity:
     storage: 1000Gi
   nfs:
-    path: /mnt/Storage/appdata
+    path: /mnt/Backup/appdata
     server: 192.168.1.21
   persistentVolumeReclaimPolicy: Retain
   volumeMode: Filesystem
