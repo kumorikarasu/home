@@ -29,6 +29,8 @@ argo-cd:
         value: /helm-working-dir
       - name: HELM_DATA_HOME
         value: /helm-working-dir
+      - name: ARGOCD_EXEC_TIMEOUT
+        value: "5m"
       securityContext:
         runAsNonRoot: true
         runAsUser: 999
