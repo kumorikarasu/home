@@ -19,6 +19,6 @@ parameters:
   csi.storage.k8s.io/provisioner-secret-namespace: {{ .Release.Namespace }}
   csi.storage.k8s.io/fstype: xfs
   allowOverrides: sparse,compression,deduplication,volblocksize,sync,description
-  root: Storage/csi-volumes
+  root: Backup/csi-volumes
 reclaimPolicy: Delete
 allowVolumeExpansion: true
