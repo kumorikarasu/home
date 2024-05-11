@@ -1,10 +1,11 @@
-persistence:
-  enabled: true
-  accessModes:
-    - ReadWriteOnce
-  size: 64Gi
-  storageClassName: hpe
+foundry:
+  persistence:
+    enabled: true
+    accessModes:
+      - ReadWriteOnce
+    size: 64Gi
+    storageClassName: hpe
 
-service:
-  loadBalancerIP: 192.168.19.22
+  service:
+    loadBalancerIP: 192.168.19.22
 
