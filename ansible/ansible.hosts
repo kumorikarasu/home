@@ -1,16 +1,16 @@
 [all]
-node1 ansible_host=192.168.16.20 etcd_member_name=etcd1 local_as=64513
-node2 ansible_host=192.168.16.21 etcd_member_name=etcd2 local_as=64512
-node3 ansible_host=192.168.16.22 etcd_member_name=etcd3 local_as=64515
+node1 ansible_host=192.168.16.20 etcd_member_name=etcd1 local_as=64514
+node2 ansible_host=192.168.16.22 etcd_member_name=etcd2 local_as=64515
+node3 ansible_host=192.168.16.23 etcd_member_name=etcd3 local_as=64516
+node4 ansible_host=192.168.16.21 local_as=64517
 
 [kube_node]
 node1
-node2
+node4
 
 [kube_control_plane]
 node1
 node2
-node3
 
 [etcd]
 node1
