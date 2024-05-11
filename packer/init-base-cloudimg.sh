@@ -3,13 +3,13 @@
 PROXMOX_URL="root@192.168.1.10"
 
 # Ubuntu 22.04 Cloud Image
-UBUNTU_VER="jammy"
-UBUNTU_V="22.04"
+UBUNTU_VER="noble"
+UBUNTU_V="24.04"
 
 #echo "scp $HOME/.ssh/id_rsa.pub $PROXMOX_URL:id_rsa.pub"
 #scp $HOME/.ssh/id_rsa.pub $PROXMOX_URL:id_rsa.pub
 
-VMID=9000
+VMID=9001
 
 cat << EOF | ssh $PROXMOX_URL 'bash -s'
 
@@ -44,7 +44,7 @@ qm set $VMID --boot c --bootdisk scsi0
 
 qm set $VMID --serial0 socket --vga serial0
 
-qm resize $VMID scsi0 32G
+qm resize $VMID scsi0 64G
 
 qm set $VMID --ciuser kumori
 qm set $VMID --sshkey id_rsa.pub
@@ -52,5 +52,4 @@ qm set $VMID --sshkey id_rsa.pub
 qm set $VMID --ipconfig0 ip=dhcp
 qm set $VMID --agent enabled=1
 
-qm template 9000
 EOF
