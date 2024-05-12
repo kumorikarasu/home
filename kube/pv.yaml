@@ -1,0 +1,94 @@
+# REGISTRY PERSISTENT VOLUME
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  finalizers:
+  - kubernetes.io/pv-protection
+  name: pvc-7125908b-5b25-4bd4-82c5-0b974451cdfc
+  resourceVersion: "23147"
+  uid: 7125908b-5b25-4bd4-82c5-0b974451cdfc
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 128Gi
+  csi:
+    controllerExpandSecretRef:
+      name: system-zvolcsi-truenas-secret
+      namespace: system-zvolcsi
+    controllerPublishSecretRef:
+      name: system-zvolcsi-truenas-secret
+      namespace: system-zvolcsi
+    driver: csi.hpe.com
+    fsType: xfs
+    nodePublishSecretRef:
+      name: system-zvolcsi-truenas-secret
+      namespace: system-zvolcsi
+    nodeStageSecretRef:
+      name: system-zvolcsi-truenas-secret
+      namespace: system-zvolcsi
+    volumeAttributes:
+      allowOverrides: sparse,compression,deduplication,volblocksize,sync,description
+      compression: LZ4
+      deduplication: "OFF"
+      fsType: xfs
+      hostEncryption: "false"
+      root: Backup/csi-volumes
+      storage.kubernetes.io/csiProvisionerIdentity: 1715476018486-8081-csi.hpe.com
+      sync: STANDARD
+      targetScope: volume
+      volblocksize: 8K
+      volumeAccessMode: mount
+    volumeHandle: Backup_csi-volumes_pvc-7125908b-5b25-4bd4-82c5-0b974451cdfc
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: hpe
+  volumeMode: Filesystem
+
+
+# FOUNDRY PERSISTENT VOLUME
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  finalizers:
+  - kubernetes.io/pv-protection
+  name: pvc-fe51714b-e2f8-473f-9aa4-275a553e286b
+  resourceVersion: "23147"
+  uid: fe51714b-e2f8-473f-9aa4-275a553e286b
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 64Gi
+  csi:
+    controllerExpandSecretRef:
+      name: system-zvolcsi-truenas-secret
+      namespace: system-zvolcsi
+    controllerPublishSecretRef:
+      name: system-zvolcsi-truenas-secret
+      namespace: system-zvolcsi
+    driver: csi.hpe.com
+    fsType: xfs
+    nodePublishSecretRef:
+      name: system-zvolcsi-truenas-secret
+      namespace: system-zvolcsi
+    nodeStageSecretRef:
+      name: system-zvolcsi-truenas-secret
+      namespace: system-zvolcsi
+    volumeAttributes:
+      allowOverrides: sparse,compression,deduplication,volblocksize,sync,description
+      compression: LZ4
+      deduplication: "OFF"
+      fsType: xfs
+      hostEncryption: "false"
+      root: Backup/csi-volumes
+      storage.kubernetes.io/csiProvisionerIdentity: 1715476018486-8081-csi.hpe.com
+      sync: STANDARD
+      targetScope: volume
+      volblocksize: 8K
+      volumeAccessMode: mount
+    volumeHandle: Backup_csi-volumes_pvc-fe51714b-e2f8-473f-9aa4-275a553e286b
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: hpe
+  volumeMode: Filesystem

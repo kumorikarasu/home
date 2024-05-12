@@ -16,7 +16,7 @@ peers:
     sourceaddress: "None"
 
 # Enables Internet connectivity from containers
-nat_outgoing: false
+nat_outgoing: true
 
 # Enables Calico CNI "host-local" IPAM plugin
 # calico_ipam_host_local: true
@@ -25,7 +25,7 @@ nat_outgoing: false
 # calico_pool_name: "default-pool"
 
 # add default ippool blockSize (defaults kube_network_node_prefix)
-calico_pool_blocksize: 24
+#calico_pool_blocksize: 24
 
 # add default ippool CIDR (must be inside kube_pods_subnet, defaults to kube_pods_subnet otherwise)
 # calico_pool_cidr: 192.168.17.0/24
@@ -40,7 +40,7 @@ calico_pool_blocksize: 24
 # calico_cni_pool_ipv6: true
 
 # Global as_num (/calico/bgp/v1/global/as_num)
-global_as_num: "64512"
+global_as_num: "64514"
 
 # If doing peering with node-assigned asn where the globas does not match your nodes, you want this
 # to be true.  All other cases, false.

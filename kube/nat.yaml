@@ -47,6 +47,15 @@ spec:
 apiVersion: crd.projectcalico.org/v1
 kind: IPPool
 metadata:
+  name: nat-outgoing-pool-6
+spec:
+  cidr: 192.168.0.0/16
+  natOutgoing: true
+
+---
+apiVersion: crd.projectcalico.org/v1
+kind: IPPool
+metadata:
   name: nat-outgoing-pool-7
 spec:
   cidr:  192.169.0.0/16
