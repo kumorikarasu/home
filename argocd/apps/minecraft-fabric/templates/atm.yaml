@@ -1,0 +1,76 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minecraft-deployment
+  labels:
+    app: minecraft
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minecraft
+  template:
+    metadata:
+      labels:
+        app: minecraft
+    spec:
+      hostNetwork: true
+      volumes:
+      - name: minecraft
+        persistentVolumeClaim:
+          claimName: appdata-pvc
+      tolerations:
+      - key: "gpu"
+        effect: "NoSchedule"
+        operator: "Exists"
+      containers:
+      - name: minecraft
+        image: itzg/minecraft-server:java17
+        resources:
+          requests:
+            memory: "32Gi"
+            cpu: 3000m
+          limits:
+            memory: "32Gi"
+        ports:
+        - containerPort: 25565
+          hostPort: 25565
+        env:
+        - name: UID
+          value: "1000"
+        - name: GID
+          value: "1000"
+        - name: UMASK
+          value: "000"
+        - name: EULA
+          value: "TRUE"
+        - name: TYPE
+          value: "FABRIC"
+        - name: VERSION
+          value: "1.20.1"
+        - name: MEMORY
+          value: 32G
+        - name: JVM_DD_OPTS
+          value: "fml.queryResult:confirm,fml.readTimeout=999"
+        - name: OPS
+          value: kumorikarasu
+        volumeMounts:
+        - mountPath: "/data"
+          subPath: "minecraft/prom2"
+          name: minecraft
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minecraft-atm-service
+spec:
+  type: LoadBalancer
+  loadBalancerIP: 192.168.28.21
+  selector:
+    app: minecraft
+  ports:
+    - protocol: TCP
+      port: 25565
+      targetPort: 25565
