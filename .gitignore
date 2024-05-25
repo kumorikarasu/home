@@ -26,5 +26,7 @@ charts/
 *.retry
 ansible/kubespray
 
+docker/tgwu/text-generation-webui/
+docker/sillytavern/SillyTavern
 
 
