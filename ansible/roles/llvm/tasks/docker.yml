@@ -1,0 +1,37 @@
+- name: Install nvidia docker gpg apt key
+  become: true
+  apt_key:
+    url: https://nvidia.github.io/libnvidia-container/gpgkey
+    state: present
+
+# - name: gpg key
+#   become: true
+#   shell: |
+#     curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg 
+
+- name: Add nvidia docker apt repository
+  become: true
+  apt_repository:
+    repo: deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://nvidia.github.io/libnvidia-container/stable/deb/$(ARCH) /
+    state: present
+
+- name: Install nvidia container toolkit
+  become: true
+  apt:
+    update_cache: yes
+    name: nvidia-container-toolkit
+    state: present
+
+- name: Update containerd
+  become: true
+  notify: Restart containerd
+  shell: |
+    nvidia-ctk runtime configure --runtime=containerd
+
+# Since we don't have a 10Gbe nic on the GPU server, we need to use the local volume cache to store large files
+- name: Create local volume cache to store large files
+  become: true
+  shell: |
+    mkdir -p /data/volumes/local-volume-cache
+    chown -R 1000:1000 /data/volumes/local-volume-cache
+    chmod 777 /data/volumes/local-volume-cache

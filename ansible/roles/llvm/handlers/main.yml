@@ -23,3 +23,10 @@
     name: kobold
     state: restarted
   when: koboldcpp_install is defined and koboldcpp_install
+
+- name: Restart containerd
+  become: true
+  service:
+    name: containerd
+    state: restarted
+  when: docker_install is defined and docker_install

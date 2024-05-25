@@ -4,11 +4,15 @@
   gather_facts: true  
   vars:
     ansible_python_interpreter: /usr/bin/python3
-    cuda_install: true
-    koboldcpp_install: true
-    model_url: https://huggingface.co/TheBloke/WizardLM-13B-V1.2-GGUF/resolve/main/wizardlm-13b-v1.2.Q5_K_M.gguf
+    cuda_install: false 
+    koboldcpp_install: false
+    docker_install: true
+    model_url: https://huggingface.co/TheBloke/Pygmalion-2-13B-GGUF/resolve/main/pygmalion-2-13b.Q5_K_M.gguf
+    #model_url: https://huggingface.co/TheBloke/Augmental-13B-GGUF/resolve/main/augmental-13b.Q5_K_M.gguf
+    #model_url: https://huggingface.co/TheBloke/CausalLM-14B-GGUF/resolve/main/causallm_14b.Q5_0.gguf
+    #model_url: https://huggingface.co/TheBloke/WizardLM-13B-V1.2-GGUF/resolve/main/wizardlm-13b-v1.2.Q5_K_M.gguf
     #model_url: https://huggingface.co/TheBloke/Mythalion-13B-GGUF/resolve/main/mythalion-13b.Q5_K_M.gguf
 
   roles:
-    - common
+    #- common
     - llvm
