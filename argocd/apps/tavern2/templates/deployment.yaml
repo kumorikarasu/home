@@ -23,8 +23,8 @@ spec:
         configMap:
           name: "{{ .Release.Name }}-config"
           items:
-          - key: config.conf
-            path: config.conf
+          - key: config.yaml
+            path: config.yaml
     # - name: "{{ .Release.Name }}-volume
     #   persistentVolumeClaim:
     #     claimName: "{{ .Release.Name }}-pvc
@@ -43,14 +43,12 @@ spec:
         - name: PORT
           value: "8000"
         volumeMounts:
-      # - mountPath: "/home/node/app/config"
-      #   name: "{{ .Release.Name }}-volume
-        - mountPath: "/home/node/app/config"
+        - mountPath: "/home/node/app/data/default-user"
           subPath: "st/bitcherry"
           name: appdata
         - name: "{{ .Release.Name }}-config"
-          mountPath: /home/node/app/config/config.conf
-          subPath: config.conf
+          mountPath: /home/node/app/config/config.yaml
+          subPath: config.yaml
       
 ---
 apiVersion: v1
@@ -72,37 +70,38 @@ kind: ConfigMap
 metadata:
   name: "{{ .Release.Name }}-config"
 data:
-  config.conf: |
-    const port = 8000;
-    const whitelist = ['127.0.0.1']; //Example for add several IP in whitelist: ['127.0.0.1', '192.168.0.10']
-    const whitelistMode = false; //Disabling enabling the ip whitelist mode. true/false
-    const basicAuthMode = false; //Toggle basic authentication for endpoints.
-    const basicAuthUser = {username: "user", password: "password"}; //Login credentials when basicAuthMode is true.
-    const disableThumbnails = false; //Disables the generation of thumbnails, opting to use the raw images instead
-    const autorun = false; //Autorun in the browser. true/false
-    const enableExtensions = true; //Enables support for TavernAI-extras project
-    const listen = true; // If true, Can be access from other device or PC. otherwise can be access only from hosting machine.
-    const allowKeysExposure = false; // If true, private API keys could be fetched to the frontend.
-    const skipContentCheck = false; // If true, no new default content will be delivered to you.
+  config.yaml: |
+    listen: true
+    port: 8000
+    whitelistMode: false
+    whitelist:
+      - 127.0.0.1
+    basicAuthMode: false
+    basicAuthUser:
+      username: user
+      password: password
+    enableCorsProxy: false
+    securityOverride: true
+    autorun: true
+    disableThumbnails: false
+    thumbnailsQuality: 95
+    allowKeysExposure: false
+    skipContentCheck: false
+    disableChatBackup: false
+    requestOverrides: []
+    enableExtensions: true
+    extras:
+      disableAutoDownload: false
+      classificationModel: Cohee/distilbert-base-uncased-go-emotions-onnx
+      captioningModel: Xenova/vit-gpt2-image-captioning
+      embeddingModel: Xenova/all-mpnet-base-v2
+      promptExpansionModel: Cohee/fooocus_expansion-onnx
+    openai:
+      randomizeUserId: false
+    deepl:
+      formality: default
+    cookieSecret: qB8AMfFBjHIfh+ygvRktyI9YhIbYTvh6MJ+U/qKLEINeBdBbPbQ2oGQEnglcxQkDDT+90jbpwyi0QPaHHzmRGA==
 
-    // If true, Allows insecure settings for listen, whitelist, and authentication.
-    // Change this setting only on "trusted networks". Do not change this value unless you are aware of the issues that can arise from changing this setting and configuring a insecure setting.
-    const securityOverride = true;
-
-    module.exports = {
-      port,
-      whitelist,
-      whitelistMode,
-      basicAuthMode,
-      basicAuthUser,
-      autorun,
-      enableExtensions,
-      listen,
-      disableThumbnails,
-      allowKeysExposure,
-      securityOverride,
-      skipContentCheck,
-    };
 
 ---
 apiVersion: networking.k8s.io/v1
@@ -117,7 +116,7 @@ spec:
     - hosts:
       - ryougi.ca
   rules:
-  - host: tavern.kube.home.ryougi.ca
+  - host: st.kube.home.ryougi.ca
     http:
       paths:
       - path: /
@@ -127,7 +126,7 @@ spec:
             name: "{{ .Release.Name }}-service"
             port:
               number: 80
-  - host: tavern.kube.ryougi.ca
+  - host: st.kube.ryougi.ca
     http:
       paths:
       - path: /
@@ -137,7 +136,7 @@ spec:
             name: "{{ .Release.Name }}-service"
             port:
               number: 80
-  - host: tavern.home.ryougi.ca
+  - host: st.home.ryougi.ca
     http:
       paths:
       - path: /
@@ -147,7 +146,7 @@ spec:
             name: "{{ .Release.Name }}-service"
             port:
               number: 80
-  - host: tavern.ryougi.ca
+  - host: st.ryougi.ca
     http:
       paths:
       - path: /
