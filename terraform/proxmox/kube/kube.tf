@@ -217,15 +217,15 @@ resource "proxmox_vm_qemu" "kube-pve2-vm" {
 
   os_type = "cloud-init"
   qemu_os = "l26"
-  cores   = 6
+  cores   = 12
   sockets = 1
   vcpus   = 0
   cpu     = "host"
-  memory  = 32768
+  memory  = 61440
   scsihw  = "virtio-scsi-pci"
 
   disk {
-    size         = "64G"
+    size         = "320G"
     type         = "scsi"
     storage      = "local-lvm"
     ssd          = 0
