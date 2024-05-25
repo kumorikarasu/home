@@ -4,16 +4,18 @@ kind: Deployment
 metadata:
   name: "{{ .Release.Name }}-deployment"
   labels:
-    app: "{{ .Release.Name }}-tavern"
+    app: "{{ .Release.Name }}-tgwu"
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: "{{ .Release.Name }}-tavern"
+      app: "{{ .Release.Name }}-tgwu"
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
-        app: "{{ .Release.Name }}-tavern"
+        app: "{{ .Release.Name }}-tgwu"
     spec:
       volumes:
       - name: appdata
@@ -23,16 +25,23 @@ spec:
         configMap:
           name: "{{ .Release.Name }}-config"
           items:
-          - key: config.yaml
-            path: config.yaml
-    # - name: "{{ .Release.Name }}-volume
-    #   persistentVolumeClaim:
-    #     claimName: "{{ .Release.Name }}-pvc
+          - key: config.conf
+            path: config.conf
+      volumes:
+      - name: local-pv
+        persistentVolumeClaim:
+          claimName: {{ .Release.Name }}-local-pvc
       containers:
-      - name: tavern
-        image: registry.home.ryougi.ca/st
+      - name: tgwu 
+        image: registry.home.ryougi.ca/tgwu
+        resources:
+          limits:
+            nvidia.com/gpu: 2
+          requests:
+            nvidia.com/gpu: 2
         ports:
-        - containerPort: 8000
+        - containerPort: 7860
+        - containerPort: 5000
         env:
         - name: PUID
           value: "1000"
@@ -43,12 +52,9 @@ spec:
         - name: PORT
           value: "8000"
         volumeMounts:
-        - mountPath: "/home/node/app/data/default-user"
-          subPath: "st/kumori"
-          name: appdata
-        - name: "{{ .Release.Name }}-config"
-          mountPath: /home/node/app/config/config.yaml
-          subPath: config.yaml
+        - mountPath: "/home/app/text-generation-webui/models"
+          name: local-pv
+
       
 ---
 apiVersion: v1
@@ -57,51 +63,52 @@ metadata:
   name: "{{ .Release.Name }}-service"
 spec:
   selector:
-    app: "{{ .Release.Name }}-tavern"
+    app: "{{ .Release.Name }}-tgwu"
   ports:
     - name: http
       protocol: TCP
       port: 80
-      targetPort: 8000
+      targetPort: 7860
+    - name: api
+      protocol: TCP
+      port: 5000
+      targetPort: 5000
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Release.Name }}-local-pvc
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: local-storage
+  resources:
+    requests:
+      storage: 128Gi
 
 ---
 apiVersion: v1
-kind: ConfigMap
+kind: PersistentVolume
 metadata:
-  name: "{{ .Release.Name }}-config"
-data:
-  config.yaml: |
-    listen: true
-    port: 8000
-    whitelistMode: false
-    whitelist:
-      - 127.0.0.1
-    basicAuthMode: false
-    basicAuthUser:
-      username: user
-      password: password
-    enableCorsProxy: false
-    securityOverride: true
-    autorun: true
-    disableThumbnails: false
-    thumbnailsQuality: 95
-    allowKeysExposure: false
-    skipContentCheck: false
-    disableChatBackup: false
-    requestOverrides: []
-    enableExtensions: true
-    extras:
-      disableAutoDownload: false
-      classificationModel: Cohee/distilbert-base-uncased-go-emotions-onnx
-      captioningModel: Xenova/vit-gpt2-image-captioning
-      embeddingModel: Xenova/all-mpnet-base-v2
-      promptExpansionModel: Cohee/fooocus_expansion-onnx
-    openai:
-      randomizeUserId: false
-    deepl:
-      formality: default
-    cookieSecret: qB8AMfFBjHIfh+ygvRktyI9YhIbYTvh6MJ+U/qKLEINeBdBbPbQ2oGQEnglcxQkDDT+90jbpwyi0QPaHHzmRGA==
-
+  name: {{ .Release.Name }}-local-pv
+spec:4
+  capacity:
+    storage: 128Gi
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /data/volumes/local-volume-cache
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - node4
 
 ---
 apiVersion: networking.k8s.io/v1
@@ -116,7 +123,7 @@ spec:
     - hosts:
       - ryougi.ca
   rules:
-  - host: st.kube.home.ryougi.ca
+  - host: tgwu.kube.home.ryougi.ca
     http:
       paths:
       - path: /
@@ -126,7 +133,7 @@ spec:
             name: "{{ .Release.Name }}-service"
             port:
               number: 80
-  - host: st.kube.ryougi.ca
+  - host: tgwu.kube.ryougi.ca
     http:
       paths:
       - path: /
@@ -136,7 +143,7 @@ spec:
             name: "{{ .Release.Name }}-service"
             port:
               number: 80
-  - host: st.home.ryougi.ca
+  - host: tgwu.home.ryougi.ca
     http:
       paths:
       - path: /
@@ -146,7 +153,7 @@ spec:
             name: "{{ .Release.Name }}-service"
             port:
               number: 80
-  - host: st.ryougi.ca
+  - host: tgwu.ryougi.ca
     http:
       paths:
       - path: /
@@ -156,3 +163,4 @@ spec:
             name: "{{ .Release.Name }}-service"
             port:
               number: 80
+              
