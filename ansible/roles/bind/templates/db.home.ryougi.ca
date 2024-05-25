@@ -30,9 +30,10 @@ kumori.linux.home.ryougi.ca.  IN      A      192.168.1.14
 unifi.home.ryougi.ca.         IN      A      192.168.1.4
 
 ; Kubernetes
-kube1.home.ryougi.ca.         IN      A      192.168.2.20
-kube2.home.ryougi.ca.         IN      A      192.168.2.21
-kube-master1.home.ryougi.ca.  IN      A      192.168.2.22
+kube1.home.ryougi.ca.         IN      A      192.168.16.20
+kube4.home.ryougi.ca.         IN      A      192.168.16.21
+kube-master1.home.ryougi.ca.  IN      A      192.168.16.22
+kube-master2.home.ryougi.ca.  IN      A      192.168.16.23
 
 ; Kube Services
 minecraft.home.ryougi.ca.     IN      A      192.168.28.10
@@ -56,6 +57,7 @@ uptime.home.ryougi.ca.        IN      A      192.168.28.10
 plex.home.ryougi.ca.          IN      A      192.168.28.10
 nexus.home.ryougi.ca.         IN      A      192.168.28.10
 st.kube.home.ryougi.ca.       IN      A      192.168.28.10
+tgwu.kube.home.ryougi.ca.     IN      A      192.168.28.10
 tavern.kube.home.ryougi.ca.   IN      A      192.168.28.10
 argocd.home.ryougi.ca.        IN      A      192.168.28.10
 registry.home.ryougi.ca.      IN      A      192.168.28.10
@@ -63,6 +65,7 @@ registry.home.ryougi.ca.      IN      A      192.168.28.10
 ; VM Services
 tavern.home.ryougi.ca.        IN      A      192.168.28.10
 st.home.ryougi.ca.            IN      A      192.168.28.10
+tgwu.home.ryougi.ca.          IN      A      192.168.28.10
 jump.home.ryougi.ca.          IN      A      192.168.1.200
 llvm.home.ryougi.ca.          IN      A      192.168.1.202
 kobold.home.ryougi.ca.        IN      A      192.168.1.202
