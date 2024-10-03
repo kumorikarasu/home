@@ -66,6 +66,8 @@ registry.home.ryougi.ca.      IN      A      192.168.28.10
 tavern.home.ryougi.ca.        IN      A      192.168.28.10
 st.home.ryougi.ca.            IN      A      192.168.28.10
 tgwu.home.ryougi.ca.          IN      A      192.168.28.10
+simbru.home.ryougi.ca.        IN      A      192.168.28.10
+simbru-api.home.ryougi.ca.    IN      A      192.168.28.10
 jump.home.ryougi.ca.          IN      A      192.168.1.200
 llvm.home.ryougi.ca.          IN      A      192.168.1.202
 kobold.home.ryougi.ca.        IN      A      192.168.1.202
