@@ -7,6 +7,8 @@
 #     app: factorio-modded
 # spec:
 #   replicas: 1
+#   strategy:
+#     type: Recreate
 #   selector:
 #     matchLabels:
 #       app: factorio-modded
@@ -15,6 +17,8 @@
 #       labels:
 #         app: factorio-modded
 #     spec:
+#       strategy:
+#         type: Recreate
 #       volumes:
 #       - name: appdata
 #         persistentVolumeClaim:

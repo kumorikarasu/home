@@ -7,6 +7,8 @@
 #     app: factorio
 # spec:
 #   replicas: 1
+#   strategy:
+#     type: Recreate
 #   selector:
 #     matchLabels:
 #       app: factorio-plus
