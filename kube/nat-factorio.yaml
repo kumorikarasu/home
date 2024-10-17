@@ -1,0 +1,35 @@
+---
+apiVersion: crd.projectcalico.org/v1
+kind: IPPool
+metadata:
+  name: disable-nat-factorio-pingpong1
+spec:
+  cidr: 45.79.173.216/32
+  disabled: true
+
+---
+apiVersion: crd.projectcalico.org/v1
+kind: IPPool
+metadata:
+  name: disable-nat-factorio-pingpong2
+spec:
+  cidr: 172.104.241.28/32
+  disabled: true
+
+---
+apiVersion: crd.projectcalico.org/v1
+kind: IPPool
+metadata:
+  name: disable-nat-factorio-pingpong3
+spec:
+  cidr: 139.162.87.206/32
+  disabled: true
+
+---
+apiVersion: crd.projectcalico.org/v1
+kind: IPPool
+metadata:
+  name: disable-nat-factorio-pingpong4
+spec:
+  cidr:  45.79.202.131/32
+  disabled: true
