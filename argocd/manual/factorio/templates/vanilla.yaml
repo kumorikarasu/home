@@ -2,18 +2,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: factorio-plus-deployment
+  name: factorio-deployment
   labels:
     app: factorio
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: factorio-plus
+      app: factorio
   template:
     metadata:
       labels:
-        app: factorio-plus
+        app: factorio
     spec:
       volumes:
       - name: appdata
@@ -22,9 +22,10 @@ spec:
       containers:
       - name: factorio
         image: factoriotools/factorio:1.1.94
+        imagePullPolicy: Always
         ports:
-        - containerPort: 34199
-        - containerPort: 27019
+        - containerPort: 34197
+        - containerPort: 27016
         env:
         - name: PUID
           value: "1000"
@@ -33,9 +34,9 @@ spec:
         - name: UMASK
           value: "000"
         - name: PORT
-          value: "34199"
+          value: "34197"
         - name: RCON_PORT
-          value: "27018"
+          value: "27016"
         - name: GENERATE_NEW_SAVE
           value: "true"
         - name: SAVE_NAME
@@ -43,7 +44,7 @@ spec:
         - name: LOAD_LATEST_SAVE
           value: "false"
         - name: UPDATE_MODS_ON_START
-          value: "true"
+          value: "false"
         - name: USERNAME
           valueFrom:
             secretKeyRef:
@@ -56,7 +57,7 @@ spec:
               key: token
         volumeMounts:
         - mountPath: "/factorio"
-          subPath: "factorio/vanilla-plus"
+          subPath: "factorio/vanilla"
           name: appdata
 
 
@@ -64,19 +65,19 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: factorio-plus-service
+  name: factorio-service
 spec:
-  loadBalancerIP: 192.168.19.14
+  loadBalancerIP: 192.168.19.12
   externalTrafficPolicy: Local
   type: LoadBalancer
   selector:
-    app: factorio-plus
+    app: factorio
   ports:
     - name: game
       protocol: TCP
-      port: 27018
-      targetPort: 27018
+      port: 27016
+      targetPort: 27016
     - name: gameudp
       protocol: UDP
-      port: 34199
-      targetPort: 34199
+      port: 34197
+      targetPort: 34197
