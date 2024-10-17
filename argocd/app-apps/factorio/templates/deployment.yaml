@@ -21,7 +21,7 @@
 #           claimName: appdata-pvc
 #       containers:
 #       - name: factorio-modded
-#         image: factoriotools/factorio:1.1.94
+#         image: {{ .Values.image.name }}:{{ .Values.image.tag }}
 #         ports:
 #         - containerPort: 34198
 #         - containerPort: 27017

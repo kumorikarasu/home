@@ -21,7 +21,7 @@ spec:
           claimName: appdata-pvc
       containers:
       - name: factorio
-        image: factoriotools/factorio:1.1.94
+        image: {{ .Values.image.name }}:{{ .Values.image.tag }}
         imagePullPolicy: Always
         ports:
         - containerPort: 34197
