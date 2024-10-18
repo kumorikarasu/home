@@ -1,0 +1,5 @@
+name: satisfactory
+
+image:
+  name: wolveix/satisfactory-server
+  tag: v1

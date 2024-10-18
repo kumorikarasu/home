@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    argocd-image-updater.argoproj.io/image-list: wolveix/satisfactory-server:^v1
+  name: app-satisfactory
+  namespace: argocd
+spec:
+  destination:
+    name: in-cluster
+    namespace: apps
+  project: default
+  source:
+    path: argocd/app-apps/satisfactory
+    repoURL: https://github.com/kumorikarasu/home.git
+    targetRevision: HEAD
+  syncPolicy:
+    syncOptions:
+    - ApplyOutOfSyncOnly=true
