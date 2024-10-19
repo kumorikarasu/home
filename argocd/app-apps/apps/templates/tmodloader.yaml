@@ -3,8 +3,8 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   annotations:
-    argocd-image-updater.argoproj.io/image-list: factoriotools/factorio:^1 
-  name: app-factorio
+    argocd-image-updater.argoproj.io/image-list: kumorikarasu/tmodloadertools:2024.1.x
+  name: app-tmodloader
   namespace: argocd
 spec:
   destination:
@@ -12,7 +12,7 @@ spec:
     namespace: apps
   project: default
   source:
-    path: argocd/app-apps/factorio
+    path: argocd/app-apps/tmodloader
     repoURL: https://github.com/kumorikarasu/home.git
     targetRevision: HEAD
   syncPolicy:
@@ -23,7 +23,7 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: app-factorio-secret
+  name: app-tmodloader-secret
   namespace: argocd
 spec:
   destination:
@@ -31,7 +31,7 @@ spec:
     namespace: apps
   project: default
   source:
-    path: argocd/app-apps/factorio-secret
+    path: argocd/app-apps/tmodloader-secret
     repoURL: https://github.com/kumorikarasu/home.git
     targetRevision: HEAD
   syncPolicy:
