@@ -3,7 +3,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   annotations:
-    argocd-image-updater.argoproj.io/image-list: tmod=kumorikarasu/tmodloader
+    argocd-image-updater.argoproj.io/image-list: tmod=ghcr.io/kumorikarasu/tmodloader
     argocd-image-updater.argoproj.io/tmod.update-strategy: name
   name: app-tmodloader
   namespace: argocd
