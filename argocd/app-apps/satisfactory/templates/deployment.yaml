@@ -38,6 +38,8 @@ spec:
           value: "4"
         - name: "SERVERGAMEPORT"
           value: "7777"
+        - name: "TIMEOUT"
+          value: "120"
         volumeMounts:
         - mountPath: "/config"
           subPath: "satisfactory"
