@@ -17,8 +17,6 @@ spec:
       labels:
         app: {{ .Values.name }}
     spec:
-      strategy:
-        type: Recreate
       volumes:
       - name: appdata
         persistentVolumeClaim:
@@ -37,9 +35,13 @@ spec:
         - name: UMASK
           value: "000"
         - name: "MAXPLAYERS"
-          value: 4
+          value: "4"
         - name: "SERVERGAMEPORT"
-          value: 7777
+          value: "7777"
+        volumeMounts:
+        - mountPath: "/config"
+          subPath: "satisfactory"
+          name: appdata
 
 ---
 apiVersion: v1
