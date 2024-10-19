@@ -1,3 +1,4 @@
+---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -12,6 +13,27 @@ spec:
   project: default
   source:
     path: argocd/app-apps/tavern1
+    repoURL: https://github.com/kumorikarasu/home.git
+    targetRevision: HEAD
+  syncPolicy:
+    syncOptions:
+    - ApplyOutOfSyncOnly=true
+  
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    argocd-image-updater.argoproj.io/image-list: ghcr.io/sillytavern/sillytavern:12.x
+  name: tavern-bitcherry
+  namespace: argocd
+spec:
+  destination:
+    name: in-cluster
+    namespace: apps
+  project: default
+  source:
+    path: argocd/app-apps/tavern2
     repoURL: https://github.com/kumorikarasu/home.git
     targetRevision: HEAD
   syncPolicy:
