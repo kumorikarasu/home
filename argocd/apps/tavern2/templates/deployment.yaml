@@ -7,6 +7,8 @@ metadata:
     app: "{{ .Release.Name }}-tavern"
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: "{{ .Release.Name }}-tavern"
@@ -16,6 +18,8 @@ spec:
         app: "{{ .Release.Name }}-tavern"
     spec:
       volumes:
+      - name: config-dir
+        emptyDir: {}
       - name: appdata
         persistentVolumeClaim:
           claimName: appdata-pvc
@@ -25,12 +29,19 @@ spec:
           items:
           - key: config.yaml
             path: config.yaml
-    # - name: "{{ .Release.Name }}-volume
-    #   persistentVolumeClaim:
-    #     claimName: "{{ .Release.Name }}-pvc
+      initContainers:
+      - name: copy
+        image: busybox
+        volumeMounts:
+        - name: "{{ .Release.Name }}-config"
+          mountPath: /home/node/app/config/config.yaml
+          subPath: config.yaml
+        - name: config-dir
+          mountPath: /config
+        command: ['sh', '-c', 'cp /home/node/app/config/config.yaml /config/config.yaml']
       containers:
       - name: tavern
-        image: registry.home.ryougi.ca/st
+        image: ghcr.io/sillytavern/sillytavern:latest
         ports:
         - containerPort: 8000
         env:
@@ -43,12 +54,14 @@ spec:
         - name: PORT
           value: "8000"
         volumeMounts:
+        - name: config-dir
+          mountPath: /home/node/app/config
         - mountPath: "/home/node/app/data/default-user"
           subPath: "st/bitcherry"
           name: appdata
-        - name: "{{ .Release.Name }}-config"
-          mountPath: /home/node/app/config/config.yaml
-          subPath: config.yaml
+        - mountPath: "/home/node/app/plugins"
+          subPath: "st/bitcherry/plugins"
+          name: appdata
       
 ---
 apiVersion: v1
@@ -65,45 +78,6 @@ spec:
       targetPort: 8000
 
 ---
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: "{{ .Release.Name }}-config"
-data:
-  config.yaml: |
-    listen: true
-    port: 8000
-    whitelistMode: false
-    whitelist:
-      - 127.0.0.1
-    basicAuthMode: false
-    basicAuthUser:
-      username: user
-      password: password
-    enableCorsProxy: false
-    securityOverride: true
-    autorun: true
-    disableThumbnails: false
-    thumbnailsQuality: 95
-    allowKeysExposure: false
-    skipContentCheck: false
-    disableChatBackup: false
-    requestOverrides: []
-    enableExtensions: true
-    extras:
-      disableAutoDownload: false
-      classificationModel: Cohee/distilbert-base-uncased-go-emotions-onnx
-      captioningModel: Xenova/vit-gpt2-image-captioning
-      embeddingModel: Xenova/all-mpnet-base-v2
-      promptExpansionModel: Cohee/fooocus_expansion-onnx
-    openai:
-      randomizeUserId: false
-    deepl:
-      formality: default
-    cookieSecret: qB8AMfFBjHIfh+ygvRktyI9YhIbYTvh6MJ+U/qKLEINeBdBbPbQ2oGQEnglcxQkDDT+90jbpwyi0QPaHHzmRGA==
-
-
----
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -116,7 +90,7 @@ spec:
     - hosts:
       - ryougi.ca
   rules:
-  - host: st.kube.home.ryougi.ca
+  - host: tavern.kube.home.ryougi.ca
     http:
       paths:
       - path: /
@@ -126,7 +100,7 @@ spec:
             name: "{{ .Release.Name }}-service"
             port:
               number: 80
-  - host: st.kube.ryougi.ca
+  - host: tavern.kube.ryougi.ca
     http:
       paths:
       - path: /
@@ -136,7 +110,7 @@ spec:
             name: "{{ .Release.Name }}-service"
             port:
               number: 80
-  - host: st.home.ryougi.ca
+  - host: tavern.home.ryougi.ca
     http:
       paths:
       - path: /
@@ -146,7 +120,7 @@ spec:
             name: "{{ .Release.Name }}-service"
             port:
               number: 80
-  - host: st.ryougi.ca
+  - host: tavern.ryougi.ca
     http:
       paths:
       - path: /
