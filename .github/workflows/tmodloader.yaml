@@ -16,10 +16,12 @@ jobs:
      - name: Docker login
        uses: docker/login-action@v2.1.0
        with:
-         registry: ${{ env.REPO_URL }}
+         registry: ${{ env.REPO_URL }}l
          username: kumorikarasu
          password: ${{ secrets.GH_PAT }}
-     - name: Run Build Script
+     - name: Build Script
+       env:
+         GH_PAT: ${{ secrets.GH_PAT }}
        run: |
          cd docker/terraria
          chmod +x build.sh
