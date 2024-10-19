@@ -3,7 +3,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   annotations:
-    argocd-image-updater.argoproj.io/image-list: ghcr.io/sillytavern/sillytavern:12.x
+    argocd-image-updater.argoproj.io/image-list: ghcr.io/sillytavern/sillytavern:1.12.x
   name: tavern-kumori
   namespace: argocd
 spec:
@@ -24,7 +24,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   annotations:
-    argocd-image-updater.argoproj.io/image-list: ghcr.io/sillytavern/sillytavern:12.x
+    argocd-image-updater.argoproj.io/image-list: ghcr.io/sillytavern/sillytavern:1.12.x
   name: tavern-bitcherry
   namespace: argocd
 spec:
