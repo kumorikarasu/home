@@ -14,7 +14,7 @@ echo "Uploaded tags: $UPLOADED_TAGS"
 
 if echo $UPLOADED_TAGS | grep -q $TAG; then
   echo "Tag $TAG already exists on ghcr"
-  exit 1
+  exit 0
 else
   echo "Tag $TAG does not exist on ghcr"
   echo "Building image..."
