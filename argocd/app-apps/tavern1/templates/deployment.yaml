@@ -41,7 +41,7 @@ spec:
         command: ['sh', '-c', 'cp /home/node/app/config/config.yaml /config/config.yaml']
       containers:
       - name: tavern
-        image: ghcr.io/sillytavern/sillytavern:latest
+        image: {{ .Values.image.name }}:{{ .Values.image.tag }}
         ports:
         - containerPort: 8000
         env:

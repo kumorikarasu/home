@@ -1,0 +1,4 @@
+
+image: 
+  name: ghcr.io/sillytavern/sillytavern
+  tag: latest
