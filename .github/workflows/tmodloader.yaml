@@ -1,4 +1,4 @@
-name: Docker Build DAGs
+name: Docker Build Tmodloader
 on:
   schedule: 
   - cron: '5 2 * * *'
