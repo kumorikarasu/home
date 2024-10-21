@@ -58,7 +58,7 @@ spec:
               key: token
         volumeMounts:
         - mountPath: "/factorio"
-          subPath: "factorio/vanilla"
+          subPath: "factorio/spaceage"
           name: appdata
 
 

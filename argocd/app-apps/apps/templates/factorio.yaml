@@ -3,7 +3,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   annotations:
-    argocd-image-updater.argoproj.io/image-list: factoriotools/factorio:^1 
+    argocd-image-updater.argoproj.io/image-list: factoriotools/factorio:2.x
   name: app-factorio
   namespace: argocd
 spec:
