@@ -4,7 +4,7 @@ repo="${1:-kumorikarasu/tmodloader}"
 
 # Get latest version of tmodloader server
 GH_TOKEN=$(echo $GH_PAT | base64)
-TAG=$(curl -sL https://api.github.com/repos/tModLoader/tModLoader/releases | jq -r "first | .tag_name")
+TAG=$(curl -sL https://api.github.com/repos/tModLoader/tModLoader/releases | jq -r "[.[] | select(.prerelease == false)] | first | .tag_name")
 UPLOADED_TAGS=$(curl -H "Authorization: Bearer $GH_TOKEN" -s "https://ghcr.io/v2/${repo}/tags/list" | jq -r ".tags[]")
 
 echo "Repo: $repo"
@@ -20,9 +20,11 @@ else
   echo "Building image..."
 fi
 
-
 # Update dockerfile with tag
 sed -i "s/ARG TMOD_VER=.*/ARG TMOD_VER=$TAG/" Dockerfile
+
+# Login to ghcr
+echo $GH_PAT | docker login ghcr.io -u kumorikarasu --password-stdin
 
 # Build image
 docker build -t ghcr.io/${repo}:${TAG} --build-arg TMOD_VER="${TAG}" . --no-cache
