@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   annotations:
-    argocd-image-updater.argoproj.io/image-list: wolveix/satisfactory-server:^v1
+    argocd-image-updater.argoproj.io/image-list: wolveix/satisfactory-server:v1.x.x
   name: app-satisfactory
   namespace: argocd
 spec:
