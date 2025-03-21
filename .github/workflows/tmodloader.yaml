@@ -25,3 +25,5 @@ jobs:
          cd docker/terraria
          chmod +x build.sh
          ./build.sh
+
+     - uses: liskin/gh-workflow-keepalive@v1
