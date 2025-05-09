@@ -1,0 +1,15 @@
+# Waiting for calico 3.30 for full support of IPAMConfig on loadbalancer assignment
+apiVersion: crd.projectcalico.org/v1
+kind: IPPool
+metadata:
+ name: loadbalancer-ip-pool
+spec:
+ cidr: 192.168.28.0/22
+ blockSize: 24
+ natOutgoing: true
+ disabled: false
+ allowedUses:
+  - LoadBalancer
+ ipipMode: Never    
+ nodeSelector: all()
+ vxlanMode: Always
