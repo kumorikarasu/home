@@ -30,7 +30,10 @@ spec:
       volumes:
       - name: local-pv
         persistentVolumeClaim:
-          claimName: {{ .Release.Name }}-local-pvc
+          claimName: "{{ .Release.Name }}-local-pvc"
+      - name: cmd-config
+        configMap:
+          name: "{{ .Release.Name }}-config"
       containers:
       - name: tgwu 
         image: registry.home.ryougi.ca/tgwu
@@ -54,6 +57,9 @@ spec:
         volumeMounts:
         - mountPath: "/home/app/text-generation-webui/user_data/models"
           name: local-pv
+        - mountPath: "/home/app/text-generation-webui/user_data/CMD_FLAGS.txt"
+          subPath: CMD_FLAGS.txt
+          name: cmd-config
 
       
 ---
@@ -78,7 +84,7 @@ spec:
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ .Release.Name }}-local-pvc
+  name: "{{ .Release.Name }}-local-pvc"
 spec:
   accessModes:
   - ReadWriteOnce
@@ -91,7 +97,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: {{ .Release.Name }}-local-pv
+  name: "{{ .Release.Name }}-local-pv"
 spec:
   capacity:
     storage: 128Gi
@@ -165,3 +171,15 @@ spec:
             port:
               number: 80
               
+# CMD_FLAGS configmap
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ .Release.Name }}-config"
+data: 
+  CMD_FLAGS.txt: |
+    --listen
+    --api
+
+
