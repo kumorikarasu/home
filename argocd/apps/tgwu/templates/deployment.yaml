@@ -52,7 +52,7 @@ spec:
         - name: PORT
           value: "8000"
         volumeMounts:
-        - mountPath: "/home/app/text-generation-webui/models"
+        - mountPath: "/home/app/text-generation-webui/user_data/models"
           name: local-pv
 
       
