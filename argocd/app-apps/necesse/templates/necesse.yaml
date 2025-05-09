@@ -1,0 +1,71 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.name }}-deployment
+  labels:
+    app: {{ .Values.name }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{ .Values.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.name }}
+    spec:
+      volumes:
+      - name: appdata
+        persistentVolumeClaim:
+          claimName: appdata-pvc
+      containers:
+      - name: {{ .Values.name }}
+        image: {{ .Values.image.name }}:{{ .Values.image.tag }}
+        ports:
+        - containerPort: 14159
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: UMASK
+          value: "000"
+        - name: "PAUSE"
+          value: "1"
+        - name: "WORLD"
+          value: "B&S"
+        - name: "MOTD"
+          value: "Welcome to B&S!"
+        volumeMounts:
+        - mountPath: "/necesse/saves"
+          subPath: "necesse"
+          name: appdata
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Values.name }}-secret
+type: Opaque
+data:
+  password: {{ .Values.password | b64enc }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.name }}-service
+spec:
+  type: LoadBalancer
+  loadBalancerIP: 192.168.28.18
+  externalTrafficPolicy: Local
+  selector:
+    app: {{ .Values.name }}
+  ports:
+    - name: gameudp
+      protocol: UDP
+      port: 14159
+      targetPort: 14159

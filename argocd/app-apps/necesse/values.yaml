@@ -1,0 +1,5 @@
+name: necesse
+
+image:
+  name: brammys/necesse-server 
+  tag: latest
