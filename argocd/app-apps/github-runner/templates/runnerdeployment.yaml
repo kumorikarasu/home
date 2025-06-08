@@ -1,0 +1,31 @@
+{{- range $i, $runnerCfg := .Values.runnerDeployments }}
+---
+apiVersion: actions.summerwind.dev/v1alpha1
+kind: RunnerDeployment
+metadata:
+  name: {{ printf "%s-%s" $.Release.Name $runnerCfg.name | trunc 63 | trimSuffix "-" }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: {{ $runnerCfg.name }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+    app.kubernetes.io/managed-by: {{ $.Release.Service }}
+    helm.sh/chart: {{ include "github-runner.chart" $ }}
+    github-runner-config: {{ $runnerCfg.name }}
+spec:
+  replicas: {{ $runnerCfg.replicas }}
+  template:
+    spec:
+      repository: {{ $runnerCfg.spec.template.spec.githubConfigUrl | splitList "/" | last }} # For personal repos, this extracts the username
+      image: {{ $runnerCfg.spec.template.spec.image }}
+      githubAPICredentialsFrom:
+        secretRef:
+          name: {{ include "github-runner.appSecretName" $ }}
+      {{- if $runnerCfg.spec.template.spec.labels }}
+      labels:
+      {{- toYaml $runnerCfg.spec.template.spec.labels | nindent 8 }}
+      {{- end }}
+      {{- if $runnerCfg.spec.template.spec.resources }}
+      resources:
+      {{- toYaml $runnerCfg.spec.template.spec.resources | nindent 8 }}
+      {{- end }}
+{{- end }}

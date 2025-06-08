@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: github-runner
+  namespace: argocd # Assuming you want to manage this app in the argocd namespace
+spec:
+  project: default # Or your specific project
+  source:
+    repoURL: https://github.com/kumorikarasu/home.git # Assuming your repo URL
+    targetRevision: HEAD
+    path: argocd/app-apps/github-runner
+    helm:
+      skipCrds: true
+      valueFiles:
+        - values.yaml
+        # If you have environment-specific values, you can add them here
+        # - values-production.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: actions-runner
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true

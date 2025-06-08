@@ -1,0 +1,14 @@
+apiVersion: v2
+name: github-runner
+description: A Helm chart for deploying GitHub Actions runners for personal repositories
+type: application
+version: 0.1.0
+appVersion: "1.0.0" # Replace with your app version or runner image version if applicable
+
+dependencies:
+  - name: actions-runner-controller
+    version: "0.23.0" # Updated to a valid chart version for app version ~0.27.1
+    repository: "https://actions-runner-controller.github.io/actions-runner-controller"
+    # You can add an alias and condition if needed, e.g.:
+    # alias: controller
+    # condition: controller.enabled
