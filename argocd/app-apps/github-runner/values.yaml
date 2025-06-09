@@ -19,6 +19,7 @@ runnerDeployments:
           # For personal repositories, configure with your username.
           # The GitHub App must be installed on your account and have access to the target repositories.
           githubConfigUrl: "https://github.com/kumorikarasu"
+          organization: "kumorikarasu" # Define the runner at the user/organization level
 
           # GitHub App Authentication details are now sourced from the secret created
           # by templates/secret.yaml using values from secrets.enc.yaml
