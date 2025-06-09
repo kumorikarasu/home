@@ -16,7 +16,11 @@ spec:
   replicas: {{ $runnerCfg.replicas }}
   template:
     spec:
+      {{- if $runnerCfg.repository }}
+      repository: {{ $runnerCfg.repository }}
+      {{- else }}
       organization: {{ $runnerCfg.organization }}
+      {{- end }}
       image: {{ $runnerCfg.image }}
       githubAPICredentialsFrom:
         secretRef:

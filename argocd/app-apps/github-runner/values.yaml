@@ -15,7 +15,8 @@
 # Each runner deployment is associated with an organization defined above.
 runnerDeployments:
   - name: "kumorikarasu-runner"
-    organization: "kumorikarasu"  # Must match a key in organizations above
+    organization: "kumorikarasu"  # Used for secret name
+    repository: "kumorikarasu/home"  # Repository-specific runner
     replicas: 1
     image: "ghcr.io/actions/actions-runner:latest"
     # Optional: Define labels for your runners
