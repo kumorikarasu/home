@@ -1,0 +1,9 @@
+imageTag: "latest"
+
+api:
+  image:
+    tag: "latest"
+
+frontend:
+  image:
+    tag: "latest"
