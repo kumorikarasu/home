@@ -9,12 +9,11 @@ spec:
     repoURL: https://github.com/kumorikarasu/home.git # Assuming your repo URL
     targetRevision: HEAD
     path: argocd/app-apps/github-runner
-    helm:
-      skipCrds: true
-      valueFiles:
-        - values.yaml
-        # If you have environment-specific values, you can add them here
-        # - values-production.yaml
+    plugin:
+      name: sops-helm-skipcrds # Use the new plugin that skips CRDs
+      # env: # Optional: if your plugin needs specific environment variables
+      #   - name: SOPS_DECRYPT_SKIP_CRDS # Example: to pass skipCrds to the plugin
+      #     value: "true"
   destination:
     server: https://kubernetes.default.svc
     namespace: actions-runner

@@ -9,8 +9,8 @@ argo-cd:
 
   repoServer:
     extraContainers:
-    - name: cmp
-      command: [/var/run/argocd/argocd-cmp-server] # Entrypoint should be Argo CD lightweight CMP server i.e. argocd-cmp-server
+    - name: cmp-sops # CMP sidecar for the 'sops' plugin
+      command: [/var/run/argocd/argocd-cmp-server] # Let it use default config path for plugin.yaml
       image: kumorikarasu/helm-sops
       env:
       - name: AWS_ACCESS_KEY_ID
@@ -35,13 +35,50 @@ argo-cd:
         runAsNonRoot: true
         runAsUser: 999
       volumeMounts:
-        - name: var-files
+        - name: var-files # For argocd-cmp-server binary
           mountPath: /var/run/argocd
-        - name: plugins
+        - name: plugins # For plugin sockets
           mountPath: /home/argocd/cmp-server/plugins
-        - name: cmp-plugin
-          mountPath: /home/argocd/cmp-server/config/plugin.yaml # Plugin config file can either be volume mapped or baked into image
-          subPath: plugin.yaml
+        - name: cmp-plugin # The ConfigMap volume
+          mountPath: /home/argocd/cmp-server/config/plugin.yaml # Mount the 'sops' plugin definition as plugin.yaml
+          subPath: plugin.yaml # Key from ConfigMap for 'sops' plugin
+        - name: cmp-tmp
+          mountPath: /tmp
+        - name: helm-temp-dir
+          mountPath: /helm-working-dir
+    - name: cmp-sops-helm-skipcrds # CMP sidecar for the 'sops-helm-skipcrds' plugin
+      command: [/var/run/argocd/argocd-cmp-server] # Let it use default config path for plugin.yaml
+      image: kumorikarasu/helm-sops # Assuming same image
+      env: # Repeat necessary env vars
+      - name: AWS_ACCESS_KEY_ID
+        valueFrom:
+          secretKeyRef:
+            name: aws-token-secret
+            key: AWS_ACCESS_KEY_ID
+      - name: AWS_SECRET_ACCESS_KEY
+        valueFrom:
+          secretKeyRef:
+            name: aws-token-secret
+            key: AWS_SECRET_ACCESS_KEY
+      - name: HELM_CACHE_HOME
+        value: /helm-working-dir
+      - name: HELM_CONFIG_HOME
+        value: /helm-working-dir
+      - name: HELM_DATA_HOME
+        value: /helm-working-dir
+      - name: ARGOCD_EXEC_TIMEOUT
+        value: "5m"
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 999
+      volumeMounts:
+        - name: var-files # For argocd-cmp-server binary
+          mountPath: /var/run/argocd
+        - name: plugins # For plugin sockets
+          mountPath: /home/argocd/cmp-server/plugins
+        - name: cmp-plugin # The ConfigMap volume
+          mountPath: /home/argocd/cmp-server/config/plugin.yaml # Mount the 'sops-helm-skipcrds' plugin definition as plugin.yaml
+          subPath: sops-helm-skipcrds.yaml # Key from ConfigMap for 'sops-helm-skipcrds' plugin
         - name: cmp-tmp
           mountPath: /tmp
         - name: helm-temp-dir
