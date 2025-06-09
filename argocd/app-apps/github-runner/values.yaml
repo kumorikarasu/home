@@ -14,9 +14,15 @@
 # RunnerDeployments define the configuration for a set of runners.
 # Each runner deployment is associated with an organization defined above.
 runnerDeployments:
-  - name: "kumorikarasu-runner"
+  - name: "kumorikarasu-home-runner"
     organization: "kumorikarasu"  # Used for secret name
     repository: "kumorikarasu/home"  # Repository-specific runner
+    replicas: 1
+    image: "summerwind/actions-runner:latest"
+  
+  - name: "kumorikarasu-life-runner"
+    organization: "kumorikarasu"  # Used for secret name  
+    repository: "kumorikarasu/life"  # Repository-specific runner for life repo
     replicas: 1
     image: "summerwind/actions-runner:latest"
     # Optional: Define labels for your runners
