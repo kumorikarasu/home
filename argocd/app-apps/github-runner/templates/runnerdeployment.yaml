@@ -22,6 +22,9 @@ spec:
       organization: {{ $runnerCfg.organization }}
       {{- end }}
       image: {{ $runnerCfg.image }}
+      env:
+        - name: RUNNER_GRACEFUL_STOP_TIMEOUT
+          value: "60"  # Increase timeout for Docker startup
       githubAPICredentialsFrom:
         secretRef:
           name: {{ printf "%s-%s-credentials" $.Release.Name $runnerCfg.organization | trunc 63 | trimSuffix "-" }}
