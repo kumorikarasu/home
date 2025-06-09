@@ -11,21 +11,22 @@ metadata:
     app.kubernetes.io/managed-by: {{ $.Release.Service }}
     helm.sh/chart: {{ include "github-runner.chart" $ }}
     github-runner-config: {{ $runnerCfg.name }}
+    github-runner-org: {{ $runnerCfg.organization }}
 spec:
   replicas: {{ $runnerCfg.replicas }}
   template:
     spec:
-      repository: {{ $runnerCfg.spec.template.spec.githubConfigUrl | splitList "/" | last }} # For personal repos, this extracts the username
-      image: {{ $runnerCfg.spec.template.spec.image }}
+      organization: {{ $runnerCfg.organization }}
+      image: {{ $runnerCfg.image }}
       githubAPICredentialsFrom:
         secretRef:
-          name: {{ include "github-runner.appSecretName" $ }}
-      {{- if $runnerCfg.spec.template.spec.labels }}
+          name: {{ printf "%s-%s-credentials" $.Release.Name $runnerCfg.organization | trunc 63 | trimSuffix "-" }}
+      {{- if $runnerCfg.labels }}
       labels:
-      {{- toYaml $runnerCfg.spec.template.spec.labels | nindent 8 }}
+      {{- toYaml $runnerCfg.labels | nindent 8 }}
       {{- end }}
-      {{- if $runnerCfg.spec.template.spec.resources }}
+      {{- if $runnerCfg.resources }}
       resources:
-      {{- toYaml $runnerCfg.spec.template.spec.resources | nindent 8 }}
+      {{- toYaml $runnerCfg.resources | nindent 8 }}
       {{- end }}
 {{- end }}
