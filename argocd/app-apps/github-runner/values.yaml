@@ -18,7 +18,7 @@ runnerDeployments:
     organization: "kumorikarasu"  # Used for secret name
     repository: "kumorikarasu/home"  # Repository-specific runner
     replicas: 1
-    image: "ghcr.io/actions/actions-runner:latest"
+    image: "summerwind/actions-runner:latest"
     # Optional: Define labels for your runners
     # labels:
     #   - self-hosted
@@ -36,7 +36,7 @@ runnerDeployments:
   - name: "bayoudb-runner"
     organization: "bayoudb"  # Must match a key in organizations above
     replicas: 1
-    image: "ghcr.io/actions/actions-runner:latest"
+    image: "summerwind/actions-runner:latest"
     # Add resource requests to ensure proper scheduling
     resources:
       requests:
