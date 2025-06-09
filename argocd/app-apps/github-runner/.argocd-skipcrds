@@ -1,0 +1,2 @@
+# This file is used by the sops-helm-skipcrds plugin for discovery
+# It indicates this repository should use the skipcrds variant of the sops plugin

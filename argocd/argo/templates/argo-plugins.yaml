@@ -26,7 +26,6 @@ data:
     metadata:
       name: sops-helm-skipcrds
     spec:
-      version: v1.0
       init:
         command: ["/bin/sh", "-c"]
         args: ["helm dependency update"]
@@ -34,6 +33,6 @@ data:
         command: ["sh", "-c"]
         args: ["sops exec-file --filename secrets.json secrets.enc.yaml \"helm template --skip-crds --namespace ${ARGOCD_APP_NAMESPACE} --release-name ${ARGOCD_APP_NAME} . --values {} --values values.yaml\""]
       discover:
-        fileName: 'secrets.enc.yaml' # Or Chart.yaml if it should discover Helm charts that might not have secrets
+        fileName: '.argocd-skipcrds'
       allowConcurrency: true
       lockRepo: true

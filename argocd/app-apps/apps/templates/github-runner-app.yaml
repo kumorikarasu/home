@@ -10,10 +10,7 @@ spec:
     targetRevision: HEAD
     path: argocd/app-apps/github-runner
     plugin:
-      name: sops-helm-skipcrds # Use the new plugin that skips CRDs
-      # env: # Optional: if your plugin needs specific environment variables
-      #   - name: SOPS_DECRYPT_SKIP_CRDS # Example: to pass skipCrds to the plugin
-      #     value: "true"
+      name: sops-helm-skipcrds
   destination:
     server: https://kubernetes.default.svc
     namespace: actions-runner
