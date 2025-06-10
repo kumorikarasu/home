@@ -7,6 +7,6 @@ description: ArgoCD app-apps configuration for Life simulation application
 
 dependencies:
   - name: life
-    version: "0.1.2"
+    version: "0.1.3"
     repository: "https://kumorikarasu.github.io/charts"
     alias: life
