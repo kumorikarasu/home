@@ -2,8 +2,8 @@ imageTag: "latest"
 
 api:
   image:
-    tag: "c8eb764d5cc9a601637cece5c7e5dde6a23a9d2a"
+    tag: "e413a9b"
 
 frontend:
   image:
-    tag: "c8eb764d5cc9a601637cece5c7e5dde6a23a9d2a"
+    tag: "e413a9b"
