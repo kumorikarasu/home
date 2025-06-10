@@ -1,7 +1,8 @@
-api:
-  image:
-    tag: "e413a9b"
-
-frontend:
-  image:
-    tag: "e413a9b"
+life:
+  api:
+    image:
+      tag: "e413a9b"
+  
+  frontend:
+    image:
+      tag: "e413a9b"
