@@ -46,11 +46,11 @@ runnerDeployments:
     # Add resource requests to ensure proper scheduling
     resources:
       requests:
-        cpu: "500m"
+        cpu: "1"
         memory: "1Gi"
       limits:
-        cpu: "2"
-        memory: "4Gi"
+        cpu: "40"
+        memory: "40Gi"
     # Optional: Define labels for your runners
     # labels:
     #   - self-hosted
