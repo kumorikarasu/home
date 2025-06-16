@@ -1,41 +1,149 @@
 ---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: registry-external-certs
+type: Opaque
+data:
+  ca.crt: {{ .Values.registry.external.mtls.certs.ca }}
+  client.cert: {{ .Values.registry.external.mtls.certs.clientCert }}
+  client.key: {{ .Values.registry.external.mtls.certs.clientKey }}
+  server-cert.pem: {{ .Values.registry.external.mtls.certs.serverCert }}
+  server-key.pem: {{ .Values.registry.external.mtls.certs.serverKey }}
+  ca.pem: {{ .Values.registry.external.mtls.certs.ca }}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: registry-internal-config
+data:
+  config.yml: |
+    version: 0.1
+    log:
+      fields:
+        service: registry-internal
+    storage:
+      filesystem:
+        rootdirectory: /var/lib/registry
+    http:
+      addr: :5000
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: registry-external-config
+data:
+  config.yml: |
+    version: 0.1
+    log:
+      fields:
+        service: registry-external
+    storage:
+      filesystem:
+        rootdirectory: /var/lib/registry
+      delete:
+        enabled: true
+    notifications:
+      endpoints:
+        - name: sync-webhook
+          url: http://registry-sync-service:8080/sync
+          headers:
+            Authorization: [Bearer sync-token]
+          events:
+            - push
+    http:
+      addr: :7834
+      tls:
+        certificate: /certs/server-cert.pem
+        key: /certs/server-key.pem
+        clientcas:
+          - /certs/ca.pem
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: registry-deployment
+  name: registry-internal-deployment
   labels:
-    app: registry
+    app: registry-internal
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: registry
+      app: registry-internal
   template:
     metadata:
       labels:
-        app: registry
+        app: registry-internal
     spec:
       volumes:
       - name: registry-volume
         persistentVolumeClaim:
           claimName: registry-pvc
+      - name: registry-config
+        configMap:
+          name: registry-internal-config
       containers:
       - name: registry
         image: registry:2
         ports:
         - containerPort: 5000
         env:
-        - name: PUID
-          value: "1000"
-        - name: PGID
-          value: "1000"
-        - name: UMASK
-          value: "000"
-        - name: PORT
-          value: "4000"
+        - name: REGISTRY_CONFIG_PATH
+          value: /etc/registry/config.yml
         volumeMounts:
         - mountPath: "/var/lib/registry"
           name: registry-volume
+        - mountPath: "/etc/registry"
+          name: registry-config
+          readOnly: true
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: registry-external-deployment
+  labels:
+    app: registry-external
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: registry-external
+  template:
+    metadata:
+      labels:
+        app: registry-external
+    spec:
+      volumes:
+      - name: registry-external-volume
+        persistentVolumeClaim:
+          claimName: registry-external-pvc
+      - name: registry-certs
+        secret:
+          secretName: registry-external-certs
+      - name: registry-config
+        configMap:
+          name: registry-external-config
+      containers:
+      - name: registry
+        image: registry:2
+        ports:
+        - containerPort: 7834
+        env:
+        - name: REGISTRY_CONFIG_PATH
+          value: /etc/docker/registry/config.yml
+        volumeMounts:
+        - mountPath: "/var/lib/registry"
+          name: registry-external-volume
+        - mountPath: "/certs"
+          name: registry-certs
+          readOnly: true
+        - mountPath: "/etc/docker/registry"
+          name: registry-config
+          readOnly: true
 
 
 ---
@@ -52,17 +160,46 @@ spec:
 
 ---
 apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: registry-external-pvc
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 128Gi
+
+---
+apiVersion: v1
 kind: Service
 metadata:
-  name: registry-service
+  name: registry-internal-service
 spec:
+  type: ClusterIP
   selector:
-    app: registry
+    app: registry-internal
   ports:
     - name: http
       protocol: TCP
       port: 5000
       targetPort: 5000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: registry-external-service
+spec:
+  type: LoadBalancer
+  loadBalancerIP: {{ .Values.registry.external.loadBalancer.ip }}
+  selector:
+    app: registry-external
+  ports:
+    - name: https
+      protocol: TCP
+      port: 7834
+      targetPort: 7834
 
 ---
 apiVersion: networking.k8s.io/v1
@@ -71,12 +208,13 @@ metadata:
   annotations:
     ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/proxy-body-size: 0m
-  name: registry-ingress
+  name: registry-internal-ingress
 spec:
   ingressClassName: nginx
   tls:
     - hosts:
-      - ryougi.ca
+      - registry.home.ryougi.ca
+      - registry.ryougi.ca
   rules:
   - host: registry.home.ryougi.ca
     http:
@@ -85,7 +223,7 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: registry-service
+            name: registry-internal-service
             port:
               number: 5000
   - host: registry.ryougi.ca
@@ -95,6 +233,6 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: registry-service
+            name: registry-internal-service
             port:
               number: 5000

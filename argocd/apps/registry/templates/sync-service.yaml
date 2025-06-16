@@ -1,0 +1,191 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: registry-sync-script
+data:
+  sync.py: |
+    #!/usr/bin/env python3
+    import json
+    import sys
+    import subprocess
+    import os
+    
+    def sync_image(payload_str):
+        try:
+            payload = json.loads(payload_str)
+            
+            # Extract image details from registry webhook payload
+            if 'events' in payload:
+                repos_to_sync = set()
+                
+                for event in payload['events']:
+                    if event['action'] == 'push' and 'repository' in event['target']:
+                        repo = event['target']['repository']
+                        repos_to_sync.add(repo)
+                
+                # For each repository that had pushes, sync all its tags
+                for repo in repos_to_sync:
+                    print(f"Syncing repository: {repo}")
+                    
+                    # List all tags in the external registry for this repo
+                    # Use internal service name (now included in certificate SAN)
+                    list_cmd = [
+                        'skopeo', 'list-tags',
+                        f'docker://registry-external-service:7834/{repo}',
+                        '--cert-dir=/certs'
+                    ]
+                    
+                    list_result = subprocess.run(list_cmd, capture_output=True, text=True)
+                    
+                    if list_result.returncode == 0:
+                        tags_data = json.loads(list_result.stdout)
+                        tags = tags_data.get('Tags', [])
+                        
+                        for tag in tags:
+                            print(f"Syncing {repo}:{tag}")
+                            
+                            # Copy each tag
+                            copy_cmd = [
+                                'skopeo', 'copy',
+                                f'docker://registry-external-service:7834/{repo}:{tag}',
+                                f'docker://registry-internal-service:5000/{repo}:{tag}',
+                                '--src-cert-dir=/certs',
+                                '--dest-tls-verify=false'
+                            ]
+                            
+                            copy_result = subprocess.run(copy_cmd, capture_output=True, text=True)
+                            
+                            if copy_result.returncode == 0:
+                                print(f"Successfully synced {repo}:{tag}")
+                                
+                                # Delete from external registry after successful sync
+                                delete_cmd = [
+                                    'skopeo', 'delete',
+                                    f'docker://registry-external-service:7834/{repo}:{tag}',
+                                    '--cert-dir=/certs'
+                                ]
+                                
+                                delete_result = subprocess.run(delete_cmd, capture_output=True, text=True)
+                                
+                                if delete_result.returncode == 0:
+                                    print(f"Successfully deleted {repo}:{tag} from external registry")
+                                else:
+                                    print(f"Warning: Failed to delete {repo}:{tag} from external registry: {delete_result.stderr}")
+                            else:
+                                print(f"Failed to sync {repo}:{tag}: {copy_result.stderr}")
+                                return False
+                    else:
+                        print(f"Failed to list tags for {repo}: {list_result.stderr}")
+                        return False
+            
+            return True
+            
+        except Exception as e:
+            print(f"Error processing webhook: {e}")
+            return False
+    
+    if __name__ == "__main__":
+        if len(sys.argv) > 1:
+            success = sync_image(sys.argv[1])
+            sys.exit(0 if success else 1)
+        else:
+            print("No payload provided")
+            sys.exit(1)
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: registry-sync-deployment
+  labels:
+    app: registry-sync
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: registry-sync
+  template:
+    metadata:
+      labels:
+        app: registry-sync
+    spec:
+      volumes:
+      - name: sync-script
+        configMap:
+          name: registry-sync-script
+          defaultMode: 0755
+      - name: client-certs
+        secret:
+          secretName: registry-external-certs
+      containers:
+      - name: sync
+        image: quay.io/skopeo/stable:latest
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: sync-script
+          mountPath: /scripts
+        - name: client-certs
+          mountPath: /certs
+          readOnly: true
+        command:
+        - python3
+        - -c
+        - |
+          import json
+          import subprocess
+          from http.server import HTTPServer, BaseHTTPRequestHandler
+          
+          class SyncHandler(BaseHTTPRequestHandler):
+              def do_POST(self):
+                  if self.path == '/sync':
+                      content_length = int(self.headers['Content-Length'])
+                      payload = self.rfile.read(content_length).decode('utf-8')
+                      
+                      try:
+                          print(f"Received webhook payload: {payload}")
+                          
+                          # Execute sync script
+                          result = subprocess.run(['python3', '/scripts/sync.py', payload], 
+                                                capture_output=True, text=True)
+                          
+                          print(f"Sync script output: {result.stdout}")
+                          print(f"Sync script errors: {result.stderr}")
+                          
+                          if result.returncode == 0:
+                              self.send_response(200)
+                              self.end_headers()
+                              self.wfile.write(b'Sync completed')
+                          else:
+                              self.send_response(500)
+                              self.end_headers()
+                              self.wfile.write(f'Sync failed: {result.stderr}'.encode())
+                              
+                      except Exception as e:
+                          print(f"Handler exception: {e}")
+                          self.send_response(500)
+                          self.end_headers()
+                          self.wfile.write(f'Error: {str(e)}'.encode())
+                  else:
+                      self.send_response(404)
+                      self.end_headers()
+              
+              def log_message(self, format, *args):
+                  print(f"{self.address_string()} - {format%args}")
+          
+          server = HTTPServer(('0.0.0.0', 8080), SyncHandler)
+          print("Registry sync service listening on port 8080")
+          server.serve_forever()
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: registry-sync-service
+spec:
+  selector:
+    app: registry-sync
+  ports:
+    - port: 8080
+      targetPort: 8080
