@@ -9,4 +9,5 @@ terraform {
 
 provider "aws" {
   profile = "home"
+  region  = "ca-central-1"
 }
