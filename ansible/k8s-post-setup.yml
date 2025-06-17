@@ -1,0 +1,23 @@
+---
+# Kubernetes Post-Setup Playbook
+# Run this after Kubernetes cluster is deployed but before applications
+
+- name: Kubernetes Post-Setup Tasks
+  hosts: localhost
+  gather_facts: false
+  vars:
+    terraform_aws_dir: "/home/kumori/code/home/terraform/aws"
+  
+  pre_tasks:
+    - name: Verify kubectl is working
+      shell: kubectl cluster-info
+      changed_when: false
+      
+    - name: Verify Terraform AWS directory exists
+      stat:
+        path: "{{ terraform_aws_dir }}"
+      register: terraform_dir_check
+      failed_when: not terraform_dir_check.stat.exists
+
+  roles:
+    - kubernetes-post-setup

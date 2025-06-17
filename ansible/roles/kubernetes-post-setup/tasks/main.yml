@@ -1,0 +1,6 @@
+---
+- name: Include ESO setup tasks
+  include_tasks: external-secrets.yml
+  tags:
+    - eso
+    - external-secrets
