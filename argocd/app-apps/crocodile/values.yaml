@@ -1,0 +1,181 @@
+bayoudb:
+  # Global configuration
+  global:
+    storageClass: hpe
+    
+  # BayouDB Configuration for Production
+  bayoudb:
+    enabled: true
+    replicaCount: 1
+    image:
+      registry: registry.home.ryougi.ca
+      repository: bayoudb/bayoudb
+      tag: ci
+      pullPolicy: Always
+    
+    ingress:
+      enabled: true
+      className: "nginx"
+      annotations:
+        cert-manager.io/cluster-issuer: "letsencrypt-prod"
+      hosts:
+        - host: crocodile.ryougi.ca
+          paths:
+            - path: /
+              pathType: Prefix
+        - host: crocodile.home.ryougi.ca
+          paths:
+            - path: /
+              pathType: Prefix
+        - host: api.dev.bayoudb.com
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - secretName: crocodile-ryougi-tls
+          hosts:
+            - crocodile.ryougi.ca
+            - crocodile.home.ryougi.ca
+        - secretName: crocodile-dev-tls
+          hosts:
+            - api.dev.bayoudb.com
+
+  # Frontend Configuration
+  frontend2:
+    enabled: true
+    replicaCount: 1
+    image:
+      registry: registry.home.ryougi.ca
+      repository: bayoudb/frontend2
+      tag: ci
+      pullPolicy: Always
+    
+    service:
+      type: ClusterIP
+      port: 80
+      targetPort: 8080
+    
+    ingress:
+      enabled: true
+      className: "nginx"
+      annotations:
+        cert-manager.io/cluster-issuer: "letsencrypt-prod"
+      hosts:
+        - host: crocodile-ui.ryougi.ca
+          paths:
+            - path: /
+              pathType: Prefix
+        - host: crocodile-ui.home.ryougi.ca
+          paths:
+            - path: /
+              pathType: Prefix
+        - host: dev.bayoudb.com
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - secretName: crocodile-ui-ryougi-tls
+          hosts:
+            - crocodile-ui.ryougi.ca
+            - crocodile-ui.home.ryougi.ca
+        - secretName: crocodile-ui-dev-tls
+          hosts:
+            - dev.bayoudb.com
+
+  # Grafana with Crocodile Plugin
+  grafana:
+    enabled: true
+    replicaCount: 1
+    image:
+      registry: registry.home.ryougi.ca
+      repository: bayoudb/grafana-plugin
+      tag: ci
+      pullPolicy: Always
+    
+    ingress:
+      enabled: true
+      className: "nginx"
+      annotations:
+        cert-manager.io/cluster-issuer: "letsencrypt-prod"
+      hosts:
+        - host: grafana-crocodile.ryougi.ca
+          paths:
+            - path: /
+              pathType: Prefix
+        - host: grafana-crocodile.home.ryougi.ca
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - secretName: grafana-crocodile-tls
+          hosts:
+            - grafana-crocodile.ryougi.ca
+            - grafana-crocodile.home.ryougi.ca
+    
+    persistence:
+      enabled: true
+      size: 10Gi
+      storageClass: "hpe"
+
+  # Database Migration
+  migration:
+    enabled: true
+    image:
+      registry: registry.home.ryougi.ca
+      repository: bayoudb/migration
+      tag: ci
+      pullPolicy: Always
+
+  # Event Generator (disabled for production)
+  eventGenerator:
+    enabled: false
+    image:
+      registry: registry.home.ryougi.ca
+      repository: bayoudb/event-generator
+      tag: ci
+      pullPolicy: Always
+
+  # PostgreSQL for metadata
+  postgresql:
+    enabled: true
+    auth:
+      existingSecret: "crocodile-postgres-secrets"
+      secretKeys:
+        adminPasswordKey: "postgres-password"
+        userPasswordKey: "password"
+      username: "crocodile"
+      database: "crocodile"
+    
+    primary:
+      persistence:
+        enabled: true
+        size: 20Gi
+        storageClass: "hpe"
+
+  # ClickHouse for timeseries data
+  clickhouse:
+    enabled: true
+    shards: 1
+    replicas: 1
+    replicaCount: 1
+    keeper:
+      enabled: false
+      replicaCount: 0
+    zookeeper:
+      enabled: false
+      replicaCount: 0
+    cluster:
+      enabled: false
+    auth:
+      existingSecret: "crocodile-clickhouse-secrets" 
+      existingSecretKey: "admin-password"
+      username: "crocodile"
+    
+    persistence:
+      enabled: true
+      size: 100Gi
+      storageClass: "hpe"
+
+  # Global storage class
+  global:
+    storageClass: "hpe"

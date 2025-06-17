@@ -1,0 +1,12 @@
+apiVersion: v2
+name: crocodile
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+description: ArgoCD app-apps configuration for Crocodile (BayouDB) application
+
+dependencies:
+  - name: bayoudb
+    version: "0.1.3"
+    repository: "oci://registry.home.ryougi.ca/helm"
+    alias: bayoudb
