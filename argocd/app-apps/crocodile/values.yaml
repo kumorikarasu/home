@@ -13,32 +13,38 @@ bayoudb:
       tag: ci
       pullPolicy: Always
     
+    # Authentication Configuration
+    auth:
+      # Authentication mode: single_tenant or multi_tenant
+      mode: "multi_tenant"
+      
+      # OAuth Providers Configuration
+      oauth:
+        # Base URL for OAuth redirects
+        redirectBaseUrl: "https://dev.bayoudb.com"
+        
+        github:
+          enabled: true
+          # Using existing secret (recommended for production)
+          existingSecret: "github-oauth-secrets"
+          clientIdKey: "client-id"
+          clientSecretKey: "client-secret"
+          redirectUri: "https://dev.bayoudb.com/api/v1/auth/oauth/github/callback"
+    
     ingress:
       enabled: true
       className: "nginx"
       annotations:
         cert-manager.io/cluster-issuer: "letsencrypt-prod"
       hosts:
-        - host: crocodile.ryougi.ca
-          paths:
-            - path: /
-              pathType: Prefix
-        - host: crocodile.home.ryougi.ca
-          paths:
-            - path: /
-              pathType: Prefix
-        - host: api.dev.bayoudb.com
+        - host: crocodile-api.home.ryougi.ca
           paths:
             - path: /
               pathType: Prefix
       tls:
         - secretName: crocodile-ryougi-tls
           hosts:
-            - crocodile.ryougi.ca
-            - crocodile.home.ryougi.ca
-        - secretName: crocodile-dev-tls
-          hosts:
-            - api.dev.bayoudb.com
+            - crocodile-api.home.ryougi.ca
 
   # Frontend Configuration
   frontend2:
@@ -69,6 +75,10 @@ bayoudb:
           paths:
             - path: /
               pathType: Prefix
+        - host: crocodile.home.ryougi.ca
+          paths:
+            - path: /
+              pathType: Prefix
         - host: dev.bayoudb.com
           paths:
             - path: /
@@ -78,8 +88,7 @@ bayoudb:
           hosts:
             - crocodile-ui.ryougi.ca
             - crocodile-ui.home.ryougi.ca
-        - secretName: crocodile-ui-dev-tls
-          hosts:
+            - crocodile.home.ryougi.ca
             - dev.bayoudb.com
 
   # Grafana with Crocodile Plugin
