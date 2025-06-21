@@ -22,6 +22,7 @@ spec:
       organization: {{ $runnerCfg.organization }}
       {{- end }}
       image: {{ $runnerCfg.image }}
+      serviceAccountName: github-runner-deployer
       env:
         - name: RUNNER_GRACEFUL_STOP_TIMEOUT
           value: "60"  # Increase timeout for Docker startup
