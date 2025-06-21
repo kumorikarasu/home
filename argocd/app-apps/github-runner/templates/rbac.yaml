@@ -1,0 +1,53 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: github-runner-deployer
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: github-runner-deployer
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "github-runner.chart" . }}
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: github-runner-deployer
+  labels:
+    app.kubernetes.io/name: github-runner-deployer
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "github-runner.chart" . }}
+rules:
+# ArgoCD Application permissions
+- apiGroups: ["argoproj.io"]
+  resources: ["applications"]
+  verbs: ["get", "list", "patch", "update"]
+# For checking image existence in registry
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["create", "delete"]
+- apiGroups: [""]
+  resources: ["pods/exec"]
+  verbs: ["create"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: github-runner-deployer
+  labels:
+    app.kubernetes.io/name: github-runner-deployer
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "github-runner.chart" . }}
+subjects:
+- kind: ServiceAccount
+  name: github-runner-deployer
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: github-runner-deployer
+  apiGroup: rbac.authorization.k8s.io

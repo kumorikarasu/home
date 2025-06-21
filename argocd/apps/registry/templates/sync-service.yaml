@@ -10,76 +10,174 @@ data:
     import sys
     import subprocess
     import os
+    import time
+    from datetime import datetime, timedelta
+    
+    def sync_all_images():
+        try:
+            # Discover all repositories dynamically instead of using hardcoded list
+            catalog_cmd = [
+                'skopeo', 'list-tags',
+                'docker://registry-external-service:7834/_catalog',
+                '--cert-dir=/certs'
+            ]
+            
+            # Get repository list from catalog
+            catalog_result = subprocess.run(['curl', '-s', '--cert', '/certs/client.cert', '--key', '/certs/client.key', '--cacert', '/certs/ca.crt', 'https://registry-external-service:7834/v2/_catalog'], capture_output=True, text=True)
+            
+            if catalog_result.returncode == 0:
+                try:
+                    catalog_data = json.loads(catalog_result.stdout)
+                    repositories = catalog_data.get('repositories', [])
+                    print(f"Found {len(repositories)} repositories to sync")
+                except json.JSONDecodeError:
+                    print("Failed to parse catalog response, falling back to known repositories")
+                    repositories = ['bayoudb/bayoudb', 'bayoudb/frontend2', 'bayoudb/grafana-plugin', 'bayoudb/migration', 'bayoudb/event-generator']
+            else:
+                print(f"Failed to get catalog: {catalog_result.stderr}")
+                repositories = ['bayoudb/bayoudb', 'bayoudb/frontend2', 'bayoudb/grafana-plugin', 'bayoudb/migration', 'bayoudb/event-generator']
+            
+            for repo in repositories:
+                print(f"Syncing repository: {repo}")
+                
+                list_cmd = [
+                    'skopeo', 'list-tags',
+                    f'docker://registry-external-service:7834/{repo}',
+                    '--cert-dir=/certs'
+                ]
+                
+                list_result = subprocess.run(list_cmd, capture_output=True, text=True)
+                
+                if list_result.returncode == 0:
+                    tags_data = json.loads(list_result.stdout)
+                    tags = tags_data.get('Tags', [])
+                    
+                    for tag in tags:
+                        print(f"Syncing {repo}:{tag}")
+                        
+                        inspect_cmd = [
+                            'skopeo', 'inspect',
+                            f'docker://registry-internal-service:5000/{repo}:{tag}',
+                            '--tls-verify=false'
+                        ]
+                        
+                        inspect_result = subprocess.run(inspect_cmd, capture_output=True, text=True)
+                        
+                        if inspect_result.returncode == 0:
+                            print(f"Tag {repo}:{tag} already exists in internal registry, skipping")
+                            continue
+                        
+                        copy_cmd = [
+                            'skopeo', 'copy',
+                            f'docker://registry-external-service:7834/{repo}:{tag}',
+                            f'docker://registry-internal-service:5000/{repo}:{tag}',
+                            '--src-cert-dir=/certs',
+                            '--dest-tls-verify=false'
+                        ]
+                        
+                        copy_result = subprocess.run(copy_cmd, capture_output=True, text=True)
+                        
+                        if copy_result.returncode == 0:
+                            print(f"Successfully synced {repo}:{tag} to internal registry")
+                        else:
+                            print(f"Failed to sync {repo}:{tag}: {copy_result.stderr}")
+                            
+                else:
+                    print(f"Failed to list tags for {repo}: {list_result.stderr}")
+            
+            return True
+            
+        except Exception as e:
+            print(f"Error syncing images: {e}")
+            return False
+    
+    def cleanup_old_external_images():
+        try:
+            cutoff_date = datetime.now() - timedelta(days=7)
+            
+            # Get repository list from catalog for cleanup too
+            catalog_result = subprocess.run(['curl', '-s', '--cert', '/certs/client.cert', '--key', '/certs/client.key', '--cacert', '/certs/ca.crt', 'https://registry-external-service:7834/v2/_catalog'], capture_output=True, text=True)
+            
+            if catalog_result.returncode == 0:
+                try:
+                    catalog_data = json.loads(catalog_result.stdout)
+                    repositories = catalog_data.get('repositories', [])
+                    print(f"Found {len(repositories)} repositories for cleanup")
+                except json.JSONDecodeError:
+                    print("Failed to parse catalog response for cleanup, falling back to known repositories")
+                    repositories = ['bayoudb/bayoudb', 'bayoudb/frontend2', 'bayoudb/grafana-plugin', 'bayoudb/migration', 'bayoudb/event-generator']
+            else:
+                print(f"Failed to get catalog for cleanup: {catalog_result.stderr}")
+                repositories = ['bayoudb/bayoudb', 'bayoudb/frontend2', 'bayoudb/grafana-plugin', 'bayoudb/migration', 'bayoudb/event-generator']
+            
+            for repo in repositories:
+                print(f"Cleaning up old images in repository: {repo}")
+                
+                list_cmd = [
+                    'skopeo', 'list-tags',
+                    f'docker://registry-external-service:7834/{repo}',
+                    '--cert-dir=/certs'
+                ]
+                
+                list_result = subprocess.run(list_cmd, capture_output=True, text=True)
+                
+                if list_result.returncode == 0:
+                    tags_data = json.loads(list_result.stdout)
+                    tags = tags_data.get('Tags', [])
+                    
+                    for tag in tags:
+                        inspect_cmd = [
+                            'skopeo', 'inspect',
+                            f'docker://registry-external-service:7834/{repo}:{tag}',
+                            '--cert-dir=/certs'
+                        ]
+                        
+                        inspect_result = subprocess.run(inspect_cmd, capture_output=True, text=True)
+                        
+                        if inspect_result.returncode == 0:
+                            image_info = json.loads(inspect_result.stdout)
+                            created_str = image_info.get('Created', '')
+                            
+                            if created_str:
+                                try:
+                                    created_date = datetime.fromisoformat(created_str.replace('Z', '+00:00')).replace(tzinfo=None)
+                                    
+                                    if created_date < cutoff_date:
+                                        print(f"Deleting old image {repo}:{tag} (created: {created_date})")
+                                        
+                                        delete_cmd = [
+                                            'skopeo', 'delete',
+                                            f'docker://registry-external-service:7834/{repo}:{tag}',
+                                            '--cert-dir=/certs'
+                                        ]
+                                        
+                                        delete_result = subprocess.run(delete_cmd, capture_output=True, text=True)
+                                        
+                                        if delete_result.returncode == 0:
+                                            print(f"Successfully deleted old image {repo}:{tag}")
+                                        else:
+                                            print(f"Failed to delete {repo}:{tag}: {delete_result.stderr}")
+                                    else:
+                                        print(f"Keeping recent image {repo}:{tag} (created: {created_date})")
+                                        
+                                except ValueError as e:
+                                    print(f"Could not parse creation date for {repo}:{tag}: {e}")
+                        
+            return True
+            
+        except Exception as e:
+            print(f"Error cleaning up old images: {e}")
+            return False
     
     def sync_image(payload_str):
         try:
             payload = json.loads(payload_str)
+            print(f"Received webhook payload, syncing all images...")
             
-            # Extract image details from registry webhook payload
-            if 'events' in payload:
-                repos_to_sync = set()
-                
-                for event in payload['events']:
-                    if event['action'] == 'push' and 'repository' in event['target']:
-                        repo = event['target']['repository']
-                        repos_to_sync.add(repo)
-                
-                # For each repository that had pushes, sync all its tags
-                for repo in repos_to_sync:
-                    print(f"Syncing repository: {repo}")
-                    
-                    # List all tags in the external registry for this repo
-                    # Use internal service name (now included in certificate SAN)
-                    list_cmd = [
-                        'skopeo', 'list-tags',
-                        f'docker://registry-external-service:7834/{repo}',
-                        '--cert-dir=/certs'
-                    ]
-                    
-                    list_result = subprocess.run(list_cmd, capture_output=True, text=True)
-                    
-                    if list_result.returncode == 0:
-                        tags_data = json.loads(list_result.stdout)
-                        tags = tags_data.get('Tags', [])
-                        
-                        for tag in tags:
-                            print(f"Syncing {repo}:{tag}")
-                            
-                            # Copy each tag
-                            copy_cmd = [
-                                'skopeo', 'copy',
-                                f'docker://registry-external-service:7834/{repo}:{tag}',
-                                f'docker://registry-internal-service:5000/{repo}:{tag}',
-                                '--src-cert-dir=/certs',
-                                '--dest-tls-verify=false'
-                            ]
-                            
-                            copy_result = subprocess.run(copy_cmd, capture_output=True, text=True)
-                            
-                            if copy_result.returncode == 0:
-                                print(f"Successfully synced {repo}:{tag}")
-                                
-                                # Delete from external registry after successful sync
-                                delete_cmd = [
-                                    'skopeo', 'delete',
-                                    f'docker://registry-external-service:7834/{repo}:{tag}',
-                                    '--cert-dir=/certs'
-                                ]
-                                
-                                delete_result = subprocess.run(delete_cmd, capture_output=True, text=True)
-                                
-                                if delete_result.returncode == 0:
-                                    print(f"Successfully deleted {repo}:{tag} from external registry")
-                                else:
-                                    print(f"Warning: Failed to delete {repo}:{tag} from external registry: {delete_result.stderr}")
-                            else:
-                                print(f"Failed to sync {repo}:{tag}: {copy_result.stderr}")
-                                return False
-                    else:
-                        print(f"Failed to list tags for {repo}: {list_result.stderr}")
-                        return False
+            sync_success = sync_all_images()
+            cleanup_success = cleanup_old_external_images()
             
-            return True
+            return sync_success and cleanup_success
             
         except Exception as e:
             print(f"Error processing webhook: {e}")
@@ -140,10 +238,10 @@ spec:
           class SyncHandler(BaseHTTPRequestHandler):
               def do_POST(self):
                   if self.path == '/sync':
-                      content_length = int(self.headers['Content-Length'])
-                      payload = self.rfile.read(content_length).decode('utf-8')
-                      
                       try:
+                          content_length = int(self.headers.get('Content-Length', 0))
+                          payload = self.rfile.read(content_length).decode('utf-8') if content_length > 0 else '{}'
+                          
                           print(f"Received webhook payload: {payload}")
                           
                           # Execute sync script
@@ -151,25 +249,39 @@ spec:
                                                 capture_output=True, text=True)
                           
                           print(f"Sync script output: {result.stdout}")
-                          print(f"Sync script errors: {result.stderr}")
+                          if result.stderr:
+                              print(f"Sync script errors: {result.stderr}")
                           
-                          if result.returncode == 0:
-                              self.send_response(200)
-                              self.end_headers()
-                              self.wfile.write(b'Sync completed')
-                          else:
-                              self.send_response(500)
-                              self.end_headers()
-                              self.wfile.write(f'Sync failed: {result.stderr}'.encode())
+                          try:
+                              if result.returncode == 0:
+                                  self.send_response(200)
+                                  self.send_header('Content-Type', 'text/plain')
+                                  self.end_headers()
+                                  self.wfile.write(b'Sync completed')
+                              else:
+                                  self.send_response(500)
+                                  self.send_header('Content-Type', 'text/plain')
+                                  self.end_headers()
+                                  self.wfile.write(f'Sync failed: {result.stderr}'.encode())
+                          except (BrokenPipeError, ConnectionResetError):
+                              print("Client disconnected during response")
                               
                       except Exception as e:
                           print(f"Handler exception: {e}")
-                          self.send_response(500)
-                          self.end_headers()
-                          self.wfile.write(f'Error: {str(e)}'.encode())
+                          try:
+                              self.send_response(500)
+                              self.send_header('Content-Type', 'text/plain')
+                              self.end_headers()
+                              self.wfile.write(f'Error: {str(e)}'.encode())
+                          except (BrokenPipeError, ConnectionResetError):
+                              print("Client disconnected during error response")
                   else:
-                      self.send_response(404)
-                      self.end_headers()
+                      try:
+                          self.send_response(404)
+                          self.send_header('Content-Type', 'text/plain')
+                          self.end_headers()
+                      except (BrokenPipeError, ConnectionResetError):
+                          print("Client disconnected during 404 response")
               
               def log_message(self, format, *args):
                   print(f"{self.address_string()} - {format%args}")
