@@ -1,0 +1,268 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ .Release.Name }}-deployment"
+  labels:
+    app: "{{ .Release.Name }}-combined-webui"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "{{ .Release.Name }}-combined-webui"
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: "{{ .Release.Name }}-combined-webui"
+    spec:
+      volumes:
+      - name: appdata
+        persistentVolumeClaim:
+          claimName: appdata-pvc
+      - name: "{{ .Release.Name }}-tgwu-models"
+        persistentVolumeClaim:
+          claimName: "{{ .Release.Name }}-tgwu-models-pvc"
+      - name: "{{ .Release.Name }}-sdwu-models"
+        persistentVolumeClaim:
+          claimName: "{{ .Release.Name }}-sdwu-models-pvc"
+      - name: "{{ .Release.Name }}-config"
+        configMap:
+          name: "{{ .Release.Name }}-config"
+          items:
+          - key: CMD_FLAGS.txt
+            path: CMD_FLAGS.txt
+      containers:
+      - name: combined-webui
+        image: registry.home.ryougi.ca/combined-webui
+        resources:
+          limits:
+            nvidia.com/gpu: 2
+          requests:
+            nvidia.com/gpu: 2
+        ports:
+        - containerPort: 7860
+          name: tgwu
+        - containerPort: 7861
+          name: sdwu
+        - containerPort: 5000
+          name: tgwu-api
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: UMASK
+          value: "000"
+        volumeMounts:
+        - mountPath: "/app/text-generation-webui/models"
+          name: "{{ .Release.Name }}-tgwu-models"
+        - mountPath: "/app/stable-diffusion-webui/models"
+          name: "{{ .Release.Name }}-sdwu-models"
+        - mountPath: "/app/stable-diffusion-webui/outputs"
+          name: appdata
+          subPath: sdwu/outputs
+        - mountPath: "/app/text-generation-webui/CMD_FLAGS.txt"
+          subPath: CMD_FLAGS.txt
+          name: "{{ .Release.Name }}-config"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ .Release.Name }}-service"
+spec:
+  selector:
+    app: "{{ .Release.Name }}-combined-webui"
+  ports:
+    - name: tgwu
+      protocol: TCP
+      port: 80
+      targetPort: 7860
+    - name: sdwu
+      protocol: TCP
+      port: 81
+      targetPort: 7861
+    - name: tgwu-api
+      protocol: TCP
+      port: 5000
+      targetPort: 5000
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: "{{ .Release.Name }}-tgwu-models-pvc"
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: local-storage
+  resources:
+    requests:
+      storage: 128Gi
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: "{{ .Release.Name }}-tgwu-models-pv"
+spec:
+  capacity:
+    storage: 128Gi
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /data/volumes/tgwu-models
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - node4
+          - node5
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: "{{ .Release.Name }}-sdwu-models-pvc"
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: local-storage
+  resources:
+    requests:
+      storage: 64Gi
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: "{{ .Release.Name }}-sdwu-models-pv"
+spec:
+  capacity:
+    storage: 64Gi
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /data/volumes/sdwu-models
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - node4
+          - node5
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    ingress.kubernetes.io/rewrite-target: /
+  name: "{{ .Release.Name }}-ingress"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+      - ryougi.ca
+  rules:
+  - host: tgwu.kube.home.ryougi.ca
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: "{{ .Release.Name }}-service"
+            port:
+              number: 80
+  - host: tgwu.kube.ryougi.ca
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: "{{ .Release.Name }}-service"
+            port:
+              number: 80
+  - host: tgwu.home.ryougi.ca
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: "{{ .Release.Name }}-service"
+            port:
+              number: 80
+  - host: tgwu.ryougi.ca
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: "{{ .Release.Name }}-service"
+            port:
+              number: 80
+  - host: sdwu.kube.home.ryougi.ca
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: "{{ .Release.Name }}-service"
+            port:
+              number: 81
+  - host: sdwu.kube.ryougi.ca
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: "{{ .Release.Name }}-service"
+            port:
+              number: 81
+  - host: sdwu.home.ryougi.ca
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: "{{ .Release.Name }}-service"
+            port:
+              number: 81
+  - host: sdwu.ryougi.ca
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: "{{ .Release.Name }}-service"
+            port:
+              number: 81
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ .Release.Name }}-config"
+data: 
+  CMD_FLAGS.txt: |
+    --listen
+    --api
