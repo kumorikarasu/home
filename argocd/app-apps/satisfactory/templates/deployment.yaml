@@ -25,8 +25,15 @@ spec:
       - name: {{ .Values.name }}
         image: {{ .Values.image.name }}:{{ .Values.image.tag }}
         ports:
-        - containerPort: 34198
-        - containerPort: 27017
+        - name: "api"
+          containerPort: 7777
+          protocol: TCP
+        - name: "game"
+          containerPort: 7777
+          protocol: UDP
+        - name: "messaging"
+          containerPort: 8888
+          protocol: TCP
         env:
         - name: PUID
           value: "1000"
@@ -65,3 +72,7 @@ spec:
       protocol: UDP
       port: 7777
       targetPort: 7777
+    - name: messaging
+      protocol: TCP
+      port: 8888
+      targetPort: 8888
