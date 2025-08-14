@@ -1,4 +1,49 @@
 ---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ .Release.Name }}-setup-directories"
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": before-hook-creation
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - node4
+                - node5
+      tolerations:
+      - operator: Exists
+      containers:
+      - name: setup-directories
+        image: busybox:latest
+        command:
+        - /bin/sh
+        - -c
+        - |
+          mkdir -p /data/volumes/tgwu-models
+          mkdir -p /data/volumes/sdwu-models
+          chmod 755 /data/volumes/tgwu-models
+          chmod 755 /data/volumes/sdwu-models
+        volumeMounts:
+        - name: host-data
+          mountPath: /data
+      volumes:
+      - name: host-data
+        hostPath:
+          path: /data
+          type: DirectoryOrCreate
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -56,7 +101,7 @@ spec:
         - name: UMASK
           value: "000"
         volumeMounts:
-        - mountPath: "/app/text-generation-webui/models"
+        - mountPath: "/app/text-generation-webui/user_data/models"
           name: "{{ .Release.Name }}-tgwu-models"
         - mountPath: "/app/stable-diffusion-webui/models"
           name: "{{ .Release.Name }}-sdwu-models"
