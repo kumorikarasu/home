@@ -1,0 +1,4 @@
+# TTS Generation WebUI values
+image:
+  repository: registry.home.ryougi.ca/tts
+  tag: latest

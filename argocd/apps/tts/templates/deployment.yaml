@@ -1,0 +1,247 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ .Release.Name }}-setup-directories"
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": before-hook-creation
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - node4
+                - node5
+      tolerations:
+      - operator: Exists
+      containers:
+      - name: setup-directories
+        image: busybox:latest
+        command:
+        - /bin/sh
+        - -c
+        - |
+          mkdir -p /data/volumes/tts-models
+          mkdir -p /data/volumes/tts-extensions
+          chmod 755 /data/volumes/tts-models
+          chmod 755 /data/volumes/tts-extensions
+        volumeMounts:
+        - name: host-data
+          mountPath: /data
+      volumes:
+      - name: host-data
+        hostPath:
+          path: /data
+          type: DirectoryOrCreate
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ .Release.Name }}-deployment"
+  labels:
+    app: "{{ .Release.Name }}-tts"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "{{ .Release.Name }}-tts"
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: "{{ .Release.Name }}-tts"
+    spec:
+      runtimeClassName: nvidia
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: nvidia.com/gpu.present
+                operator: In
+                values: ["true"]
+      volumes:
+      - name: appdata
+        persistentVolumeClaim:
+          claimName: appdata-pvc
+      - name: "{{ .Release.Name }}-models"
+        persistentVolumeClaim:
+          claimName: "{{ .Release.Name }}-models-pvc"
+      - name: "{{ .Release.Name }}-extensions"
+        persistentVolumeClaim:
+          claimName: "{{ .Release.Name }}-extensions-pvc"
+      containers:
+      - name: tts
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        # No GPU resource limits - use runtime class and env vars for GPU access
+        ports:
+        - containerPort: 7770
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: UMASK
+          value: "000"
+        - name: NVIDIA_VISIBLE_DEVICES
+          value: "all"
+        - name: NVIDIA_DRIVER_CAPABILITIES
+          value: "all"
+        volumeMounts:
+        - mountPath: "/app/tts-generation-webui/data/models/user"
+          name: "{{ .Release.Name }}-models"
+        - mountPath: "/app/tts-generation-webui/extensions/user"
+          name: "{{ .Release.Name }}-extensions"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ .Release.Name }}-service"
+spec:
+  selector:
+    app: "{{ .Release.Name }}-tts"
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 7770
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: "{{ .Release.Name }}-models-pvc"
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: local-storage
+  resources:
+    requests:
+      storage: 32Gi
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: "{{ .Release.Name }}-models-pv"
+spec:
+  capacity:
+    storage: 32Gi
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /data/volumes/tts-models
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - node4
+          - node5
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: "{{ .Release.Name }}-extensions-pvc"
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: local-storage
+  resources:
+    requests:
+      storage: 8Gi
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: "{{ .Release.Name }}-extensions-pv"
+spec:
+  capacity:
+    storage: 8Gi
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /data/volumes/tts-extensions
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - node4
+          - node5
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    ingress.kubernetes.io/rewrite-target: /
+  name: "{{ .Release.Name }}-ingress"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+      - ryougi.ca
+  rules:
+  - host: tts.kube.home.ryougi.ca
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: "{{ .Release.Name }}-service"
+            port:
+              number: 80
+  - host: tts.kube.ryougi.ca
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: "{{ .Release.Name }}-service"
+            port:
+              number: 80
+  - host: tts.home.ryougi.ca
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: "{{ .Release.Name }}-service"
+            port:
+              number: 80
+  - host: tts.ryougi.ca
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: "{{ .Release.Name }}-service"
+            port:
+              number: 80
