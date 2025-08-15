@@ -17,6 +17,15 @@ spec:
       labels:
         app: "{{ .Release.Name }}-tgwu"
     spec:
+      runtimeClassName: nvidia
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: nvidia.com/gpu.present
+                operator: In
+                values: ["true"]
       volumes:
       - name: appdata
         persistentVolumeClaim:
@@ -37,11 +46,7 @@ spec:
       containers:
       - name: tgwu 
         image: registry.home.ryougi.ca/tgwu
-        resources:
-          limits:
-            nvidia.com/gpu: 2
-          requests:
-            nvidia.com/gpu: 2
+        # No GPU resource limits - use runtime class and env vars for GPU access
         ports:
         - containerPort: 7860
         - containerPort: 5000
@@ -54,6 +59,10 @@ spec:
           value: "000"
         - name: PORT
           value: "8000"
+        - name: NVIDIA_VISIBLE_DEVICES
+          value: "all"
+        - name: NVIDIA_DRIVER_CAPABILITIES
+          value: "all"
         volumeMounts:
         - mountPath: "/home/app/text-generation-webui/user_data/models"
           name: local-pv
