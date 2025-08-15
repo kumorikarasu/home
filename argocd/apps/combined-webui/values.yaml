@@ -1,1 +1,4 @@
 # Combined WebUI values
+image:
+  repository: registry.home.ryougi.ca/combined-webui
+  tag: latest
