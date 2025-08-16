@@ -26,6 +26,8 @@ data:
     storage:
       filesystem:
         rootdirectory: /var/lib/registry
+      delete:
+        enabled: true
     http:
       addr: :5000
 
@@ -78,6 +80,17 @@ spec:
       labels:
         app: registry-internal
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: nvidia.com/gpu.present
+                operator: NotIn
+                values: ["true"]
+              - key: amd.com/gpu.present
+                operator: NotIn
+                values: ["true"]
       volumes:
       - name: registry-volume
         persistentVolumeClaim:
@@ -117,6 +130,17 @@ spec:
       labels:
         app: registry-external
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: nvidia.com/gpu.present
+                operator: NotIn
+                values: ["true"]
+              - key: amd.com/gpu.present
+                operator: NotIn
+                values: ["true"]
       volumes:
       - name: registry-external-volume
         persistentVolumeClaim:
