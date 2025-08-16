@@ -26,10 +26,19 @@ data:
     storage:
       filesystem:
         rootdirectory: /var/lib/registry
+        maxthreads: 100
       delete:
         enabled: true
     http:
       addr: :5000
+      timeout:
+        read: 900s
+        write: 900s
+        idle: 900s
+      headers:
+        X-Content-Type-Options: [nosniff]
+      relativeurls: false
+      draintimeout: 60s
 
 ---
 apiVersion: v1
@@ -232,6 +241,9 @@ metadata:
   annotations:
     ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/proxy-body-size: 0m
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "7200"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "7200"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "7200"
   name: registry-internal-ingress
 spec:
   ingressClassName: nginx
