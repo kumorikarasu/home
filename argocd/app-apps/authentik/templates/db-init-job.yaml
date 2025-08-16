@@ -1,0 +1,80 @@
+# Database initialization will use SOPS encrypted values
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: authentik-db-init
+  namespace: apps
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: db-init
+        image: postgres:15-alpine
+        env:
+        - name: PGHOST
+          value: "{{ .Values.postgresinit.postgresql.host }}"
+        - name: PGPORT
+          value: "5432"
+        - name: PGUSER
+          value: "postgres"
+        - name: PGPASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: "{{ .Values.postgresinit.postgresql.existingSecret }}"
+              key: "{{ .Values.postgresinit.postgresql.secretKey }}"
+        - name: AUTHENTIK_DB_NAME
+          value: "{{ .Values.postgresinit.postgresql.name }}"
+        - name: AUTHENTIK_DB_USER
+          value: "{{ .Values.authentik.authentik.postgresql.user }}"
+        - name: AUTHENTIK_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: authentik-secrets
+              key: AUTHENTIK_POSTGRESQL__PASSWORD
+        command:
+        - /bin/sh
+        - -c
+        - |
+          set -e
+          echo "Waiting for PostgreSQL to be ready..."
+          until pg_isready; do
+            echo "PostgreSQL is not ready yet, waiting..."
+            sleep 2
+          done
+          
+          echo "Creating Authentik database and user..."
+          
+          # Check if database exists
+          if psql -lqt | cut -d \| -f 1 | grep -qw "$AUTHENTIK_DB_NAME"; then
+            echo "Database $AUTHENTIK_DB_NAME already exists"
+          else
+            echo "Creating database $AUTHENTIK_DB_NAME"
+            psql -c "CREATE DATABASE $AUTHENTIK_DB_NAME;"
+          fi
+          
+          # Check if user exists
+          if psql -t -c "SELECT 1 FROM pg_roles WHERE rolname='$AUTHENTIK_DB_USER'" | grep -q 1; then
+            echo "User $AUTHENTIK_DB_USER already exists"
+            psql -c "ALTER USER $AUTHENTIK_DB_USER WITH PASSWORD '$AUTHENTIK_DB_PASSWORD';"
+          else
+            echo "Creating user $AUTHENTIK_DB_USER"
+            psql -c "CREATE USER $AUTHENTIK_DB_USER WITH PASSWORD '$AUTHENTIK_DB_PASSWORD';"
+          fi
+          
+          echo "Granting privileges..."
+          psql -c "GRANT ALL PRIVILEGES ON DATABASE $AUTHENTIK_DB_NAME TO $AUTHENTIK_DB_USER;"
+          psql -d "$AUTHENTIK_DB_NAME" -c "GRANT ALL ON SCHEMA public TO $AUTHENTIK_DB_USER;"
+          psql -d "$AUTHENTIK_DB_NAME" -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO $AUTHENTIK_DB_USER;"
+          psql -d "$AUTHENTIK_DB_NAME" -c "GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO $AUTHENTIK_DB_USER;"
+          psql -d "$AUTHENTIK_DB_NAME" -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO $AUTHENTIK_DB_USER;"
+          psql -d "$AUTHENTIK_DB_NAME" -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO $AUTHENTIK_DB_USER;"
+          
+          echo "Database setup completed successfully!"
+      backoffLimit: 3

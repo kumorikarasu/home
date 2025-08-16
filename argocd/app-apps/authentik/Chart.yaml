@@ -1,0 +1,10 @@
+apiVersion: v2
+name: authentik-official
+description: Authentik Identity Provider using official Helm chart
+type: application
+version: 0.1.0
+
+dependencies:
+- name: authentik
+  version: "2025.6.4"
+  repository: https://charts.goauthentik.io

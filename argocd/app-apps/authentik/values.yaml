@@ -1,0 +1,77 @@
+postgresinit:
+  postgresql:
+    host: "app-postgres-postgresql.apps.svc.cluster.local"
+    name: "authentik"
+    port: 5432
+    existingSecret: "app-postgres-postgresql"
+    secretKey: "postgres-password"
+
+
+authentik:
+  authentik:
+    # All sensitive values (secret_key, postgresql.user/password, bootstrap_*) 
+    # come from secrets.enc.yaml via SOPS
+    error_reporting:
+      enabled: false
+    postgresql:
+      host: "app-postgres-postgresql.apps.svc.cluster.local"
+      name: "authentik"
+      port: 5432
+
+  server:
+    affinity:
+      nodeAffinity:
+        type: soft
+        matchExpressions:
+          - key: nvidia.com/gpu.present
+            operator: DoesNotExist
+    ingress:
+      enabled: true
+      ingressClassName: nginx
+      hosts:
+        - auth.home.ryougi.ca
+        - auth.ryougi.ca
+      paths:
+        - "/"
+      pathType: Prefix
+      tls:
+        - secretName: auth-home-ryougi-ca-tls
+          hosts:
+            - auth.home.ryougi.ca
+        - secretName: auth-ryougi-ca-tls
+          hosts:
+            - auth.ryougi.ca
+        
+  worker:
+    affinity:
+      nodeAffinity:
+        type: soft
+        matchExpressions:
+          - key: nvidia.com/gpu.present
+            operator: DoesNotExist
+
+  postgresql:
+    enabled: false
+        
+  redis:
+    enabled: true
+    auth:
+      enabled: false
+    architecture: standalone
+    master:
+      persistence:
+        enabled: false  # No persistence needed for cache/queues
+      resources:
+        requests:
+          memory: 64Mi
+          cpu: 50m
+        limits:
+          memory: 128Mi
+          cpu: 100m
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: nvidia.com/gpu.present
+                operator: DoesNotExist
