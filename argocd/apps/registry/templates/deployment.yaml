@@ -180,7 +180,7 @@ spec:
   - ReadWriteOnce
   resources:
     requests:
-      storage: 128Gi
+      storage: 256Gi
 
 ---
 apiVersion: v1
@@ -192,7 +192,7 @@ spec:
   - ReadWriteOnce
   resources:
     requests:
-      storage: 128Gi
+      storage: 256Gi
 
 ---
 apiVersion: v1
