@@ -32,8 +32,10 @@ spec:
         - |
           mkdir -p /data/volumes/tts-models
           mkdir -p /data/volumes/tts-extensions
+          mkdir -p /data/volumes/tts-outputs
           chmod 755 /data/volumes/tts-models
           chmod 755 /data/volumes/tts-extensions
+          chmod 755 /data/volumes/tts-outputs
         volumeMounts:
         - name: host-data
           mountPath: /data
@@ -42,6 +44,72 @@ spec:
         hostPath:
           path: /data
           type: DirectoryOrCreate
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ .Release.Name }}-init-defaults"
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "-3"
+    "helm.sh/hook-delete-policy": before-hook-creation
+spec:
+  template:
+    spec:
+      runtimeClassName: nvidia
+      restartPolicy: OnFailure
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: nvidia.com/gpu.present
+                operator: In
+                values: ["true"]
+      volumes:
+      - name: "{{ .Release.Name }}-models"
+        persistentVolumeClaim:
+          claimName: "{{ .Release.Name }}-models-pvc"
+      - name: "{{ .Release.Name }}-extensions"
+        persistentVolumeClaim:
+          claimName: "{{ .Release.Name }}-extensions-pvc"
+      containers:
+      - name: init-defaults
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        env:
+        - name: NVIDIA_VISIBLE_DEVICES
+          value: "all"
+        - name: NVIDIA_DRIVER_CAPABILITIES
+          value: "all"
+        command:
+        - /bin/bash
+        - -c
+        - |
+          echo "Initializing TTS defaults..."
+          
+          # Copy built-in models if persistent volume is empty
+          if [ ! "$(ls -A /mnt/models)" ]; then
+            echo "Copying built-in models..."
+            cp -r /app/tts-generation-webui/models/* /mnt/models/ 2>/dev/null || echo "No built-in models to copy"
+          else
+            echo "Models directory already initialized"
+          fi
+          
+          # Copy built-in extensions if persistent volume is empty  
+          if [ ! "$(ls -A /mnt/extensions)" ]; then
+            echo "Copying built-in extensions..."
+            cp -r /app/tts-generation-webui/extensions/* /mnt/extensions/ 2>/dev/null || echo "No built-in extensions to copy"
+          else
+            echo "Extensions directory already initialized"
+          fi
+          
+          echo "Initialization complete!"
+        volumeMounts:
+        - mountPath: "/mnt/models"
+          name: "{{ .Release.Name }}-models"
+        - mountPath: "/mnt/extensions"
+          name: "{{ .Release.Name }}-extensions"
 
 ---
 apiVersion: apps/v1
@@ -81,12 +149,18 @@ spec:
       - name: "{{ .Release.Name }}-extensions"
         persistentVolumeClaim:
           claimName: "{{ .Release.Name }}-extensions-pvc"
+      - name: "{{ .Release.Name }}-outputs"
+        persistentVolumeClaim:
+          claimName: "{{ .Release.Name }}-outputs-pvc"
       containers:
       - name: tts
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         # No GPU resource limits - use runtime class and env vars for GPU access
         ports:
         - containerPort: 7770
+          name: gradio
+        - containerPort: 7778
+          name: openai-api
         env:
         - name: PUID
           value: "1000"
@@ -99,9 +173,11 @@ spec:
         - name: NVIDIA_DRIVER_CAPABILITIES
           value: "all"
         volumeMounts:
-        - mountPath: "/app/tts-generation-webui/data/models/user"
+        - mountPath: "/app/tts-generation-webui/models"
           name: "{{ .Release.Name }}-models"
-        - mountPath: "/app/tts-generation-webui/extensions/user"
+        - mountPath: "/app/tts-generation-webui/outputs"
+          name: "{{ .Release.Name }}-outputs"
+        - mountPath: "/app/tts-generation-webui/extensions"
           name: "{{ .Release.Name }}-extensions"
 
 ---
@@ -113,10 +189,14 @@ spec:
   selector:
     app: "{{ .Release.Name }}-tts"
   ports:
-    - name: http
+    - name: gradio
       protocol: TCP
       port: 80
       targetPort: 7770
+    - name: openai-api
+      protocol: TCP
+      port: 7778
+      targetPort: 7778
 
 ---
 kind: PersistentVolumeClaim
@@ -182,6 +262,43 @@ spec:
   storageClassName: local-storage
   local:
     path: /data/volumes/tts-extensions
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - node4
+          - node5
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: "{{ .Release.Name }}-outputs-pvc"
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: local-storage
+  resources:
+    requests:
+      storage: 16Gi
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: "{{ .Release.Name }}-outputs-pv"
+spec:
+  capacity:
+    storage: 16Gi
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /data/volumes/tts-outputs
   nodeAffinity:
     required:
       nodeSelectorTerms:

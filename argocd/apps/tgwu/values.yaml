@@ -1,0 +1,4 @@
+# TGWU values
+image:
+  repository: registry.home.ryougi.ca/tgwu
+  tag: latest
