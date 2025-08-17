@@ -55,9 +55,9 @@ data:
         - localhost
         - 127.0.0.1
     # Enable multi-user mode
-    enableUserAccounts: false
+    enableUserAccounts: true
     # Enable discreet login mode: hides user list on the login screen
-    enableDiscreetLogin: false
+    enableDiscreetLogin: true
     # User session timeout *in seconds* (defaults to 24 hours).
     ## Set to a positive number to expire session after a certain time of inactivity
     ## Set to 0 to expire session when the browser is closed
@@ -70,6 +70,8 @@ data:
     # Disable startup security checks - NOT RECOMMENDED
     # NOTE: Security is disabled as this is not a public server, it is only accessible through cloudflare zero trust
     securityOverride: true
+    # Enable Authelia/SSO authentication (works with Cloudflare Access headers)
+    autheliaAuth: true
     # -- ADVANCED CONFIGURATION --
     # Open the browser automatically
     autorun: true

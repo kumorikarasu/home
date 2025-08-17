@@ -1,0 +1,22 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: st-test-proxy-ingress
+spec:
+  ingressClassName: nginx
+  tls:
+    - secretName: st-test-home-ryougi-ca-tls
+      hosts:
+        - st-test.home.ryougi.ca
+  rules:
+  - host: st-test.home.ryougi.ca
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: ak-outpost-authentik-embedded-outpost
+            port:
+              number: 9000

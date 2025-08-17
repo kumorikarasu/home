@@ -62,6 +62,9 @@ spec:
         - mountPath: "/home/node/app/plugins"
           subPath: "st/kumori/plugins"
           name: appdata
+        - mountPath: "/home/node/app/public/scripts/extensions/third-party"
+          subPath: "st/kumori/third-party"
+          name: appdata
           
       
 ---
@@ -84,6 +87,13 @@ kind: Ingress
 metadata:
   annotations:
     ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      set $transformed_user $http_cf_access_authenticated_user_email;
+      if ($transformed_user ~ "^(.+)@(.+)\.(.+)$") {
+        set $transformed_user "$1-$2-$3";
+      }
+      more_set_headers "Remote-User: $transformed_user";
+      proxy_set_header Remote-User $transformed_user;
   name: "{{ .Release.Name }}-ingress"
 spec:
   ingressClassName: nginx
