@@ -1,0 +1,65 @@
+kube-prometheus-stack:
+  defaultRules:
+    create: true
+
+  kubeControllerManager:
+    enabled: false
+
+  kubeScheduler:
+    enabled: false
+
+  grafana:
+    additionalDataSources:
+      - name: monitoring
+        type: prometheus
+        access: proxy
+        url: http://grafana-kube-prometheus-stack-prometheus.monitoring.svc:9090
+        isDefault: true
+        editable: false
+      - name: storage-sentinel
+        type: prometheus
+        access: proxy
+        url: http://storage-sentinel-kube-prometheus-stack-prometheus.monitoring.svc:9090
+        isDefault: false
+        editable: false
+    ingress:
+      enabled: true
+      ingressClassName: nginx
+      hosts:
+        - grafana.home.ryougi.ca
+        - grafana.ryougi.ca
+      path: /
+      pathType: Prefix
+    persistence:
+      enabled: false
+
+  prometheus:
+    prometheusSpec:
+      retention: 15d
+      storageSpec:
+        volumeClaimTemplate:
+          spec:
+            accessModes: ["ReadWriteOnce"]
+            resources:
+              requests:
+                storage: 50Gi
+    ingress:
+      enabled: true
+      ingressClassName: nginx
+      hosts:
+        - prometheus.home.ryougi.ca
+        - prometheus.ryougi.ca
+      paths:
+        - /
+      pathType: Prefix
+
+  alertmanager:
+    ingress:
+      enabled: true
+      ingressClassName: nginx
+      hosts:
+        - alertmanager.home.ryougi.ca
+        - alertmanager.ryougi.ca
+      paths:
+        - /
+      pathType: Prefix

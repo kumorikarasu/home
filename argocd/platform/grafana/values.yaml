@@ -1,0 +1,15 @@
+kube-prometheus-stack:
+  crds:
+    enabled: true
+
+  grafana:
+    enabled: true
+
+  prometheus:
+    enabled: true
+
+  alertmanager:
+    enabled: true
+
+  kubeEtcd:
+    enabled: false

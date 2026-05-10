@@ -1,0 +1,16 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: platform
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  description: Platform and cluster services for the homelab
+  sourceRepos:
+    - https://github.com/kumorikarasu/home.git
+  destinations:
+    - server: https://kubernetes.default.svc
+      namespace: monitoring
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'

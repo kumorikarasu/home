@@ -1,0 +1,5 @@
+kube-prometheus-stack:
+  prometheus:
+    prometheusSpec:
+      externalLabels:
+        stack: storage-sentinel
