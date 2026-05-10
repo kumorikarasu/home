@@ -1,0 +1,60 @@
+---
+k8s_storage_packages:
+  - open-iscsi
+  - multipath-tools
+
+k8s_storage_services:
+  - iscsid
+  - multipathd
+
+k8s_storage_multipath_find_multipaths: "no"
+k8s_storage_multipath_user_friendly_names: "yes"
+
+k8s_storage_multipath_devices:
+  - vendor: "TrueNAS"
+    product: "iSCSI Disk"
+    path_grouping_policy: "multibus"
+    path_selector: "service-time 0"
+    path_checker: "tur"
+    failback: "immediate"
+    no_path_retry: "60"
+    fast_io_fail_tmo: "5"
+    dev_loss_tmo: "600"
+  - vendor: "Nimble"
+    product: "Server"
+    hardware_handler: "1 alua"
+    path_grouping_policy: "group_by_prio"
+    path_selector: "service-time 0"
+    path_checker: "tur"
+    prio: "alua"
+    failback: "immediate"
+    no_path_retry: "30"
+    fast_io_fail_tmo: "5"
+    dev_loss_tmo: "infinity"
+  - vendor: "3PARdata"
+    product: "VV"
+    hardware_handler: "1 alua"
+    path_grouping_policy: "group_by_prio"
+    path_selector: "round-robin 0"
+    path_checker: "tur"
+    prio: "alua"
+    failback: "immediate"
+    no_path_retry: "18"
+    rr_min_io: "100"
+    features: "0"
+    getuid_callout: "/lib/udev/scsi_id --whitelisted --device=/dev/%n"
+
+k8s_storage_iscsi_node_startup: "manual"
+k8s_storage_iscsi_leading_login: "No"
+k8s_storage_iscsi_replacement_timeout: "120"
+k8s_storage_iscsi_login_timeout: "15"
+k8s_storage_iscsi_logout_timeout: "15"
+k8s_storage_iscsi_noop_out_interval: "5"
+k8s_storage_iscsi_noop_out_timeout: "10"
+k8s_storage_iscsi_abort_timeout: "15"
+k8s_storage_iscsi_lu_reset_timeout: "30"
+k8s_storage_iscsi_tgt_reset_timeout: "30"
+k8s_storage_iscsi_host_reset_timeout: "60"
+k8s_storage_iscsi_initial_login_retry_max: "8"
+k8s_storage_iscsi_cmds_max: "512"
+k8s_storage_iscsi_queue_depth: "256"

@@ -1,0 +1,51 @@
+# Managed by Ansible.
+
+defaults {
+    find_multipaths     {{ k8s_storage_multipath_find_multipaths }}
+    user_friendly_names {{ k8s_storage_multipath_user_friendly_names }}
+}
+
+devices {
+{% for device in k8s_storage_multipath_devices %}
+    device {
+        vendor               "{{ device.vendor }}"
+        product              "{{ device.product }}"
+{% if device.hardware_handler is defined %}
+        hardware_handler     "{{ device.hardware_handler }}"
+{% endif %}
+{% if device.dev_loss_tmo is defined %}
+        dev_loss_tmo         {{ device.dev_loss_tmo }}
+{% endif %}
+{% if device.fast_io_fail_tmo is defined %}
+        fast_io_fail_tmo     {{ device.fast_io_fail_tmo }}
+{% endif %}
+{% if device.failback is defined %}
+        failback             {{ device.failback }}
+{% endif %}
+{% if device.path_grouping_policy is defined %}
+        path_grouping_policy {{ device.path_grouping_policy }}
+{% endif %}
+{% if device.no_path_retry is defined %}
+        no_path_retry        {{ device.no_path_retry }}
+{% endif %}
+{% if device.path_selector is defined %}
+        path_selector        "{{ device.path_selector }}"
+{% endif %}
+{% if device.prio is defined %}
+        prio                 {{ device.prio }}
+{% endif %}
+{% if device.path_checker is defined %}
+        path_checker         {{ device.path_checker }}
+{% endif %}
+{% if device.rr_min_io is defined %}
+        rr_min_io            {{ device.rr_min_io }}
+{% endif %}
+{% if device.features is defined %}
+        features             "{{ device.features }}"
+{% endif %}
+{% if device.getuid_callout is defined %}
+        getuid_callout       "{{ device.getuid_callout }}"
+{% endif %}
+    }
+{% endfor %}
+}

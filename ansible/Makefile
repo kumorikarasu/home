@@ -50,3 +50,6 @@ kubeconf:
 
 k8s-post-setup:
 	ansible-playbook k8s-post-setup.yml
+
+k8s-storage:
+	ansible-playbook k8s-storage.yml -i ansible.hosts

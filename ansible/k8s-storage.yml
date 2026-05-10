@@ -1,13 +1,11 @@
 ---
-- name: Kube Common Playbook
-  hosts: 
+- name: Kubernetes Storage Node Preparation
+  hosts:
     - kube_node
     - kube_control_plane
     - etcd
-  gather_facts: true  
+  gather_facts: true
   vars:
     ansible_python_interpreter: /usr/bin/python3
-    nfs: true
   roles:
-    - common
     - k8s-storage

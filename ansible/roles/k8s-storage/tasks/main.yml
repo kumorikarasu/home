@@ -1,0 +1,38 @@
+---
+- name: Install node storage packages
+  become: true
+  ansible.builtin.apt:
+    name: "{{ k8s_storage_packages }}"
+    state: present
+    update_cache: true
+
+- name: Render multipath configuration
+  become: true
+  ansible.builtin.template:
+    src: multipath.conf.j2
+    dest: /etc/multipath.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart multipathd
+
+- name: Render iSCSI initiator configuration
+  become: true
+  ansible.builtin.template:
+    src: iscsid.conf.j2
+    dest: /etc/iscsi/iscsid.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart iscsid
+
+- name: Enable and start storage services
+  become: true
+  ansible.builtin.service:
+    name: "{{ item }}"
+    enabled: true
+    state: started
+  loop: "{{ k8s_storage_services }}"
+
+- name: Flush storage service handlers
+  ansible.builtin.meta: flush_handlers

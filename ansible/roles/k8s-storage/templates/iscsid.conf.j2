@@ -1,0 +1,17 @@
+# Managed by Ansible.
+
+iscsid.startup = /bin/systemctl start iscsid.socket
+node.startup = {{ k8s_storage_iscsi_node_startup }}
+node.leading_login = {{ k8s_storage_iscsi_leading_login }}
+node.session.timeo.replacement_timeout = {{ k8s_storage_iscsi_replacement_timeout }}
+node.conn[0].timeo.login_timeout = {{ k8s_storage_iscsi_login_timeout }}
+node.conn[0].timeo.logout_timeout = {{ k8s_storage_iscsi_logout_timeout }}
+node.conn[0].timeo.noop_out_interval = {{ k8s_storage_iscsi_noop_out_interval }}
+node.conn[0].timeo.noop_out_timeout = {{ k8s_storage_iscsi_noop_out_timeout }}
+node.session.err_timeo.abort_timeout = {{ k8s_storage_iscsi_abort_timeout }}
+node.session.err_timeo.lu_reset_timeout = {{ k8s_storage_iscsi_lu_reset_timeout }}
+node.session.err_timeo.tgt_reset_timeout = {{ k8s_storage_iscsi_tgt_reset_timeout }}
+node.session.err_timeo.host_reset_timeout = {{ k8s_storage_iscsi_host_reset_timeout }}
+node.session.initial_login_retry_max = {{ k8s_storage_iscsi_initial_login_retry_max }}
+node.session.cmds_max = {{ k8s_storage_iscsi_cmds_max }}
+node.session.queue_depth = {{ k8s_storage_iscsi_queue_depth }}
