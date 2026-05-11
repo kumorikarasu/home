@@ -36,3 +36,73 @@ data:
         fileName: '.argocd-skipcrds'
       allowConcurrency: true
       lockRepo: true
+  sops-live.yaml: |
+    apiVersion: argoproj.io/v1alpha1
+    kind: ConfigManagementPlugin
+    metadata:
+      name: sops-live
+    spec:
+      version: v1.0
+      init:
+        command: ["/bin/sh", "-c"]
+        args: ["helm dependency update"]
+      generate:
+        command: ["sh", "-c"]
+        args:
+          - |
+            set -eu
+
+            group="$(basename "$(dirname "$PWD")")"
+            app="$(basename "$PWD")"
+            live_base="../../../live/${group}/${app}"
+            values_args="--values values.yaml"
+
+            if [ -f "${live_base}.yaml" ]; then
+              values_args="${values_args} --values ${live_base}.yaml"
+            fi
+
+            if [ -f "${live_base}.enc.yaml" ]; then
+              sops exec-file --filename secrets.json "${live_base}.enc.yaml" \
+                "helm template --include-crds --namespace ${ARGOCD_APP_NAMESPACE} --release-name ${ARGOCD_APP_NAME} . ${values_args} --values {}"
+            else
+              helm template --include-crds --namespace "${ARGOCD_APP_NAMESPACE}" --release-name "${ARGOCD_APP_NAME}" . ${values_args}
+            fi
+      discover:
+        fileName: 'Chart.yaml'
+      allowConcurrency: true
+      lockRepo: true
+  sops-live-skipcrds.yaml: |
+    apiVersion: argoproj.io/v1alpha1
+    kind: ConfigManagementPlugin
+    metadata:
+      name: sops-live-skipcrds
+    spec:
+      version: v1.0
+      init:
+        command: ["/bin/sh", "-c"]
+        args: ["helm dependency update"]
+      generate:
+        command: ["sh", "-c"]
+        args:
+          - |
+            set -eu
+
+            group="$(basename "$(dirname "$PWD")")"
+            app="$(basename "$PWD")"
+            live_base="../../../live/${group}/${app}"
+            values_args="--values values.yaml"
+
+            if [ -f "${live_base}.yaml" ]; then
+              values_args="${values_args} --values ${live_base}.yaml"
+            fi
+
+            if [ -f "${live_base}.enc.yaml" ]; then
+              sops exec-file --filename secrets.json "${live_base}.enc.yaml" \
+                "helm template --skip-crds --namespace ${ARGOCD_APP_NAMESPACE} --release-name ${ARGOCD_APP_NAME} . ${values_args} --values {}"
+            else
+              helm template --skip-crds --namespace "${ARGOCD_APP_NAMESPACE}" --release-name "${ARGOCD_APP_NAME}" . ${values_args}
+            fi
+      discover:
+        fileName: 'Chart.yaml'
+      allowConcurrency: true
+      lockRepo: true

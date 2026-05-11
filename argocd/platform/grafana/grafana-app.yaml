@@ -10,7 +10,7 @@ spec:
     targetRevision: HEAD
     path: argocd/platform/grafana
     plugin:
-      name: sops
+      name: sops-live
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring

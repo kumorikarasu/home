@@ -4,12 +4,65 @@ kube-prometheus-stack:
 
   grafana:
     enabled: true
+    persistence:
+      enabled: true
+      type: pvc
+      existingClaim: grafana-data
+      accessModes:
+        - ReadWriteOnce
+      size: 10Gi
+      storageClassName: ""
 
   prometheus:
     enabled: true
+    prometheusSpec:
+      storageSpec:
+        volumeClaimTemplate:
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 50Gi
+            storageClassName: ""
+            selector:
+              matchLabels:
+                ryougi.ca/prometheus-storage: monitoring-prometheus
 
   alertmanager:
     enabled: true
 
   kubeEtcd:
     enabled: false
+
+platformStorage:
+  csi:
+    driver: csi.hpe.com
+    fsType: xfs
+    secretName: system-zvolcsi-truenas-secret
+    secretNamespace: system-zvolcsi
+    volumeAttributes:
+      allowOverrides: sparse,compression,deduplication,volblocksize,sync,description
+      compression: LZ4
+      deduplication: "OFF"
+      hostEncryption: "false"
+      root: Backup/csi-volumes
+      sync: STANDARD
+      targetScope: volume
+      volblocksize: 8K
+      volumeAccessMode: mount
+
+  grafana:
+    pvName: grafana-platform-pv
+    claimName: grafana-data
+    size: 10Gi
+    reclaimPolicy: Retain
+    volumeHandle: Backup_csi-volumes_monitoring-grafana
+
+  prometheus:
+    pvName: prometheus-platform-pv
+    size: 50Gi
+    reclaimPolicy: Retain
+    selectorLabel: ryougi.ca/prometheus-storage
+    selectorValue: monitoring-prometheus
+    volumeHandle: Backup_csi-volumes_monitoring-prometheus

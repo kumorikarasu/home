@@ -1,0 +1,88 @@
+{{- $csi := .Values.platformStorage.csi -}}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Values.platformStorage.grafana.pvName }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  capacity:
+    storage: {{ .Values.platformStorage.grafana.size }}
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: {{ .Values.platformStorage.grafana.claimName }}
+    namespace: {{ .Release.Namespace }}
+  csi:
+    controllerExpandSecretRef:
+      name: {{ $csi.secretName }}
+      namespace: {{ $csi.secretNamespace }}
+    controllerPublishSecretRef:
+      name: {{ $csi.secretName }}
+      namespace: {{ $csi.secretNamespace }}
+    driver: {{ $csi.driver }}
+    fsType: {{ $csi.fsType }}
+    nodePublishSecretRef:
+      name: {{ $csi.secretName }}
+      namespace: {{ $csi.secretNamespace }}
+    nodeStageSecretRef:
+      name: {{ $csi.secretName }}
+      namespace: {{ $csi.secretNamespace }}
+    volumeAttributes:
+{{- range $key, $value := $csi.volumeAttributes }}
+      {{ $key }}: {{ $value | quote }}
+{{- end }}
+    volumeHandle: {{ .Values.platformStorage.grafana.volumeHandle }}
+  persistentVolumeReclaimPolicy: {{ .Values.platformStorage.grafana.reclaimPolicy }}
+  storageClassName: ""
+  volumeMode: Filesystem
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.platformStorage.grafana.claimName }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.platformStorage.grafana.size }}
+  storageClassName: ""
+  volumeName: {{ .Values.platformStorage.grafana.pvName }}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  labels:
+    {{ .Values.platformStorage.prometheus.selectorLabel }}: {{ .Values.platformStorage.prometheus.selectorValue | quote }}
+  name: {{ .Values.platformStorage.prometheus.pvName }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  capacity:
+    storage: {{ .Values.platformStorage.prometheus.size }}
+  csi:
+    controllerExpandSecretRef:
+      name: {{ $csi.secretName }}
+      namespace: {{ $csi.secretNamespace }}
+    controllerPublishSecretRef:
+      name: {{ $csi.secretName }}
+      namespace: {{ $csi.secretNamespace }}
+    driver: {{ $csi.driver }}
+    fsType: {{ $csi.fsType }}
+    nodePublishSecretRef:
+      name: {{ $csi.secretName }}
+      namespace: {{ $csi.secretNamespace }}
+    nodeStageSecretRef:
+      name: {{ $csi.secretName }}
+      namespace: {{ $csi.secretNamespace }}
+    volumeAttributes:
+{{- range $key, $value := $csi.volumeAttributes }}
+      {{ $key }}: {{ $value | quote }}
+{{- end }}
+    volumeHandle: {{ .Values.platformStorage.prometheus.volumeHandle }}
+  persistentVolumeReclaimPolicy: {{ .Values.platformStorage.prometheus.reclaimPolicy }}
+  storageClassName: ""
+  volumeMode: Filesystem
