@@ -30,3 +30,5 @@ spec:
         syncOptions:
           - ApplyOutOfSyncOnly=true
           - CreateNamespace=true
+          - ServerSideApply=true
+          - SkipDryRunOnMissingResource=true
