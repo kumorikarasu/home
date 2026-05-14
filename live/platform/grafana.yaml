@@ -2,18 +2,6 @@ kube-prometheus-stack:
   defaultRules:
     create: true
 
-  coreDns:
-    enabled: false
-
-  kubeControllerManager:
-    enabled: false
-
-  kubeProxy:
-    enabled: false
-
-  kubeScheduler:
-    enabled: false
-
   grafana:
     additionalDataSources:
       - name: monitoring
