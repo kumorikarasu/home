@@ -1,4 +1,10 @@
 kube-prometheus-stack:
+  coreDns:
+    enabled: false
+
+  kubeProxy:
+    enabled: false
+
   prometheus:
     prometheusSpec:
       externalLabels:
