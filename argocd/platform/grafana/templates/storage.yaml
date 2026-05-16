@@ -33,3 +33,17 @@ spec:
   persistentVolumeReclaimPolicy: {{ .Values.platformStorage.prometheus.reclaimPolicy }}
   storageClassName: ""
   volumeMode: Filesystem
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.platformStorage.prometheus.claimName }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.platformStorage.prometheus.size }}
+  storageClassName: ""
+  volumeName: {{ .Values.platformStorage.prometheus.pvName }}

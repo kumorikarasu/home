@@ -1,11 +1,8 @@
-kube-prometheus-stack:
-  coreDns:
-    enabled: false
+prometheus:
+  server:
+    retention: 1h
+    persistentVolume:
+      enabled: false
 
-  kubeProxy:
+  alertmanager:
     enabled: false
-
-  prometheus:
-    prometheusSpec:
-      externalLabels:
-        stack: storage-sentinel

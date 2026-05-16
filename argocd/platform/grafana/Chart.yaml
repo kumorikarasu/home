@@ -4,6 +4,9 @@ type: application
 version: 1.0.0
 appVersion: "1.0.0"
 dependencies:
-  - name: kube-prometheus-stack
-    version: 83.6.0
-    repository: "oci://ghcr.io/prometheus-community/charts"
+  - name: grafana
+    version: 10.5.15
+    repository: "https://grafana.github.io/helm-charts"
+  - name: prometheus
+    version: 29.6.0
+    repository: "https://prometheus-community.github.io/helm-charts"

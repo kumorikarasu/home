@@ -1,59 +1,55 @@
-kube-prometheus-stack:
-  defaultRules:
-    create: true
+grafana:
+  persistence:
+    enabled: false
 
-  grafana:
-    additionalDataSources:
-      - name: monitoring
-        type: prometheus
-        access: proxy
-        url: http://grafana-kube-prometheus-stack-prometheus.monitoring.svc:9090
-        isDefault: true
-        editable: false
-      - name: storage-sentinel
-        type: prometheus
-        access: proxy
-        url: http://storage-sentinel-kube-prometheus-stack-prometheus.monitoring.svc:9090
-        isDefault: false
-        editable: false
-    ingress:
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    hosts:
+      - grafana.home.ryougi.ca
+      - grafana.ryougi.ca
+    path: /
+    pathType: Prefix
+
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+        - name: monitoring
+          type: prometheus
+          access: proxy
+          url: http://platform-grafana-prometheus-server.monitoring.svc:80
+          isDefault: true
+          editable: false
+        - name: storage-sentinel
+          type: prometheus
+          access: proxy
+          url: http://platform-storage-sentinel-prometheus-server.monitoring.svc:80
+          isDefault: false
+          editable: false
+
+prometheus:
+  server:
+    retention: 15d
+    persistentVolume:
       enabled: true
-      ingressClassName: nginx
-      hosts:
-        - grafana.home.ryougi.ca
-        - grafana.ryougi.ca
-      path: /
-      pathType: Prefix
-    persistence:
-      enabled: false
+      existingClaim: prometheus-data
+      accessModes:
+        - ReadWriteOnce
+      size: 50Gi
+      storageClass: ""
+      volumeName: prometheus-platform-pv
 
-  prometheus:
-    prometheusSpec:
-      retention: 15d
-      storageSpec:
-        volumeClaimTemplate:
-          spec:
-            accessModes: ["ReadWriteOnce"]
-            resources:
-              requests:
-                storage: 50Gi
     ingress:
       enabled: true
       ingressClassName: nginx
       hosts:
         - prometheus.home.ryougi.ca
         - prometheus.ryougi.ca
-      paths:
-        - /
+      path: /
       pathType: Prefix
 
   alertmanager:
-    ingress:
-      enabled: true
-      ingressClassName: nginx
-      hosts:
-        - alertmanager.home.ryougi.ca
-        - alertmanager.ryougi.ca
-      paths:
-        - /
-      pathType: Prefix
+    enabled: true
+    persistence:
+      enabled: false

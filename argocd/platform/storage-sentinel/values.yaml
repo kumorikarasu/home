@@ -1,25 +1,8 @@
-kube-prometheus-stack:
-  defaultRules:
-    create: false
-
-  grafana:
-    enabled: false
+prometheus:
+  server:
+    retention: 1h
+    persistentVolume:
+      enabled: false
 
   alertmanager:
     enabled: false
-
-  kubeControllerManager:
-    enabled: false
-
-  kubeScheduler:
-    enabled: false
-
-  kubeEtcd:
-    enabled: false
-
-  prometheus:
-    prometheusSpec:
-      retention: 1h
-      serviceMonitorSelectorNilUsesHelmValues: true
-      podMonitorSelectorNilUsesHelmValues: true
-      probeSelectorNilUsesHelmValues: true

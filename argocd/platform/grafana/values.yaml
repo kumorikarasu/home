@@ -1,39 +1,63 @@
-kube-prometheus-stack:
-  crds:
-    enabled: true
+grafana:
+  persistence:
+    enabled: false
 
-  grafana:
+  ingress:
     enabled: true
-    persistence:
+    ingressClassName: nginx
+    hosts:
+      - grafana.home.ryougi.ca
+      - grafana.ryougi.ca
+    path: /
+    pathType: Prefix
+
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+        - name: monitoring
+          type: prometheus
+          access: proxy
+          url: http://platform-grafana-prometheus-server.monitoring.svc:80
+          isDefault: true
+          editable: false
+        - name: storage-sentinel
+          type: prometheus
+          access: proxy
+          url: http://platform-storage-sentinel-prometheus-server.monitoring.svc:80
+          isDefault: false
+          editable: false
+
+  grafana.ini:
+    server:
+      domain: grafana.ryougi.ca
+
+prometheus:
+  server:
+    retention: 15d
+    persistentVolume:
       enabled: true
-      type: pvc
-      existingClaim: grafana-data
+      existingClaim: prometheus-data
       accessModes:
         - ReadWriteOnce
-      size: 10Gi
-      storageClassName: ""
+      size: 50Gi
+      storageClass: ""
+      volumeName: prometheus-platform-pv
 
-  prometheus:
-    enabled: true
-    prometheusSpec:
-      storageSpec:
-        volumeClaimTemplate:
-          spec:
-            accessModes:
-              - ReadWriteOnce
-            resources:
-              requests:
-                storage: 50Gi
-            storageClassName: ""
-            selector:
-              matchLabels:
-                ryougi.ca/prometheus-storage: monitoring-prometheus
+    ingress:
+      enabled: true
+      ingressClassName: nginx
+      hosts:
+        - prometheus.home.ryougi.ca
+        - prometheus.ryougi.ca
+      paths:
+        - /
+      pathType: Prefix
 
   alertmanager:
     enabled: true
-
-  kubeEtcd:
-    enabled: false
+    persistence:
+      enabled: false
 
 platformStorage:
   csi:
@@ -52,14 +76,8 @@ platformStorage:
       volblocksize: 8K
       volumeAccessMode: mount
 
-  grafana:
-    pvName: grafana-platform-pv
-    claimName: grafana-data
-    size: 10Gi
-    reclaimPolicy: Retain
-    volumeHandle: Backup_csi-volumes_monitoring-grafana
-
   prometheus:
+    claimName: prometheus-data
     pvName: prometheus-platform-pv
     size: 50Gi
     reclaimPolicy: Retain
