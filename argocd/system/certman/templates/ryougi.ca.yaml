@@ -18,6 +18,11 @@ spec:
             - '*.kube.home.ryougi.ca'
             - 'masterexploder.ca'
             - '*.masterexploder.ca'
+            - 'wrbgc.ca'
+            - '*.wrbgc.ca'
+            - 'dev.wrbgc.ca'
+            - 'wrbgc.home.ryougi.ca'
+            - 'dev.wrbgc.home.ryougi.ca'
         dns01:
           cloudflare:
             apiTokenSecretRef:

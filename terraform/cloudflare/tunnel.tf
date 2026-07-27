@@ -6,12 +6,12 @@ resource "cloudflare_tunnel" "test" {
 
 resource "cloudflare_tunnel_config" "test_config" {
   account_id = var.account_id
-  tunnel_id = cloudflare_tunnel.test.id
+  tunnel_id  = cloudflare_tunnel.test.id
 
   config {
     ingress_rule {
       hostname = "test.ryougi.ca"
-      service = "https://localhost:80"
+      service  = "https://localhost:80"
     }
 
     ingress_rule {

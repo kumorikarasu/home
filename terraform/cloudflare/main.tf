@@ -1,9 +1,14 @@
 data "cloudflare_zone" "ryougi" {
-  name = "ryougi.ca"
+  name       = "ryougi.ca"
   account_id = var.account_id
 }
 
 data "cloudflare_zone" "masterexploder" {
-  name = "masterexploder.com"
+  name       = "masterexploder.com"
+  account_id = var.account_id
+}
+
+data "cloudflare_zone" "wrbgc" {
+  name       = "wrbgc.ca"
   account_id = var.account_id
 }

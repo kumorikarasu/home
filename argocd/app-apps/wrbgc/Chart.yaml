@@ -1,0 +1,6 @@
+apiVersion: v2
+name: wrbgc
+description: Waterloo Region Board Game Community static website
+type: application
+version: 1.0.0
+appVersion: "0.1.0"

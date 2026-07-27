@@ -21,11 +21,3 @@ resource "cloudflare_record" "pfsense" {
   type    = "CNAME"
   proxied = true
 }
-
-resource "cloudflare_record" "test" {
-  zone_id = data.cloudflare_zone.ryougi.id
-  name    = "test"
-  value   = cloudflare_tunnel.test.cname
-  type    = "CNAME"
-  proxied = true
-}

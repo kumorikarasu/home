@@ -1,0 +1,27 @@
+image:
+  repository: registry.home.ryougi.ca/wrbgc-site
+  tag: latest
+  pullPolicy: Always
+
+replicaCount: 1
+
+service:
+  port: 80
+  targetPort: 80
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/cluster-issuer: letsencrypt-production
+  hosts:
+    - wrbgc.ca
+    - wrbgc.home.ryougi.ca
+    - dev.wrbgc.ca
+    - dev.wrbgc.home.ryougi.ca
+  tls:
+    enabled: true
+    secretName: wrbgc-ca-tls
+
+resources: {}

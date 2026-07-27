@@ -61,6 +61,8 @@ tgwu.kube.home.ryougi.ca.     IN      A      192.168.28.10
 tavern.kube.home.ryougi.ca.   IN      A      192.168.28.10
 argocd.home.ryougi.ca.        IN      A      192.168.28.10
 registry.home.ryougi.ca.      IN      A      192.168.28.10
+wrbgc.home.ryougi.ca.         IN      A      192.168.28.10
+dev.wrbgc.home.ryougi.ca.     IN      A      192.168.28.10
 
 ; VM Services
 tavern.home.ryougi.ca.        IN      A      192.168.28.10
@@ -84,8 +86,14 @@ factorio2.static.home.ryougi.ca.   IN      A      192.168.28.12
 factorio2.static.home.ryougi.ca.   IN      A      192.168.28.14
 
 ; Acme
-_acme-challenge.home.ryougi.ca.        IN      NS   1.1.1.1
-_acme-challenge.kube.home.ryougi.ca.   IN      NS   1.1.1.1
+_acme-challenge.home.ryougi.ca.        IN      NS   kianchau.ns.cloudflare.com.
+_acme-challenge.home.ryougi.ca.        IN      NS   norah.ns.cloudflare.com.
+_acme-challenge.kube.home.ryougi.ca.   IN      NS   kianchau.ns.cloudflare.com.
+_acme-challenge.kube.home.ryougi.ca.   IN      NS   norah.ns.cloudflare.com.
+_acme-challenge.wrbgc.home.ryougi.ca.  IN      NS   kianchau.ns.cloudflare.com.
+_acme-challenge.wrbgc.home.ryougi.ca.  IN      NS   norah.ns.cloudflare.com.
+_acme-challenge.dev.wrbgc.home.ryougi.ca.  IN  NS   kianchau.ns.cloudflare.com.
+_acme-challenge.dev.wrbgc.home.ryougi.ca.  IN  NS   norah.ns.cloudflare.com.
 
 ; _acme-challenge.home.ryougi.ca.        IN      TXT   ""
 ; _acme-challenge.kube.home.ryougi.ca.   IN      TXT   ""
