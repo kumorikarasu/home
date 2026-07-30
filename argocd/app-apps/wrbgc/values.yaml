@@ -25,3 +25,15 @@ ingress:
     secretName: wrbgc-ca-tls
 
 resources: {}
+
+sync:
+  enabled: true
+  schedule: "*/15 * * * *"
+  image:
+    repository: registry.home.ryougi.ca/wrbgc-sync
+    tag: latest
+    pullPolicy: Always
+  secretName: wrbgc-sync-env
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  resources: {}

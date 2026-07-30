@@ -1,0 +1,41 @@
+{{- if .Values.sync.enabled }}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Release.Name }}-sync
+  labels:
+    app.kubernetes.io/name: {{ .Chart.Name }}-sync
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  schedule: {{ .Values.sync.schedule | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: {{ .Values.sync.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.sync.failedJobsHistoryLimit }}
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: {{ .Chart.Name }}-sync
+            app.kubernetes.io/instance: {{ .Release.Name }}
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: wrbgc-sync
+              image: "{{ .Values.sync.image.repository }}:{{ .Values.sync.image.tag }}"
+              imagePullPolicy: {{ .Values.sync.image.pullPolicy }}
+              envFrom:
+                - secretRef:
+                    name: {{ .Values.sync.secretName }}
+              env:
+                - name: SYNC_EVENTS
+                  value: "true"
+                - name: SYNC_ANNOUNCEMENTS
+                  value: "true"
+                - name: IMPORT_UNMAPPED_GOOGLE_EVENTS
+                  value: "false"
+              resources:
+{{ toYaml .Values.sync.resources | indent 16 }}
+{{- end }}
