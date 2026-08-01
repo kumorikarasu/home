@@ -1,0 +1,42 @@
+{{- if .Values.sync.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-sync
+  labels:
+    app.kubernetes.io/name: {{ .Chart.Name }}-sync
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.sync.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Chart.Name }}-sync
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ .Chart.Name }}-sync
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: wrbgc-sync
+          image: "{{ .Values.sync.image.repository }}:{{ .Values.sync.image.tag }}"
+          imagePullPolicy: {{ .Values.sync.image.pullPolicy }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.sync.secretName }}
+          env:
+            - name: SYNC_MODE
+              value: "daemon"
+            - name: RECONCILE_INTERVAL_SECONDS
+              value: {{ .Values.sync.reconcileIntervalSeconds | quote }}
+            - name: SYNC_EVENTS
+              value: "true"
+            - name: SYNC_ANNOUNCEMENTS
+              value: "true"
+            - name: IMPORT_UNMAPPED_GOOGLE_EVENTS
+              value: "false"
+          resources:
+{{ toYaml .Values.sync.resources | indent 12 }}
+{{- end }}

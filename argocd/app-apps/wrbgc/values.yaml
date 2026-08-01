@@ -28,12 +28,11 @@ resources: {}
 
 sync:
   enabled: true
-  schedule: "*/15 * * * *"
+  replicaCount: 1
+  reconcileIntervalSeconds: "21600"
   image:
     repository: registry.home.ryougi.ca/wrbgc-sync
     tag: latest
     pullPolicy: Always
   secretName: wrbgc-sync-env
-  successfulJobsHistoryLimit: 3
-  failedJobsHistoryLimit: 3
   resources: {}
