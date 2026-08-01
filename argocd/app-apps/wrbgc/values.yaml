@@ -35,4 +35,7 @@ sync:
     tag: latest
     pullPolicy: Always
   secretName: wrbgc-sync-env
+  discordGuildId: "1238671986746720388"
+  discordAnnouncementsChannelId: "1239589618127605771"
+  googleCalendarId: "afdaf942b172185e5580aad344ed164cdf2d862b6d170e7dc6bc0e924cdda9b4@group.calendar.google.com"
   resources: {}
