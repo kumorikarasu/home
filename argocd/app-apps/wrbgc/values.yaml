@@ -29,7 +29,7 @@ resources: {}
 sync:
   enabled: true
   replicaCount: 1
-  reconcileIntervalSeconds: "21600"
+  reconcileIntervalSeconds: "3600"
   image:
     repository: registry.home.ryougi.ca/wrbgc-sync
     tag: latest
