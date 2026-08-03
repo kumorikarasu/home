@@ -1,0 +1,34 @@
+name: minecraft-atm9
+
+image:
+  name: itzg/minecraft-server
+  tag: java17
+
+service:
+  type: LoadBalancer
+  loadBalancerIP: 192.168.28.21
+  externalTrafficPolicy: Local
+  port: 25565
+
+resources:
+  requests:
+    memory: 28Gi
+    cpu: 3000m
+  limits:
+    memory: 32Gi
+    cpu: 6000m
+
+storage:
+  existingClaim: appdata-pvc
+  subPath: minecraft/ATM9
+
+minecraft:
+  eula: "TRUE"
+  type: FORGE
+  version: "1.20.1"
+  memory: 32G
+  uid: "1000"
+  gid: "1000"
+  umask: "000"
+  ops: kumorikarasu
+  forgeInstaller: "forge-1.20.1-47.1.3-installer.jar"

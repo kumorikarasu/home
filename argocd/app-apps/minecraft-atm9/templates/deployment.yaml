@@ -1,0 +1,80 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.name }}-deployment
+  labels:
+    app: {{ .Values.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.name }}
+    spec:
+      hostNetwork: true
+      volumes:
+      - name: minecraft
+        persistentVolumeClaim:
+          claimName: {{ .Values.storage.existingClaim }}
+      tolerations:
+      - key: "gpu"
+        effect: "NoSchedule"
+        operator: "Exists"
+      containers:
+      - name: {{ .Values.name }}
+        image: {{ .Values.image.name }}:{{ .Values.image.tag }}
+        resources:
+          requests:
+            memory: {{ .Values.resources.requests.memory | quote }}
+            cpu: {{ .Values.resources.requests.cpu | quote }}
+          limits:
+            memory: {{ .Values.resources.limits.memory | quote }}
+            cpu: {{ .Values.resources.limits.cpu | quote }}
+        ports:
+        - containerPort: {{ .Values.service.port }}
+          hostPort: {{ .Values.service.port }}
+        env:
+        - name: UID
+          value: {{ .Values.minecraft.uid | quote }}
+        - name: GID
+          value: {{ .Values.minecraft.gid | quote }}
+        - name: UMASK
+          value: {{ .Values.minecraft.umask | quote }}
+        - name: EULA
+          value: {{ .Values.minecraft.eula | quote }}
+        - name: TYPE
+          value: {{ .Values.minecraft.type | quote }}
+        - name: VERSION
+          value: {{ .Values.minecraft.version | quote }}
+        - name: FORGE_INSTALLER
+          value: {{ .Values.minecraft.forgeInstaller | quote }}
+        - name: MEMORY
+          value: {{ .Values.minecraft.memory | quote }}
+        - name: JVM_DD_OPTS
+          value: "fml.queryResult:confirm,fml.readTimeout=999"
+        - name: OPS
+          value: {{ .Values.minecraft.ops | quote }}
+        volumeMounts:
+        - mountPath: /data
+          subPath: {{ .Values.storage.subPath | quote }}
+          name: minecraft
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.name }}-service
+spec:
+  type: {{ .Values.service.type }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+  externalTrafficPolicy: {{ .Values.service.externalTrafficPolicy }}
+  selector:
+    app: {{ .Values.name }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.port }}
