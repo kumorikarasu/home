@@ -1,0 +1,37 @@
+name: minecraft-atm10
+
+image:
+  name: itzg/minecraft-server
+  tag: java21
+
+service:
+  type: LoadBalancer
+  loadBalancerIP: 192.168.28.21
+  externalTrafficPolicy: Local
+  port: 25565
+
+resources:
+  requests:
+    memory: 28Gi
+    cpu: 3000m
+  limits:
+    memory: 32Gi
+    cpu: 6000m
+
+storage:
+  existingClaim: appdata-pvc
+  subPath: minecraft/ATM10
+
+minecraft:
+  eula: "TRUE"
+  type: NEOFORGE
+  version: "1.21.1"
+  memory: 32G
+  difficulty: hard
+  uid: "1000"
+  gid: "1000"
+  umask: "000"
+  ops: kumorikarasu
+  neoforgeVersion: "21.1.247"
+  motd: ""
+  maxPlayers: ""
