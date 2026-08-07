@@ -62,6 +62,9 @@ spec:
         - mountPath: "/home/node/app/plugins"
           subPath: "st/bitcherry/plugins"
           name: appdata
+        - mountPath: "/home/node/app/public/scripts/extensions/third-party"
+          subPath: "st/bitcherry/third-party"
+          name: appdata
       
 ---
 apiVersion: v1

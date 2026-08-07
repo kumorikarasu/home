@@ -7,8 +7,5 @@ appVersion: "1.0.0" # Replace with your app version or runner image version if a
 
 dependencies:
   - name: actions-runner-controller
-    version: "0.23.0" # Updated to a valid chart version for app version ~0.27.1
+    version: "0.23.7" 
     repository: "https://actions-runner-controller.github.io/actions-runner-controller"
-    # You can add an alias and condition if needed, e.g.:
-    # alias: controller
-    # condition: controller.enabled

@@ -10,13 +10,19 @@ service:
   externalTrafficPolicy: Local
   port: 25565
 
+startupProbe:
+  enabled: true
+  periodSeconds: 10
+  timeoutSeconds: 1
+  failureThreshold: 120
+
 resources:
   requests:
-    memory: 28Gi
-    cpu: 3000m
-  limits:
     memory: 32Gi
-    cpu: 6000m
+    cpu: 8000m
+  limits:
+    memory: 48Gi
+    cpu: 20000m
 
 storage:
   existingClaim: appdata-pvc
@@ -26,7 +32,7 @@ minecraft:
   eula: "TRUE"
   type: NEOFORGE
   version: "1.21.1"
-  memory: 32G
+  memory: 40G
   difficulty: hard
   uid: "1000"
   gid: "1000"
@@ -35,3 +41,5 @@ minecraft:
   neoforgeVersion: "21.1.247"
   motd: ""
   maxPlayers: ""
+  viewDistance: "8"
+  simulationDistance: "6"

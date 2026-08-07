@@ -7,10 +7,10 @@ metadata:
 spec:
   destination:
     name: in-cluster
-    namespace: apps
+    namespace: games
   project: default
   source:
-    path: argocd/app-apps/minecraft-atm10
+    path: argocd/app-games/minecraft-atm10
     repoURL: https://github.com/kumorikarasu/home.git
     targetRevision: HEAD
   syncPolicy:

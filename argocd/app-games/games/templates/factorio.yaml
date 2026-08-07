@@ -10,10 +10,10 @@ metadata:
 spec:
   destination:
     name: in-cluster
-    namespace: apps
+    namespace: games
   project: default
   source:
-    path: argocd/app-apps/factorio
+    path: argocd/app-games/factorio
     repoURL: https://github.com/kumorikarasu/home.git
     targetRevision: HEAD
   syncPolicy:
@@ -29,10 +29,10 @@ metadata:
 spec:
   destination:
     name: in-cluster
-    namespace: apps
+    namespace: games
   project: default
   source:
-    path: argocd/app-apps/factorio-secret
+    path: argocd/app-games/factorio-secret
     repoURL: https://github.com/kumorikarasu/home.git
     targetRevision: HEAD
   syncPolicy:

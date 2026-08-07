@@ -6,10 +6,10 @@ metadata:
 spec:
   destination:
     name: in-cluster
-    namespace: apps
+    namespace: games
   project: default
   source:
-    path: argocd/app-apps/necesse
+    path: argocd/app-games/necesse
     repoURL: https://github.com/kumorikarasu/home.git
     targetRevision: HEAD
   syncPolicy:

@@ -1,17 +1,16 @@
+---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  annotations:
-    argocd-image-updater.argoproj.io/image-list: wolveix/satisfactory-server:v1.x.x
-  name: app-satisfactory
+  name: app-minecraft-prom2
   namespace: argocd
 spec:
   destination:
     name: in-cluster
-    namespace: apps
+    namespace: games
   project: default
   source:
-    path: argocd/app-apps/satisfactory
+    path: argocd/app-games/minecraft-prom2
     repoURL: https://github.com/kumorikarasu/home.git
     targetRevision: HEAD
   syncPolicy:

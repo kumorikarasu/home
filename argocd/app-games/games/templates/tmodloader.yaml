@@ -10,10 +10,10 @@ metadata:
 spec:
   destination:
     name: in-cluster
-    namespace: apps
+    namespace: games
   project: default
   source:
-    path: argocd/app-apps/tmodloader
+    path: argocd/app-games/tmodloader
     repoURL: https://github.com/kumorikarasu/home.git
     targetRevision: HEAD
   syncPolicy:
@@ -29,10 +29,10 @@ metadata:
 spec:
   destination:
     name: in-cluster
-    namespace: apps
+    namespace: games
   project: default
   source:
-    path: argocd/app-apps/tmodloader-secret
+    path: argocd/app-games/tmodloader-secret
     repoURL: https://github.com/kumorikarasu/home.git
     targetRevision: HEAD
   syncPolicy:
