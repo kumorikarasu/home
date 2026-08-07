@@ -1,3 +1,7 @@
+KUBESPRAY_VENV := .venv-kubespray
+KUBESPRAY_BIN := $(KUBESPRAY_VENV)/bin
+KUBESPRAY_ANSIBLE_PLAYBOOK := $(KUBESPRAY_BIN)/ansible-playbook
+
 all: requirements jumpbox bind llvm plex nexus
 
 bind:
@@ -21,6 +25,13 @@ nexus: requirements
 requirements:
 	ansible-galaxy install -r requirements.yml
 
+$(KUBESPRAY_BIN)/python:
+	python3 -m venv $(KUBESPRAY_VENV)
+
+$(KUBESPRAY_ANSIBLE_PLAYBOOK): $(KUBESPRAY_BIN)/python kubespray/requirements.txt
+	$(KUBESPRAY_BIN)/python -m pip install --upgrade pip
+	$(KUBESPRAY_BIN)/python -m pip install -r kubespray/requirements.txt
+
 kube:
 	#git -C kubespray pull || git clone https://github.com/kubernetes-sigs/kubespray.git kubespray
 	##cd kubespray && git checkout release-2.22
@@ -36,10 +47,10 @@ kube:
 	cp group_vars/k8s-cluster/k8s-cluster.yml kubespray/inventory/mycluster/group_vars/k8s_cluster/k8s-cluster.yml
 	cp group_vars/k8s-cluster/k8s-net-calico.yml kubespray/inventory/mycluster/group_vars/k8s_cluster/k8s-net-calico.yml
 
-kubespray: kube
+kubespray: kube $(KUBESPRAY_ANSIBLE_PLAYBOOK)
   #export ANSIBLE_TIMEOUT=120; cd kubespray && ansible-playbook -i inventory/mycluster/hosts.yaml  --become --become-user=root cluster.yml
-	ansible-playbook kube.yml -i ansible.hosts
-	export ANSIBLE_TIMEOUT=120; cd kubespray && ansible-playbook -i inventory/mycluster/hosts.ini --become --become-user=root cluster.yml
+	$(KUBESPRAY_ANSIBLE_PLAYBOOK) kube.yml -i ansible.hosts
+	export ANSIBLE_TIMEOUT=120; cd kubespray && ../$(KUBESPRAY_ANSIBLE_PLAYBOOK) -i inventory/mycluster/hosts.ini --become --become-user=root cluster.yml
 
 kubeconf:
 	ssh kumori@192.168.16.20 'sudo cat /etc/kubernetes/admin.conf' > ../kubeconf.yaml

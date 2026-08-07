@@ -2,7 +2,8 @@
 node1 ansible_host=192.168.16.20 etcd_member_name=etcd1 local_as=64514
 node2 ansible_host=192.168.16.22 etcd_member_name=etcd2 local_as=64515
 node3 ansible_host=192.168.16.23 etcd_member_name=etcd3 local_as=64516
-node4 ansible_host=192.168.16.21 local_as=64517
+node5 ansible_host=192.168.16.24 local_as=64518
+node4 ansible_host=192.168.16.25 local_as=64517 ntp_package=chrony
 
 [kube_node]
 node1
@@ -11,6 +12,7 @@ node4
 [kube_control_plane]
 node1
 node2
+node3
 
 [etcd]
 node1
@@ -38,7 +40,7 @@ calico_rr
 192.168.1.201
 
 [llvm]
-192.168.16.21
+192.168.16.24
 
 [nexus]
 192.168.1.203
