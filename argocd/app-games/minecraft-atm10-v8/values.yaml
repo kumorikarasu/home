@@ -1,13 +1,14 @@
 name: minecraft-atm10-v8
-replicas: 0
 
 image:
   name: itzg/minecraft-server
   tag: java21
 
-# The existing minecraft-atm10 Service selects this label and retains its IP.
-serviceLabel: minecraft-atm10
-port: 25565
+service:
+  type: LoadBalancer
+  loadBalancerIP: 192.168.28.21
+  externalTrafficPolicy: Local
+  port: 25565
 
 startupProbe:
   enabled: true
@@ -38,5 +39,7 @@ minecraft:
   umask: "000"
   ops: kumorikarasu
   neoforgeVersion: "21.1.247"
+  motd: ""
+  maxPlayers: ""
   viewDistance: "8"
   simulationDistance: "6"

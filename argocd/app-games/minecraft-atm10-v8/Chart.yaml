@@ -1,6 +1,5 @@
 apiVersion: v2
 name: minecraft-atm10-v8
-description: Staged ATM10 8.0 server for cutover from the existing ATM10 service
 type: application
-version: 0.1.0
-appVersion: "8.0"
+version: 1.0.0
+appVersion: "1.0.0"
