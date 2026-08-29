@@ -10,7 +10,7 @@ metadata:
 spec:
   destination:
     name: in-cluster
-    namespace: games
+    namespace: apps
   project: default
   source:
     path: argocd/app-games/tmodloader
@@ -29,7 +29,7 @@ metadata:
 spec:
   destination:
     name: in-cluster
-    namespace: games
+    namespace: apps
   project: default
   source:
     path: argocd/app-games/tmodloader-secret
