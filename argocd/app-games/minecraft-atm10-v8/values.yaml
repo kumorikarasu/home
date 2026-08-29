@@ -1,0 +1,42 @@
+name: minecraft-atm10-v8
+replicas: 0
+
+image:
+  name: itzg/minecraft-server
+  tag: java21
+
+# The existing minecraft-atm10 Service selects this label and retains its IP.
+serviceLabel: minecraft-atm10
+port: 25565
+
+startupProbe:
+  enabled: true
+  periodSeconds: 10
+  timeoutSeconds: 1
+  failureThreshold: 120
+
+resources:
+  requests:
+    memory: 32Gi
+    cpu: 8000m
+  limits:
+    memory: 48Gi
+    cpu: 20000m
+
+storage:
+  existingClaim: appdata-pvc
+  subPath: minecraft/ATM10.8
+
+minecraft:
+  eula: "TRUE"
+  type: NEOFORGE
+  version: "1.21.1"
+  memory: 40G
+  difficulty: hard
+  uid: "1000"
+  gid: "1000"
+  umask: "000"
+  ops: kumorikarasu
+  neoforgeVersion: "21.1.247"
+  viewDistance: "8"
+  simulationDistance: "6"
