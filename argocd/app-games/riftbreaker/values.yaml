@@ -22,7 +22,6 @@ resources:
 
 server:
   name: Riftbreaker
-  password: ""
   maxPlayers: "4"
   # Open Campaign is the game's sandbox-style mode.
   mission: campaigns/open/headquarters_ice

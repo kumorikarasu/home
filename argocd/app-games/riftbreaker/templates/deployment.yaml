@@ -5,7 +5,7 @@ metadata:
 data:
   config.cfg: |
     set server_name {{ .Values.server.name | quote }}
-    set server_password {{ .Values.server.password | quote }}
+    set server_password "__SERVER_PASSWORD__"
     set server_rcon_password ""
     set server_max_players_count {{ .Values.server.maxPlayers | quote }}
     set server_broadcast_enabled {{ ternary "0" "1" .Values.server.disableSteam | quote }}
@@ -41,6 +41,26 @@ spec:
       - name: config
         configMap:
           name: {{ .Values.name }}-config
+      - name: rendered-config
+        emptyDir: {}
+      initContainers:
+      - name: render-config
+        image: busybox:1.36
+        command: ["/bin/sh", "-ec"]
+        args:
+        - sed "s|__SERVER_PASSWORD__|${SERVER_PASSWORD}|g" /template/config.cfg > /config/config.cfg
+        env:
+        - name: SERVER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.name }}-secret
+              key: password
+        volumeMounts:
+        - name: config
+          mountPath: /template
+          readOnly: true
+        - name: rendered-config
+          mountPath: /config
       containers:
       - name: {{ .Values.name }}
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
@@ -67,9 +87,8 @@ spec:
         volumeMounts:
         - name: appdata
           mountPath: /data
-        - name: config
+        - name: rendered-config
           mountPath: /data/config
-          readOnly: true
 ---
 apiVersion: v1
 kind: Service
