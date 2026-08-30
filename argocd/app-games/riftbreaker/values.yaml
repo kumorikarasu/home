@@ -26,6 +26,6 @@ server:
   maxPlayers: "4"
   # Open Campaign is the game's sandbox-style mode.
   mission: campaigns/open/headquarters_jungle
-  difficulty: normal
+  difficulty: hard
   # false uses the Steam server browser; true enables direct LAN connections on port 6321.
   disableSteam: false
