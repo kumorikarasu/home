@@ -34,13 +34,6 @@ spec:
       labels:
         app: {{ .Values.name }}
     spec:
-      nodeSelector:
-        dedicated: node4
-      tolerations:
-      - key: dedicated
-        effect: NoSchedule
-        operator: Equal
-        value: node4
       volumes:
       - name: appdata
         persistentVolumeClaim:
