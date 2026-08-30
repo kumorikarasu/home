@@ -1,0 +1,22 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    argocd-image-updater.argoproj.io/image-list: foundry=luxusburg/docker-foundry
+    argocd-image-updater.argoproj.io/foundry.helm.image-name: foundry.image.repository
+    argocd-image-updater.argoproj.io/foundry.helm.image-tag: foundry.image.tag
+  name: app-foundry
+  namespace: argocd
+spec:
+  destination:
+    name: in-cluster
+    namespace: apps
+  project: default
+  source:
+    path: argocd/app-games/foundry
+    repoURL: https://github.com/kumorikarasu/home.git
+    targetRevision: HEAD
+  syncPolicy:
+    syncOptions:
+    - ApplyOutOfSyncOnly=true
