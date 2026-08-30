@@ -1,0 +1,99 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.name }}-config
+data:
+  config.cfg: |
+    set server_name {{ .Values.server.name | quote }}
+    set server_password {{ .Values.server.password | quote }}
+    set server_rcon_password ""
+    set server_max_players_count {{ .Values.server.maxPlayers | quote }}
+    set server_broadcast_enabled {{ ternary "0" "1" .Values.server.disableSteam | quote }}
+    set server_pause_game_when_empty "1"
+    set app_mode "server"
+    set disable_steam {{ ternary "1" "0" .Values.server.disableSteam | quote }}
+    set campaign "open/open"
+    set mission {{ .Values.server.mission | quote }}
+    set difficulty {{ .Values.server.difficulty | quote }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.name }}-deployment
+  labels:
+    app: {{ .Values.name }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{ .Values.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.name }}
+    spec:
+      nodeSelector:
+        dedicated: node4
+      tolerations:
+      - key: dedicated
+        effect: NoSchedule
+        operator: Equal
+        value: node4
+      volumes:
+      - name: appdata
+        persistentVolumeClaim:
+          claimName: {{ .Values.storage.existingClaim }}
+      - name: config
+        configMap:
+          name: {{ .Values.name }}-config
+      containers:
+      - name: {{ .Values.name }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: WINEESYNC
+          value: "0"
+        - name: WINEFSYNC
+          value: "0"
+        resources:
+          requests:
+            cpu: {{ .Values.resources.requests.cpu | quote }}
+            memory: {{ .Values.resources.requests.memory | quote }}
+          limits:
+            cpu: {{ .Values.resources.limits.cpu | quote }}
+            memory: {{ .Values.resources.limits.memory | quote }}
+        ports:
+        - name: game-tcp
+          containerPort: {{ .Values.service.port }}
+          protocol: TCP
+        - name: game-udp
+          containerPort: {{ .Values.service.port }}
+          protocol: UDP
+        volumeMounts:
+        - name: appdata
+          mountPath: /data
+        - name: config
+          mountPath: /data/config
+          readOnly: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.name }}-service
+spec:
+  type: LoadBalancer
+  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+  externalTrafficPolicy: Local
+  selector:
+    app: {{ .Values.name }}
+  ports:
+  - name: game-tcp
+    port: {{ .Values.service.port }}
+    targetPort: game-tcp
+    protocol: TCP
+  - name: game-udp
+    port: {{ .Values.service.port }}
+    targetPort: game-udp
+    protocol: UDP
