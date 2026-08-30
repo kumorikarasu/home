@@ -15,5 +15,6 @@ spec:
     repoURL: https://github.com/kumorikarasu/home.git
     targetRevision: HEAD
   syncPolicy:
+    automated: {}
     syncOptions:
     - ApplyOutOfSyncOnly=true
