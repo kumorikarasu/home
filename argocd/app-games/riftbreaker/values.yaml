@@ -28,5 +28,5 @@ server:
   mission: campaigns/open/headquarters_ice
   difficulty: hard
   steamGameAppId: "4114030"
-  # false uses the Steam server browser; true enables direct LAN connections on port 6321.
-  disableSteam: false
+  # Steam registration fails under Wine; use the exposed LAN listener instead.
+  disableSteam: true
