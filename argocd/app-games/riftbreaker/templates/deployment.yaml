@@ -78,6 +78,9 @@ spec:
           value: "0"
         - name: WINEFSYNC
           value: "0"
+        # steamclient64.dll is at the install root while the EXE runs from bin/.
+        - name: WINEPATH
+          value: 'Z:\opt\riftbreaker'
         resources:
           requests:
             cpu: {{ .Values.resources.requests.cpu | quote }}
