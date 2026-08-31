@@ -11,7 +11,10 @@ service:
 
 storage:
   existingClaim: appdata-pvc
-  subPath: riftbreaker
+  serverPath: riftbreaker/server
+  winePath: riftbreaker/wine
+  steamHomePath: riftbreaker/steam-home
+  savesPath: riftbreaker/saves
 
 resources:
   requests:
@@ -27,6 +30,4 @@ server:
   # Open Campaign is the game's sandbox-style mode.
   mission: campaigns/open/headquarters_ice
   difficulty: hard
-  steamGameAppId: "4114030"
-  # Steam registration fails under Wine; use the exposed LAN listener instead.
-  disableSteam: true
+  disableSteam: false

@@ -45,9 +45,6 @@ spec:
           name: {{ .Values.name }}-config
       - name: rendered-config
         emptyDir: {}
-      # Wine's prefix requires local filesystem locking semantics; saves remain on NFS.
-      - name: wine-data
-        emptyDir: {}
       initContainers:
       - name: render-config
         image: busybox:1.36
@@ -75,8 +72,6 @@ spec:
           value: "0"
         - name: WINEFSYNC
           value: "0"
-        - name: STEAM_GAME_APPID
-          value: {{ .Values.server.steamGameAppId | quote }}
         resources:
           requests:
             cpu: {{ .Values.resources.requests.cpu | quote }}
@@ -93,10 +88,17 @@ spec:
           protocol: UDP
         volumeMounts:
         - name: appdata
-          mountPath: /data
-          subPath: {{ .Values.storage.subPath }}
-        - name: wine-data
+          mountPath: /opt/riftbreaker
+          subPath: {{ .Values.storage.serverPath }}
+        - name: appdata
           mountPath: /data/.wine
+          subPath: {{ .Values.storage.winePath }}
+        - name: appdata
+          mountPath: /home/steamuser
+          subPath: {{ .Values.storage.steamHomePath }}
+        - name: appdata
+          mountPath: /data/saves
+          subPath: {{ .Values.storage.savesPath }}
         - name: rendered-config
           mountPath: /data/config
 ---
