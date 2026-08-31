@@ -31,6 +31,8 @@ spec:
       app: {{ .Values.name }}
   template:
     metadata:
+      annotations:
+        checksum/server-config: {{ .Values.server | toJson | sha256sum }}
       labels:
         app: {{ .Values.name }}
     spec:
