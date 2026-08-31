@@ -43,6 +43,9 @@ spec:
           name: {{ .Values.name }}-config
       - name: rendered-config
         emptyDir: {}
+      # Wine's prefix requires local filesystem locking semantics; saves remain on NFS.
+      - name: wine-data
+        emptyDir: {}
       initContainers:
       - name: render-config
         image: busybox:1.36
@@ -88,6 +91,8 @@ spec:
         - name: appdata
           mountPath: /data
           subPath: {{ .Values.storage.subPath }}
+        - name: wine-data
+          mountPath: /data/.wine
         - name: rendered-config
           mountPath: /data/config
 ---
