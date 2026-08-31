@@ -11,6 +11,7 @@ service:
 
 storage:
   existingClaim: appdata-pvc
+  subPath: riftbreaker
 
 resources:
   requests:

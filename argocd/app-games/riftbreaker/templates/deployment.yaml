@@ -87,6 +87,7 @@ spec:
         volumeMounts:
         - name: appdata
           mountPath: /data
+          subPath: {{ .Values.storage.subPath }}
         - name: rendered-config
           mountPath: /data/config
 ---
