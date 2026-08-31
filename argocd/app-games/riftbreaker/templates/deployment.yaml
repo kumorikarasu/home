@@ -45,6 +45,12 @@ spec:
           name: {{ .Values.name }}-config
       - name: rendered-config
         emptyDir: {}
+      - name: wine-data
+        persistentVolumeClaim:
+          claimName: {{ .Values.name }}-wine
+      - name: steam-home
+        persistentVolumeClaim:
+          claimName: {{ .Values.name }}-steam-home
       initContainers:
       - name: render-config
         image: busybox:1.36
@@ -90,12 +96,10 @@ spec:
         - name: appdata
           mountPath: /opt/riftbreaker
           subPath: {{ .Values.storage.serverPath }}
-        - name: appdata
+        - name: wine-data
           mountPath: /data/.wine
-          subPath: {{ .Values.storage.winePath }}
-        - name: appdata
+        - name: steam-home
           mountPath: /home/steamuser
-          subPath: {{ .Values.storage.steamHomePath }}
         - name: appdata
           mountPath: /data/saves
           subPath: {{ .Values.storage.savesPath }}

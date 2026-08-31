@@ -12,9 +12,11 @@ service:
 storage:
   existingClaim: appdata-pvc
   serverPath: riftbreaker/server
-  winePath: riftbreaker/wine
-  steamHomePath: riftbreaker/steam-home
   savesPath: riftbreaker/saves
+  runtime:
+    storageClass: hpe
+    wineSize: 10Gi
+    steamHomeSize: 10Gi
 
 resources:
   requests:

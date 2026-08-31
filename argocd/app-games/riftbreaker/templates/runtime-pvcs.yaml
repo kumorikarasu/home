@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.name }}-wine
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: {{ .Values.storage.runtime.storageClass }}
+  resources:
+    requests:
+      storage: {{ .Values.storage.runtime.wineSize }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.name }}-steam-home
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: {{ .Values.storage.runtime.storageClass }}
+  resources:
+    requests:
+      storage: {{ .Values.storage.runtime.steamHomeSize }}
