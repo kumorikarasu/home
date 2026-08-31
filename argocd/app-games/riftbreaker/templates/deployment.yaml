@@ -73,6 +73,8 @@ spec:
           value: "0"
         - name: WINEFSYNC
           value: "0"
+        - name: STEAM_GAME_APPID
+          value: {{ .Values.server.steamGameAppId | quote }}
         resources:
           requests:
             cpu: {{ .Values.resources.requests.cpu | quote }}

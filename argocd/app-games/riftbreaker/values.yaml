@@ -27,5 +27,6 @@ server:
   # Open Campaign is the game's sandbox-style mode.
   mission: campaigns/open/headquarters_ice
   difficulty: hard
+  steamGameAppId: "4114030"
   # false uses the Steam server browser; true enables direct LAN connections on port 6321.
   disableSteam: false
