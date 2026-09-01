@@ -104,13 +104,13 @@ spec:
         - name: appdata
           mountPath: /mods
           subPath: {{ .Values.storage.serverPath }}/mods
-      - name: install-redi-pack
+      - name: restore-redi-local-mod
         image: busybox:1.36
         command: ["/bin/sh", "-ec"]
         args:
         - |
-          cp '/mods/Rift Exploration Defense Industry.zip' '/server/packs/Rift Exploration Defense Industry.zip'
-          printf '%s\n' 'Rift Exploration Defense Industry' > /mods/mods_disabled.txt
+          rm -f '/server/packs/Rift Exploration Defense Industry.zip'
+          : > /mods/mods_disabled.txt
         volumeMounts:
         - name: appdata
           mountPath: /mods
