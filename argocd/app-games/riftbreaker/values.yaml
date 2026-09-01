@@ -35,7 +35,7 @@ tolerations:
     effect: NoSchedule
 
 server:
-  name: Riftbreaker
+  name: Riftbreaker - REDI
   maxPlayers: "4"
   # Open Campaign is the game's sandbox-style mode.
   mission: campaigns/open/headquarters_ice
