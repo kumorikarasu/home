@@ -10,6 +10,7 @@ data:
     set server_max_players_count {{ .Values.server.maxPlayers | quote }}
     set server_broadcast_enabled {{ ternary "0" "1" .Values.server.disableSteam | quote }}
     set server_pause_game_when_empty "1"
+    set allow_mods "1"
     set app_mode "server"
     set disable_steam {{ ternary "1" "0" .Values.server.disableSteam | quote }}
     set campaign "open/open"
