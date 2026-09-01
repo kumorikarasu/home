@@ -33,6 +33,7 @@ spec:
     metadata:
       annotations:
         checksum/server-config: {{ .Values.server | toJson | sha256sum }}
+        riftbreaker.home.ryougi.ca/redi-version: {{ .Values.mods.redi.version | quote }}
       labels:
         app: {{ .Values.name }}
     spec:
