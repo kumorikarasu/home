@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.name }}-steam-workshop
+data:
+  appworkshop_780310.acf: |-
+{{ .Files.Get "files/appworkshop_780310.acf" | nindent 4 }}
