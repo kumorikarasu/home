@@ -104,25 +104,20 @@ spec:
         - name: appdata
           mountPath: /mods
           subPath: {{ .Values.storage.serverPath }}/mods
-      - name: install-redi-workshop
+      - name: install-redi-pack
         image: busybox:1.36
         command: ["/bin/sh", "-ec"]
         args:
         - |
-          workshop='/steam-home/Steam/steamapps/workshop/content/780310/3598485480'
-          mkdir -p "$workshop"
-          cp '/mods/Rift Exploration Defense Industry.zip' "$workshop/{03714A10-C0EA-4D6E-9D1D-F5A5EE51C660}.zip"
-          cp /metadata/appworkshop_780310.acf /steam-home/Steam/steamapps/appworkshop_780310.acf
-          : > /mods/mods_disabled.txt
+          cp '/mods/Rift Exploration Defense Industry.zip' '/server/packs/Rift Exploration Defense Industry.zip'
+          printf '%s\n' 'Rift Exploration Defense Industry' > /mods/mods_disabled.txt
         volumeMounts:
-        - name: steam-workshop
-          mountPath: /metadata
-          readOnly: true
-        - name: steam-home
-          mountPath: /steam-home
         - name: appdata
           mountPath: /mods
           subPath: {{ .Values.storage.serverPath }}/mods
+        - name: appdata
+          mountPath: /server
+          subPath: {{ .Values.storage.serverPath }}
       containers:
       - name: {{ .Values.name }}
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
