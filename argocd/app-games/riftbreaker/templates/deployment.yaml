@@ -97,6 +97,9 @@ spec:
         - name: game-udp
           containerPort: {{ .Values.service.port }}
           protocol: UDP
+        - name: steam-udp
+          containerPort: {{ .Values.service.steamPort }}
+          protocol: UDP
         volumeMounts:
         - name: appdata
           mountPath: /opt/riftbreaker
@@ -129,4 +132,8 @@ spec:
   - name: game-udp
     port: {{ .Values.service.port }}
     targetPort: game-udp
+    protocol: UDP
+  - name: steam-udp
+    port: {{ .Values.service.steamPort }}
+    targetPort: steam-udp
     protocol: UDP
