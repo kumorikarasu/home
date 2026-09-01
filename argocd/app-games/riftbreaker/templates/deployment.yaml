@@ -61,6 +61,9 @@ spec:
       - name: steam-home
         persistentVolumeClaim:
           claimName: {{ .Values.name }}-steam-home
+      - name: redi-manifest
+        configMap:
+          name: {{ .Values.name }}-redi-manifest
       initContainers:
       - name: render-config
         image: busybox:1.36
@@ -79,6 +82,18 @@ spec:
           readOnly: true
         - name: rendered-config
           mountPath: /config
+      - name: install-redi-manifest
+        image: busybox:1.36
+        command: ["/bin/sh", "-ec"]
+        args:
+        - cp /manifest/{03714A10-C0EA-4D6E-9D1D-F5A5EE51C660}.manifest /mods/{03714A10-C0EA-4D6E-9D1D-F5A5EE51C660}.manifest
+        volumeMounts:
+        - name: redi-manifest
+          mountPath: /manifest
+          readOnly: true
+        - name: appdata
+          mountPath: /mods
+          subPath: {{ .Values.storage.serverPath }}/mods
       containers:
       - name: {{ .Values.name }}
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}

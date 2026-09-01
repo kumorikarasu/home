@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.name }}-redi-manifest
+data:
+  "{03714A10-C0EA-4D6E-9D1D-F5A5EE51C660}.manifest": |-
+{{ .Files.Get "files/{03714A10-C0EA-4D6E-9D1D-F5A5EE51C660}.manifest" | nindent 4 }}
