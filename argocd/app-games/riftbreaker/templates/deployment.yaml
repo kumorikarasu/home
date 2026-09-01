@@ -113,7 +113,7 @@ spec:
           mkdir -p "$workshop"
           cp '/mods/Rift Exploration Defense Industry.zip' "$workshop/{03714A10-C0EA-4D6E-9D1D-F5A5EE51C660}.zip"
           cp /metadata/appworkshop_780310.acf /steam-home/Steam/steamapps/appworkshop_780310.acf
-          printf '%s\n' 'Rift Exploration Defense Industry' > /mods/mods_disabled.txt
+          : > /mods/mods_disabled.txt
         volumeMounts:
         - name: steam-workshop
           mountPath: /metadata
