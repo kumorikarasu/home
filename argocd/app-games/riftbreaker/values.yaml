@@ -21,9 +21,10 @@ storage:
 
 mods:
   redi:
-    enabled: true
-    steamWorkshopId: "3598485480"
-    version: "0.5.6"
+  enabled: true
+  steamWorkshopId: "3598485480"
+  version: "0.5.6"
+  activationRevision: "1"
 
 # Temporary placement for the dedicated-server performance comparison.
 nodeSelector:
