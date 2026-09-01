@@ -32,4 +32,5 @@ server:
   # Open Campaign is the game's sandbox-style mode.
   mission: campaigns/open/headquarters_ice
   difficulty: hard
-  disableSteam: false
+  # Direct LAN mode: clients join 192.168.28.23:6321 through the BGP Service.
+  disableSteam: true
