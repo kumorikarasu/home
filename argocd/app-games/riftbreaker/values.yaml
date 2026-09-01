@@ -33,6 +33,6 @@ server:
   # Open Campaign is the game's sandbox-style mode.
   mission: campaigns/open/headquarters_ice
   difficulty: hard
-  # Register against the dedicated-server app for Steam browser discovery.
-  steamGameAppId: "4114030"
+  # SteamCMD downloads tool 4114030; Steam networking uses the playable game ID.
+  steamGameAppId: "780310"
   disableSteam: false
