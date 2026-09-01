@@ -91,13 +91,6 @@ spec:
         # steamclient64.dll is at the install root while the EXE runs from bin/.
         - name: WINEPATH
           value: 'Z:\opt\riftbreaker'
-        resources:
-          requests:
-            cpu: {{ .Values.resources.requests.cpu | quote }}
-            memory: {{ .Values.resources.requests.memory | quote }}
-          limits:
-            cpu: {{ .Values.resources.limits.cpu | quote }}
-            memory: {{ .Values.resources.limits.memory | quote }}
         ports:
         - name: game-tcp
           containerPort: {{ .Values.service.port }}

@@ -32,13 +32,6 @@ spec:
       containers:
       - name: {{ .Values.name }}
         image: {{ .Values.image.name }}:{{ .Values.image.tag }}
-        resources:
-          requests:
-            memory: {{ .Values.resources.requests.memory | quote }}
-            cpu: {{ .Values.resources.requests.cpu | quote }}
-          limits:
-            memory: {{ .Values.resources.limits.memory | quote }}
-            cpu: {{ .Values.resources.limits.cpu | quote }}
         ports:
         - containerPort: {{ .Values.service.port }}
           hostPort: {{ .Values.service.port }}

@@ -16,14 +16,6 @@ startupProbe:
   timeoutSeconds: 1
   failureThreshold: 120
 
-resources:
-  requests:
-    memory: 32Gi
-    cpu: 8000m
-  limits:
-    memory: 48Gi
-    cpu: 20000m
-
 storage:
   existingClaim: appdata-pvc
   subPath: minecraft/ATM10.8

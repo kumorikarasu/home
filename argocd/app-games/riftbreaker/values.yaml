@@ -19,14 +19,6 @@ storage:
     wineSize: 10Gi
     steamHomeSize: 10Gi
 
-resources:
-  requests:
-    cpu: 4
-    memory: 8Gi
-  limits:
-    cpu: 8
-    memory: 16Gi
-
 # Temporary placement for the dedicated-server performance comparison.
 nodeSelector:
   kubernetes.io/hostname: node4
