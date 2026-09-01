@@ -44,3 +44,5 @@ server:
   # SteamCMD downloads tool 4114030; Steam networking uses the playable game ID.
   steamGameAppId: "780310"
   disableSteam: false
+  # Permit clients whose active mod list matches the server's external content.
+  allowMods: true
