@@ -30,6 +30,11 @@ resources:
 # Temporary placement for the dedicated-server performance comparison.
 nodeSelector:
   kubernetes.io/hostname: node4
+tolerations:
+  - key: dedicated
+    operator: Equal
+    value: node4
+    effect: NoSchedule
 
 server:
   name: Riftbreaker
