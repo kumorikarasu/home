@@ -1,0 +1,7 @@
+image:
+  repository: ollama/ollama
+  tag: "0.40.16"
+node: node5
+storage:
+  size: 128Gi
+  path: /data/volumes/ollama
